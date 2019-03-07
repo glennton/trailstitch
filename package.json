@@ -6,8 +6,10 @@
   "dependencies": {
     "cross-env": "^5.2.0",
     "express": "^4.16.4",
+    "materialize-css": "^1.0.0-rc.2",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
+    "react-materialize": "^2.6.0",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3"
   },
