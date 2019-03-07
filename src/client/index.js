@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-const title = '';
+import Home from './components/Home'
 
 ReactDOM.render(
-  <div>{title}
-    <div>Test</div>
+  <div>
+    <Home />
   </div>,
   document.getElementById('app')
 );
