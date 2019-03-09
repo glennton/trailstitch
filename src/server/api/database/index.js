@@ -1,13 +1,14 @@
 import mongoose from 'mongoose'
-import dbCredentials from 'Auth/database.js'
-import {OPTIONS, URI} from 'Config/database.js'
+import dbCredentials from 'Auth/database'
+import dbConfig from 'Config/database'
 
-const dbOptions = Object.assign(dbCredentials, OPTIONS);
+//Combine credentials and options into one object to pass to mongo connect
+const dbOptions = Object.assign(dbCredentials, dbConfig.OPTIONS);
 
+//Use mongoose to connect to db, async not necessary because of buffer, but should implement in case there are connection issues
 const db = async () => {
-  //No need for async as mongoose buffers model functions internally
   try {
-    await mongoose.connect(URI, dbOptions)
+    await mongoose.connect(dbConfig.URI, dbOptions)
   }catch(err){
     console.log('MongoDB Connection Error:', err)
   }

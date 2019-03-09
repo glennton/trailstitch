@@ -1,0 +1,22 @@
+{
+  "parser": "babel-eslint",
+  "rules": {
+    "no-console": "off"
+  },
+  "plugins": [
+    "react",
+    "jsx-a11y"
+  ],
+  "env": {
+    "browser": true,
+    "es6": true
+  },  
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "./src/bundler/webpack.server.config.js"
+      }
+    }
+  },
+  "extends": ["airbnb-base", "eslint:recommended", "plugin:react/recommended"]
+}

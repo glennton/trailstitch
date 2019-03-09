@@ -1,3 +1,5 @@
-const playgroundURI = `/graphql`
+const graphQLConfig = {
+  playgroundURI: `/graphql`
+}
 
-export {playgroundURI}
+export default graphQLConfig

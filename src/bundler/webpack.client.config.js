@@ -1,3 +1,4 @@
+
 const path = require("path")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 
@@ -36,8 +37,11 @@ module.exports = {
         }
       },
       {
-        // Loads the javacript into html template provided.
-        // Entry point is set below in HtmlWebPackPlugin in Plugins 
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: ['babel-loader', 'eslint-loader']
+      },
+      {
         test: /\.html$/,
         use: [
           {
