@@ -20,9 +20,6 @@ const typeDefs = gql`
   }
   type Query {
     getUsers(num: Int!): [User]
-
-  }
-  type Mutation {
   }
 `
 

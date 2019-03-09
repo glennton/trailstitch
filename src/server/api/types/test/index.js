@@ -3,7 +3,8 @@ import resolvers from './resolvers.js'
 import { makeExecutableSchema } from 'graphql-tools'
 
 const testSchema = makeExecutableSchema({
-  typeDefs
+  typeDefs,
+  resolvers
 });
   
 export default testSchema
