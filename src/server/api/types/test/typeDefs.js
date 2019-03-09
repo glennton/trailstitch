@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server'
+import { gql } from 'apollo-server-express'
 
 const typeDefs = gql`
   type User{
@@ -19,7 +19,8 @@ const typeDefs = gql`
     lng: String
   }
   type Query {
-    getUsers(num: Int!): [User]
+    getUser(num: Int!): User,
+    getAllUsers: [User]
   }
 `
 
