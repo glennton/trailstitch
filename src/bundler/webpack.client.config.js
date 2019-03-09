@@ -1,29 +1,33 @@
 const path = require("path")
-const webpack = require('webpack')
 const HtmlWebPackPlugin = require("html-webpack-plugin")
+
 module.exports = {
   entry: {
-    main: './src/client/index.js'
+    main: `./src/client/index.js`
   },
   output: {
-    path: path.join(__dirname, '../', '../', 'dist', 'client'),
-    publicPath: '/',
-    filename: '[name].js'
+    path: path.join(__dirname, `../../dist`, `client`),
+    publicPath: `/`,
+    filename: `[name].js`
   },
-  target: 'web',
-  devtool: '#source-map',
+  resolve:{
+    alias: {
+    }
+  },
+  target: `web`,
+  devtool: `#source-map`,
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: "babel-loader",
+        loader: `babel-loader`,
         options: {
-          "presets": [
+          presets: [
             [
               `@babel/env`, {
                 "targets": {
-                  "node": "current"
+                  "node": `current`
                 }
               }
             ],
@@ -37,26 +41,26 @@ module.exports = {
         test: /\.html$/,
         use: [
           {
-            loader: "html-loader",
-            //options: { minimize: true }
+            loader: `html-loader`,
+            options: { minimize: true }
           }
         ]
       },
       {
         test: /\.css$/,
-        use: [ 'style-loader', 'css-loader' ]
+        use: [ `style-loader`, `css-loader` ]
       },
       {
        test: /\.(png|svg|jpg|gif)$/,
-       use: ['file-loader']
+       use: [`file-loader`]
       }
     ]
   },
   plugins: [
     new HtmlWebPackPlugin({
-      template: "./src/client/index.html",
-      filename: "./index.html",
-      excludeChunks: [ 'server' ]
+      template: `./src/client/index.html`,
+      filename: `./index.html`,
+      excludeChunks: [ `server` ]
     })
   ]
 }
