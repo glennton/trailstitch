@@ -1,15 +1,12 @@
-import { makeExecutableSchema } from 'graphql-tools'
-import { merge } from 'lodash'
+import { mergeSchemas } from 'graphql-tools'
+import defaultSchema from './defaults'
+import testSchema from './test'
 
-typeDefs = [
+const schemas = mergeSchemas({
+  schemas: [
+    defaultSchema,
+    testSchema
+  ]
+})
 
-];
-
-resolvers = ``
-
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers
-});
-  
-export default schema
+export default schemas

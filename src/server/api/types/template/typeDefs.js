@@ -1,10 +1,12 @@
-import { gql } from 'apollo-server-express'
+import { gql } from 'apollo-server'
 
 const typeDefs = gql`
-  #Declarations
-  #Queries
-  #Inputs
-  #Mutations
+  type Query {
+
+  }  
+  type Mutation{
+
+  }
 `
 
 export default typeDefs
