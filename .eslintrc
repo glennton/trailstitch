@@ -15,7 +15,10 @@
     "import/resolver": {
       "webpack": {
         "config": "./src/bundler/webpack.server.config.js"
-      }
+      },
+      "node": {
+        "extensions": [".js",".jsx"]
+       }
     }
   },
   "extends": ["airbnb-base", "eslint:recommended", "plugin:react/recommended"]

@@ -2,7 +2,9 @@
 
 const resolvers = {
   Query: {
+    // async exampleFunction(obj, params, context, info){
 
+    // }
   },
   Mutation: {
     
