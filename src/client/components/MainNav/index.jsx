@@ -1,17 +1,21 @@
 import React from 'react'
 import { Navbar, NavItem} from 'react-materialize'
-import { NavLink } from 'react-router-dom';
 
 class MainNav extends React.Component{
+
+  handleOnClick = () => {
+    this.setState({redirect: true});
+  }
+  
   render(){
     return (
       <Navbar>
         <div className="container">
-          <NavItem><NavLink to="/">Home</NavLink></NavItem>
-          <NavItem><NavLink to="/albums">Albums</NavLink></NavItem>
-          <NavItem>Stitches</NavItem>
-          <NavItem>Upload</NavItem>
-          <NavItem>Account</NavItem>
+          <NavItem href="/">Home</NavItem>
+          <NavItem href="/albums">Albums</NavItem>
+          <NavItem href="/stitches">Stitches</NavItem>
+          <NavItem href="/upload">Upload</NavItem>
+          <NavItem href="/account">Account</NavItem>
         </div>
       </Navbar>
     )

@@ -5,6 +5,9 @@ import './styles.scss'
 
 import Home from '../routes/Home'
 import Albums from '../routes/Albums'
+import Stitches from '../routes/Stitches'
+import Upload from '../routes/Upload'
+import Account from '../routes/Account'
 import MainNav from '../MainNav'
 import FooterNav from '../FooterNav'
 
@@ -15,12 +18,17 @@ class App extends React.Component {
       <div id="main">
         <MainNav />
         <div id="content">
-          <Col s={12}>
-            <p>App</p>
-          </Col>
+          <div className="container">
+            <Col s={12}>
+              <h1>App</h1>
+            </Col>
+          </div>  
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/albums" component={Albums} />
+            <Route path="/stitches" component={Stitches} />
+            <Route path="/upload" component={Upload} />
+            <Route path="/account" component={Account} />
           </Switch>
         </div>
         <FooterNav />

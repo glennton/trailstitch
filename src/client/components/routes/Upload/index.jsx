@@ -1,12 +1,15 @@
 import React from 'react'
+import { Col } from 'react-materialize'
+
 import './styles.scss'
-//import { NavLink } from 'react-router-dom';
 
 class Upload extends React.Component {
   render() {
     return (
-      <div>
+      <div className="container">
+        <Col s={12}>
           <p>Upload</p>
+        </Col>
       </div>
     );
   }
