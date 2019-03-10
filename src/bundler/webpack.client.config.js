@@ -1,7 +1,9 @@
 
 const path = require("path")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+
+const devMode = process.env.NODE_ENV !== 'production'
 
 module.exports = {
   entry: {
@@ -24,25 +26,10 @@ module.exports = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                [
-                  '@babel/env', {
-                    targets: {
-                      "node": "current"
-                    }
-                  }
-                ],
-                `@babel/react`
-              ]
-            }
+            loader: 'babel-loader'
           },
           {
-            loader: 'eslint-loader',
-            options: {
-              presets: ['react'],
-            }
+            loader: 'eslint-loader'
           }
         ]
 
@@ -58,10 +45,12 @@ module.exports = {
       },
       {
         test: /\.(sass|scss|css)$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: "css-loader!sass-loader",
-        })
+        use: [
+          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'style-loader', 
+          'css-loader', 
+          'sass-loader'
+        ]
       },
       {
        test: /\.(png|svg|jpg|gif)$/,
@@ -75,6 +64,9 @@ module.exports = {
       filename: `./index.html`,
       excludeChunks: [ `server` ]
     }),
-    new ExtractTextPlugin('style.css')
+    new MiniCssExtractPlugin({
+      filename: devMode ? '[name].css' : '[name].[hash].css',
+      chunkFilename: devMode ? '[id].css' : '[id].[hash].css'
+    })
   ],
 }

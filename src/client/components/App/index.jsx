@@ -1,6 +1,5 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom';
-import { Col } from 'react-materialize'
 import './styles.scss'
 
 import Home from '../routes/Home'
@@ -18,11 +17,6 @@ class App extends React.Component {
       <div id="main">
         <MainNav />
         <div id="content">
-          <div className="container">
-            <Col s={12}>
-              <h1>App</h1>
-            </Col>
-          </div>  
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/albums" component={Albums} />
