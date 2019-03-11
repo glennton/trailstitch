@@ -1,6 +1,7 @@
 # Package Folders #
 /node_modules/
-/dist/
+**/dist/
+**/auth/
 
 # OS generated files #
 .DS_Store
@@ -18,3 +19,4 @@ Thumbs.db
 .com.apple.timemachine.donotpresent
 .DocumentRevisions-V100
 .vscode
+src/server/auth/database.js
