@@ -3,9 +3,12 @@ const path = require("path")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
+const webpackMerge = require('webpack-merge');
+const commonConfig = require('./webpack.common.config');
+
 const devMode = process.env.NODE_ENV !== 'production'
 
-module.exports = {
+module.exports = webpackMerge(commonConfig, {
   entry: {
     main: `./src/client/index.jsx`
   },
@@ -13,9 +16,6 @@ module.exports = {
     path: path.join(__dirname, `../../dist`, `client`),
     publicPath: `/`,
     filename: `[name].js`
-  },
-  resolve:{
-    extensions: ['.js', '.jsx']
   },
   target: `web`,
   devtool: `#source-map`,
@@ -69,4 +69,4 @@ module.exports = {
       chunkFilename: devMode ? '[id].css' : '[id].[hash].css'
     })
   ],
-}
+})

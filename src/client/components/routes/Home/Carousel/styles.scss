@@ -1,0 +1,133 @@
+@import 'Styles/mixins.scss';
+
+@mixin sliderGradient() {
+  background: rgba(0, 0, 0, 0);
+  background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 41%, rgba(0, 0, 0, 0.47) 100%);
+  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(0, 0, 0, 0)), color-stop(41%, rgba(0, 0, 0, 0)), color-stop(100%, rgba(0, 0, 0, 0.47)));
+  background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 41%, rgba(0, 0, 0, 0.47) 100%);
+  background: -o-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 41%, rgba(0, 0, 0, 0.47) 100%);
+  background: -ms-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 41%, rgba(0, 0, 0, 0.47) 100%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 41%, rgba(0, 0, 0, 0.47) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#000000', GradientType=0);
+}
+
+#carouselContainer{
+  padding: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+.carouselNav{
+  left: 0;
+  width: 100%;
+  display: flex;
+  z-index: 2;
+  bottom: 0;
+  justify-content: space-between;
+  @media #{$m}{
+    position: absolute;
+    top: 50%;
+    height: 0%;
+  }
+  .carouselLeftArrow, .carouselRightArrow{
+    display: flex;
+    align-items: center;
+    color: #fff;
+    span{
+      // height: 4em;
+      // width: 4em;
+      font-size: 6em;
+    }
+    &:hover{
+      cursor: pointer;
+    }
+  }
+  .carouselLeftArrow{
+    
+  }
+  .carouselRightArrow{
+    justify-content: flex-end;
+  }
+}
+#featured-carousel-container {
+  background-color: #000;
+  z-index: 1;
+  .slide {
+    display: flex;
+    position: relative;
+    width: 100%;
+    min-height: 50vh;
+    height: 70vh;
+
+    .slideBgContainer {
+      flex: 0 0 100%;
+      position: relative;
+      background-position: top;
+      background-repeat: no-repeat;
+      background-size: cover;
+      z-index: 1;
+    }
+
+    .slideContent {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      @include sliderGradient();
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+
+      .pushDown {
+        flex: 1 1 100%;
+      }
+
+      .slideText {
+        text-align: center;
+        padding-bottom: 2em;
+        width: 100%;
+        color: #fff;
+        flex: 1 0 1;
+
+        .slideInfo {
+          padding-bottom: 2em;
+          border-bottom: 1px solid #fff;
+
+          h2.locationName {
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px #000000;
+          }
+
+          p.coords {}
+
+          p.subText {}
+        }
+      }
+
+      .slideFeatures {
+        padding-top: 2em;
+        margin-top: 1em;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+
+        .feature {
+          flex: 0 0 auto;
+          line-height: .1em;
+          padding: 0 1em;
+
+          .material-icons {
+            font-size: 3em;
+          }
+
+          p {
+            font-size: .7em;
+            text-transform: uppercase;
+          }
+        }
+      }
+    }
+  }
+}

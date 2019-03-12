@@ -14,11 +14,8 @@
   "settings": {
     "import/resolver": {
       "webpack": {
-        "config": "./src/bundler/webpack.server.config.js"
-      },
-      "node": {
-        "extensions": [".js",".jsx"]
-       }
+        "config": "./src/bundler/webpack.common.config.js"
+      }
     },
     "react": { 
       "version": "^16.8.3"

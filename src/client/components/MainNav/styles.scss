@@ -1,13 +1,22 @@
+@import 'Styles/mixins.scss';
+
 #NavBarContainer{
-  position: fixed;
-  z-index: 10;
-  width: 100%;
-  top: 0;
-  left: 0;
+  @media #{$m} {
+    position: fixed;
+    z-index: 997;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
   nav{
-    background: rgba(0, 0, 0, .7);
+    background: rgba(0, 0, 0, 1);
+    @media #{$m} {
+      background: rgba(0, 0, 0, .7);
+    }
     a{
-      color: #fff;
+      @media #{$m} {
+        color: #fff;
+      }
     }
   }
 }

@@ -168,7 +168,7 @@ class Slider extends React.Component{
     if(this.itemCount){
       Slider = <Measure bounds onResize={(contentRect) => { this.setDimensions(contentRect) }}>
       {({ measureRef }) =>
-        <div id={`${this.id}-container`} className={`stupid-carousel-container`} ref={measureRef}>
+        <div ref={measureRef}>
           <div id={`${this.id}-slider`} className={`stupid-carousel-slider`} style={sliderStyle} ref={(slider)=>{this.sliderElement = slider}}>
             <ul id={`${this.id}-list`} className={`stupid-carousel-list`}>
               {this.reactItems.map((item, index) => {
@@ -182,7 +182,7 @@ class Slider extends React.Component{
     }
 
     return(
-      <div>
+      <div id={`${this.id}-container`} className={`stupid-carousel-container`}>
         {Slider}
       </div>
     )
