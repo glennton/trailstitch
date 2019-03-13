@@ -6,6 +6,7 @@ import Slider from 'Utils/StupidSlider'
 import ParseCoords from 'Utils/ParseCoords'
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import DummyData from 'Utils/DummyData'
 import './styles.scss'
 
 const styles = theme => ({
@@ -42,45 +43,7 @@ const styles = theme => ({
 class Carousel extends React.Component {
   constructor(props) {
     super(props);
-    this.slides = [
-      {
-        imgUrl: `http://glennroman.com/trailstitch/images/DSC03858-HDR.jpg`,
-        locName: `Ansel Adams Wilderness`,
-        subText: `Eu veniam anim laboris aliqua ipsum nostrud laboris consectetur voluptate esse labore anim proident.`,
-        linkUrl: ``,
-        locCoords: {
-          lat: `21|58|37.72|N`,
-          lon: `81|13|28.53|W`
-        },
-        features: {
-          gpsTrax: true,
-          pictures: true,
-          blogNotes: true
-        }
-      },
-      {
-        imgUrl: `http://glennroman.com/trailstitch/images/DSC02492.jpg`,
-        locName: `Ruby Lake`,
-        subText: `Duis occaecat sint laboris et consequat aliquip veniam reprehenderit consequat Lorem qui ea qui.`,
-        linkUrl: ``,
-        locCoords: {
-          lat: ``,
-          lon: ``
-        },
-        features: {}
-      },
-      {
-        imgUrl: `http://glennroman.com/trailstitch/images/DSC02425.jpg`,
-        locName: `Yosemite National Park`,
-        subText: `Duis occaecat sint laboris et consequat aliquip veniam reprehenderit consequat Lorem qui ea qui.`,
-        linkUrl: ``,
-        locCoords: {
-          lat: `21|58|37.72|N`,
-          lon: `81|13|28.53|W`
-        },
-        features: {}
-      }
-    ]
+    this.slides = DummyData(['slides']).slides
     this.renderSlides = this.renderSlides.bind(this)
     this.renderSlideFeatures = this.renderSlideFeatures.bind(this)
   }
@@ -88,6 +51,7 @@ class Carousel extends React.Component {
     return (
       this.slides.map( (e,i) =>
         <Grid key={`slide-${i}`} className='slide'>
+          {console.log(e)}
           <Grid className="slideBgContainer" style={{backgroundImage : `url(${e.imgUrl})`}}></Grid>
           <Grid className="slideContent">
             <Grid className="wrapper slideContentWrapper">
@@ -133,7 +97,6 @@ class Carousel extends React.Component {
     );
   }
 }
-
 Carousel.propTypes = {
   classes: PropTypes.object.isRequired
 }

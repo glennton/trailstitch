@@ -11,6 +11,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
+import DummyData from 'Utils/DummyData'
 
 import './styles.scss'
 
@@ -23,28 +24,7 @@ class MainNav extends React.Component{
       bottom: false,
       right: false
     }
-    this.navLinks = [
-      {
-        linkName: `Home`,
-        linkPath: `/`
-      },
-      {
-        linkName: `Albums`,
-        linkPath: `/albums`
-      },
-      {
-        linkName: `stitches`,
-        linkPath: `/stitches`
-      },
-      {
-        linkName: `upload`,
-        linkPath: `/upload`
-      },
-      {
-        linkName: `account`,
-        linkPath: `/account`
-      }
-    ]
+    this.navLinks = this.slides = DummyData(['pageNavItems']).pageNavItems
     this.toggleDrawer = this.toggleDrawer.bind(this)
     this.makeNavLinks = this.makeNavLinks.bind(this)
     this.makeMobileNavLinks = this.makeMobileNavLinks.bind(this)
@@ -65,6 +45,7 @@ class MainNav extends React.Component{
       )
     )
   }
+
   makeMobileNavLinks() {
     return (
       this.navLinks.map((e, i) =>
@@ -75,6 +56,7 @@ class MainNav extends React.Component{
       )
     )
   }
+
   render(){
     return (
       <div id="NavBarContainer">
