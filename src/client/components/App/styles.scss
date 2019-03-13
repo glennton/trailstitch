@@ -2,8 +2,21 @@
   display: flex;
   min-height: 100vh;
   flex-direction: column;
-}
 
-#content {
-  flex: 1 0 auto;
+  #content {
+    flex: 1 0 auto;
+  }
+
+  .wrapper{
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .txt-white{
+    color: #fff;
+  }
+  .txt-black {
+    color: #000;
+  }
 }

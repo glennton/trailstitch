@@ -8,7 +8,7 @@
     top: 0;
     left: 0;
   }
-  nav{
+  .nav{
     background: rgba(0, 0, 0, 1);
     @media #{$m} {
       background: rgba(0, 0, 0, .7);
@@ -20,3 +20,4 @@
     }
   }
 }
+
