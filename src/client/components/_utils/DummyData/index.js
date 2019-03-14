@@ -1,10 +1,18 @@
 const data = {
+  publicUsers: [
+    {
+      publicUserName: `Glenn`,
+      publicUserId: `22`,
+      publicProfilePicUrl: `` 
+    }
+  ],
   slides: [
     {
       imgUrl: `http://glennroman.com/trailstitch/images/DSC03858-HDR.jpg`,
       locName: `Ansel Adams Wilderness`,
       subText: `Eu veniam anim laboris aliqua ipsum nostrud laboris consectetur voluptate esse labore anim proident.`,
       linkUrl: ``,
+      publicUserId: `22`,
       locCoords: {
         lat: `21|58|37.72|N`,
         lon: `81|13|28.53|W`
@@ -20,6 +28,7 @@ const data = {
       locName: `Ruby Lake`,
       subText: `Duis occaecat sint laboris et consequat aliquip veniam reprehenderit consequat Lorem qui ea qui.`,
       linkUrl: ``,
+      publicUserId: `22`,
       locCoords: {
         lat: ``,
         lon: ``
@@ -31,6 +40,7 @@ const data = {
       locName: `Yosemite National Park`,
       subText: `Duis occaecat sint laboris et consequat aliquip veniam reprehenderit consequat Lorem qui ea qui.`,
       linkUrl: ``,
+      publicUserId: `22`,
       locCoords: {
         lat: `21|58|37.72|N`,
         lon: `81|13|28.53|W`
