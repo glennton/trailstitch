@@ -1,5 +1,6 @@
 import React from 'react'
-import { withRouter, NavLink } from 'react-router-dom'
+import PropTypes from 'prop-types';
+import { NavLink } from 'react-router-dom'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
@@ -12,8 +13,25 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
 import DummyData from 'Utils/DummyData'
+import { withStyles } from '@material-ui/core/styles';
 
-import './styles.scss'
+const styles = theme => ({
+  navBarContainer: {
+    [theme.breakpoints.up('sm')]: {
+      position: `fixed`,
+      zIndex: 997,
+      width: `100%`,
+      top: 0,
+      left: 0,
+    }
+  },
+  mainNavigation: {
+    background: 'rgba(0, 0, 0, 1)',
+    [theme.breakpoints.up('sm')]: {
+       background: 'rgba(0, 0, 0, .7)',
+    }
+  }
+})
 
 class MainNav extends React.Component{  
   constructor(props){
@@ -59,8 +77,8 @@ class MainNav extends React.Component{
 
   render(){
     return (
-      <div id="NavBarContainer">
-        <AppBar position="static" className="nav">
+      <div id="NavBarContainer" className={`${this.props.classes.navBarContainer}`}>
+        <AppBar position="static" className={`${this.props.classes.mainNavigation}`}>
           <Toolbar>
             <IconButton color="inherit" aria-label="Menu" onClick={this.toggleDrawer('left', true)}>
               <MenuIcon/>
@@ -85,4 +103,8 @@ class MainNav extends React.Component{
   }
 }
 
-export default withRouter(MainNav)
+MainNav.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(MainNav);

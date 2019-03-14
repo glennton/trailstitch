@@ -55,7 +55,7 @@ class ParseCoords extends React.Component {
   renderCoords(){
     if(this.state.lat.valid && this.state.lon.valid){
       return(
-        <Grid container justify="center">
+        <Grid container justify="center" className={`${this.props.className || ''}`}>
           <Grid item className={this.props.classes.coords}>
             <Icon>place</Icon>
           </Grid> 
@@ -84,7 +84,6 @@ class ParseCoords extends React.Component {
     this.setState({
       styles: this.props.styles ? this.props.styles : {}
     })
-    console.log(this.state, this.props.styles)
     this.splitCoords(this.props.coords.lat, 'lat')
     this.splitCoords(this.props.coords.lon, 'lon')
   }
@@ -94,6 +93,7 @@ ParseCoords.propTypes = {
   coords: PropTypes.object.isRequired,
   styles: PropTypes.object,
   classes: PropTypes.object,
+  className: PropTypes.string,
 }
 
 export default withStyles(styles)(ParseCoords);

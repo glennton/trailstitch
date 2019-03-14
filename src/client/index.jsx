@@ -4,8 +4,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import App from './components/App'
+import App from './components/App';
 
+const defaultTheme = createMuiTheme();
 const theme = createMuiTheme({
   typography: {
     useNextVariants: true,
@@ -17,12 +18,16 @@ const theme = createMuiTheme({
     h2: {
       textTransform: "uppercase",
       fontWeight: 600,
-      letterSpacing: ` 0.15em`
+      letterSpacing: ` 0.15em`,
+      fontSize: `3.75em`,
+      [defaultTheme.breakpoints.down('sm')]: {
+
+      }
     },
     h3: {
       textTransform: "uppercase",
       fontWeight: 600,
-      letterSpacing: ` 0.15em`
+      letterSpacing: ` 0.15em`,
     },
     h4: {
       textTransform: "uppercase",

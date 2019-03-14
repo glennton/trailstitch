@@ -1,7 +1,7 @@
 import React from 'react'
 import Grid from '@material-ui/core/Grid'
-import './styles.scss'
 import { Typography } from '@material-ui/core';
+//import DummyData from 'Utils/DummyData'
 
 class RecentGrid extends React.Component {
   constructor(props) {
@@ -11,8 +11,8 @@ class RecentGrid extends React.Component {
   render() {
     return (
       <Grid id="RecentGridContainer" className="wrapper">
-        <Grid container>
-          <Typography variant="h3">Recent Trips</Typography>
+        <Grid container className={`wrapper`}>
+          <Typography variant="h5">Recent Trips</Typography>
         </Grid>
       </Grid>
     );
