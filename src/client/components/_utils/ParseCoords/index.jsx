@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames'
+
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
@@ -53,19 +55,20 @@ class ParseCoords extends React.Component {
   }
 
   renderCoords(){
+    const { classes } = this.props;
     if(this.state.lat.valid && this.state.lon.valid){
       return(
-        <Grid container justify="center" className={`${this.props.className || ''}`}>
-          <Grid item className={this.props.classes.coords}>
+        <Grid container justify="center" className={classNames(this.props.className)}>
+          <Grid item className={classes.coords}>
             <Icon>place</Icon>
           </Grid> 
-          <Grid item className={this.props.classes.coords}>
-            <Typography variant="body1" style={this.state.styles} className={this.props.classes.coordsTxt}> 
+          <Grid item className={classes.coords}>
+            <Typography variant="body1" style={this.state.styles} className={classes.coordsTxt}> 
               {this.state.lat.deg}&deg; {this.state.lat.min}&apos; {this.state.lat.sec}&quot; {this.state.lat.dir} 
             </Typography>
           </Grid>
-          <Grid item className={this.props.classes.coords}>
-            <Typography variant="body1" style={this.state.styles} className={this.props.classes.coordsTxt}> 
+          <Grid item className={classes.coords}>
+            <Typography variant="body1" style={this.state.styles} className={classes.coordsTxt}> 
               {this.state.lon.deg}&deg; {this.state.lon.min}&apos; {this.state.lon.sec}&quot; {this.state.lon.dir} 
             </Typography>
           </Grid>

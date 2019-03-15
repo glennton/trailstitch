@@ -1,9 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles';
+import DummyData from 'Utils/DummyData'
 
 const styles = theme => ({
+  wrapper: {
+    width: `100%`,
+    maxWidth: theme.breakpoints.lg,
+  },
   CONTAINER:{
     [theme.breakpoints.up('xs')]: { //0
     },
@@ -23,6 +29,7 @@ class CONTAINER extends React.Component {
     this.state = {
 
     }
+    this.slides = DummyData(['slides']).slides
     this.sampleFunction = this.sampleFunction.bind(this)
   }
 
@@ -30,8 +37,9 @@ class CONTAINER extends React.Component {
     return x
   }
   render() {
+    const { classes } = this.props;
     return (
-      <Grid className={`${this.props.classes.CONTAINER}`}>
+      <Grid className={classNames(classes.CONTAINER, `testClass`)}>
       </Grid>
     );
   }

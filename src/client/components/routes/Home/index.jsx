@@ -17,9 +17,10 @@ class Home extends React.Component {
   } 
 
   render() {
+    const { classes } = this.props;
     return (
       <Grid id="HomeContainer">
-        <Carousel />
+        <Carousel className={`${classes.carouselContainer}`}/>
         <RecentGrid />
       </Grid>  
     );
