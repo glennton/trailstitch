@@ -148,7 +148,7 @@ class RecentGrid extends React.Component {
     return (
       <Grid container id="RecentGridContainer" justify="center">
         <Grid className={`${classes.wrapper}`}>
-          <Typography variant="h5">Recent Trips</Typography>
+          <Typography paragraph variant="h5">Recent Trips</Typography>
           <Grid container spacing={16}>
             {this.makeCards()}
           </Grid>

@@ -4,13 +4,15 @@ import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles';
 
 import Carousel from './Carousel'
+import About from './About'
 import RecentGrid from './RecentGrid'
 
 const styles = () => ({
   carouselContainer: {
-    marginBottom: `1em`,
+    marginBottom: `3em`,
   }
 })
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -19,9 +21,12 @@ class Home extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Grid id="HomeContainer">
+      <Grid>
         <Carousel className={`${classes.carouselContainer}`}/>
-        <RecentGrid />
+        <Grid container justify="center" direction="row">
+          <About />
+          <RecentGrid />
+        </Grid>
       </Grid>  
     );
   }

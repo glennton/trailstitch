@@ -2,13 +2,13 @@ import React from 'react'
 import { Route, Switch } from 'react-router-dom';
 import './styles.scss'
 
-import Home from '../routes/Home'
-import Albums from '../routes/Albums'
-import Stitches from '../routes/Stitches'
-import Upload from '../routes/Upload'
-import Account from '../routes/Account'
-import MainNav from '../MainNav'
-import FooterNav from '../FooterNav'
+import Home from 'Routes/Home'
+import Albums from 'Routes/Albums'
+import Stitches from 'Routes/Stitches'
+import Upload from 'Routes/Upload'
+import Account from 'Routes/Account'
+import MainNav from 'Common/MainNav'
+import FooterNav from 'Common/FooterNav'
 
 
 class App extends React.Component {
