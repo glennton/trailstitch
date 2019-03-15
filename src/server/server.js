@@ -4,13 +4,25 @@ import api from './api'
 
 const app = express()
 
+const PORT = process.env.PORT || 8080
+
+
+
 api(app).then( () => {
   app.use(express.static(path.join(__dirname, '../../dist', 'client')))
   
-  const PORT = process.env.PORT || 8080
+  app.get('/*', async (req, res) => {
+    try{
+      await res.sendFile(path.join(__dirname, '../../dist/client/index.html'))
+    }catch(err){
+      console.log(err)
+    }
+  })
+
   app.listen(PORT, () => {
     console.log(`App listening to ${PORT}....`)
     console.log(`Press Ctrl+C to quit.`)
   })
 }).catch(err => console.log(err))
+
 
