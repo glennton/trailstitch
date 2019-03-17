@@ -1,9 +1,18 @@
+//Core
 import React from 'react'
 import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles';
+
+//UI Elements
 import Grid from '@material-ui/core/Grid'
 import { Typography } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+
+//Development Data
 import DummyData from 'Utils/DummyData'
+
+//Utils
+
+//Components
 
 const styles = theme => ({
   wrapper: {

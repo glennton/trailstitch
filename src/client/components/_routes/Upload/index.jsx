@@ -1,9 +1,11 @@
+//Core
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles';
 import parser from 'fast-xml-parser'
-
 import classnames from 'classnames'
+
+//UI Elements
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -17,10 +19,19 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+//Development Data
 import DummyData from 'Utils/DummyData'
 import DummyGPX from 'Utils/DummyGPX'
 
+//Utils
+import DescribeGPX from 'Utils/DescribeGPX'
+import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
+
+//Components
 import TrackDetails from './TrackDetails'
+
+
 
 const xmlOptions = {
   ignoreAttributes: false,
@@ -36,7 +47,8 @@ const styles = theme => ({
     background: `rgba(0,0,0,.5)`,
   },
   card: {
-    minWidth: 500,
+    width: `100%`,
+    maxWidth: 500,
   },
   title: {
     fontSize: 14,
@@ -65,11 +77,13 @@ class Upload extends React.Component {
       expanded: false,
       gpx:{
         gpxMeta:{
-          id: '',
-          userId: '',
-          uploadDate: '',
-          lastModifiedDate: '',
+          id: '', //Set on server
+          userId: '', //Set on server
+          uploadDate: '', //Set on server
+          lastModifiedDate: '', //Set on server
           days: [],
+          dayCount: '',
+          
           tags:[],
         },
         gpxData: {
@@ -108,7 +122,8 @@ class Upload extends React.Component {
 
   }
   test=()=>{
-    console.log(this.state.gpx.gpxData.trk.name)
+    console.log(this.state.gpx.gpxMeta.firstDay, format(parseISO(this.state.gpx.gpxMeta.firstDay), 'MMMM'))
+    
   }
 
   handleExpandClick = () => {
@@ -150,7 +165,8 @@ class Upload extends React.Component {
     const fileName = data.files[0].name
     const readFiles = await this.readFiles(data);
     const parseFiles = await this.parseFiles(readFiles)
-    return Promise.all([readFiles, parseFiles]).then(() => { return { data: parseFiles.gpx, name: fileName}})
+    const describeFiles = await DescribeGPX(parseFiles.gpx)
+    return Promise.all([readFiles, parseFiles]).then(() => { return { data: parseFiles.gpx, name: fileName, meta: describeFiles}})
   }
 
   handleDrag = (e) => {
@@ -182,7 +198,10 @@ class Upload extends React.Component {
         this.dragCounter = 0;
         this.setState({ 
           fileLoaded: true, 
-          gpx: {gpxData: res.data}, 
+          gpx: {
+            gpxData: res.data,
+            gpxMeta: res.meta
+          }, 
           loadedFileName: res.name 
         })
       }).catch(() => {
@@ -195,6 +214,7 @@ class Upload extends React.Component {
   
   render() {
     const { classes } = this.props;
+    console.log(this.state.gpx.gpxMeta.firstDay)
     return (
       <Grid container justify="center" direction="row" id="uploadContainer" onClick={this.test} className={this.state.dragging ? classes.draggingBg : ''}>
         <Grid container alignContent="center" className={`${classes.wrapper}`}>
@@ -210,13 +230,19 @@ class Upload extends React.Component {
                       {this.state.dragging ? 'Drop here to upload files' : 'Drag a GPX track or waypoints here'}
                     </Typography>
                   </Grid>
-                  <Grid container justify="center" className={!this.state.fileLoaded ? classes.hide : '' }>
-                    <Typography align="center" variant="body1" gutterBottom className={classes.bold}>
-                      File Uploaded:&nbsp;&nbsp;
+                  <Grid container justify="center" className={!this.state.fileLoaded ? classes.hide : ''}>
+                    <Grid item xs={10}>
+                      <Typography align="center" variant="body1" gutterBottom className={classes.bold}>
+                        File Uploaded Successfully!&nbsp;&nbsp;
+                      </Typography>
+                      <Typography align="center" variant="body1" gutterBottom>
+                        From your GPX track, it looks like you went on a trip between
+                        {this.state.gpx.gpxMeta.firstDay ? format(parseISO(this.state.gpx.gpxMeta.firstDay), ' MMMM d, yyyy ') : ''}
+                        and
+                        {this.state.gpx.gpxMeta.lastDay ? format(parseISO(this.state.gpx.gpxMeta.lastDay), ' MMMM d, yyyy ') : ''}
+                        traveling over {this.state.gpx.gpxMeta.days.length} days. If this looks slightly off, you will be able to update your data after uploading.
                     </Typography>
-                    <Typography align="center" variant="body1" gutterBottom>
-                      {this.state.loadedFileName}
-                    </Typography>
+                    </Grid>
                   </Grid>
                 </CardContent>
                 <CardActions>
@@ -227,7 +253,7 @@ class Upload extends React.Component {
                         <CloudUploadIcon className={classes.rightIcon} />
                       </Button>
                       <Button variant="contained" color="secondary" className={classnames(classes.button, this.state.fileLoaded ? '' : classes.hide)} onClick={this.clearFileLoad}>
-                        Delete&nbsp;
+                        Cancel&nbsp;
                         <DeleteIcon className={classes.rightIcon} />
                       </Button>
                     </Grid>
@@ -267,14 +293,19 @@ class Upload extends React.Component {
     e.addEventListener('drop', this.handleDrop)
 
     //FOR TESTING ONLY
-    // this.setState({
-    //   gpx:{
-    //     gpxData: DummyGPX,
-    //   },
-    //   fileLoaded: true,
-    //   loadedFileName: 'Track_AA18-06-18 112218.gpx',
-    // })
+    DescribeGPX(DummyGPX).then((res)=>{
+      console.log(res)
+      this.setState({
+        gpx: {
+          gpxData: DummyGPX,
+          gpxMeta: res,
+        },
+        fileLoaded: true,
+        loadedFileName: 'Track_AA18-06-18 112218.gpx',
+      })
+    }).catch(err=>err /*TODO Add error message*/)
   }
+
   componentWillUnmount() {
     let e = this.dropRef.current
     e.removeEventListener('dragenter', this.handleDragIn)

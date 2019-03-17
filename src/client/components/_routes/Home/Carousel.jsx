@@ -1,14 +1,22 @@
+//Core
 import React from 'react'
 import PropTypes from 'prop-types';
 import classNames from 'classnames'
+import { withStyles } from '@material-ui/core/styles';
 
+//UI Elements
 import Grid from '@material-ui/core/Grid'
 import Icon from '@material-ui/core/Icon';
 import Slider from 'Utils/StupidSlider'
-import ParseCoords from 'Utils/ParseCoords'
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+
+//Development Data
 import DummyData from 'Utils/DummyData'
+
+//Utils
+
+//Components
+import ParseCoords from 'Utils/ParseCoords'
 
 const styles = theme => ({
   locationHeader:{

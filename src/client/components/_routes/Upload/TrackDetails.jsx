@@ -1,6 +1,8 @@
+//Core
 import React from 'react'
 import PropTypes from 'prop-types'
 
+//UI Elements
 import Grid from '@material-ui/core/Grid'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -8,9 +10,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import Icon from '@material-ui/core/Icon';
-import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, DatePicker } from 'material-ui-pickers';
 import { Typography } from '@material-ui/core';
+
+//Development Data
+
+//Utils
+import DateFnsUtils from '@date-io/date-fns'; //TODO change to moment if possible
+import { MuiPickersUtilsProvider, DatePicker } from 'material-ui-pickers';
 
 class TrackDetails extends React.Component {
   constructor(props) {
@@ -31,7 +37,6 @@ class TrackDetails extends React.Component {
     }
     this.handleNameChange = this.handleNameChange.bind(this)
     this.handleMetaChange = this.handleMetaChange.bind(this)
-    this.test = this.test.bind(this)
   }
   test = ()=>{
     console.log(this.state)
@@ -54,7 +59,7 @@ class TrackDetails extends React.Component {
     const ext = this.state.gpxExtensions
     //const trackDetails = this.state.gpxExtensions['gpxtrkx:TrackStatsExtension']
     return (
-      <Grid container justify="center" onClick={this.test}>
+      <Grid container justify="center">
         <Grid item xs={10}>
           <Grid container onClick={this.sampleFunction} direction="column">
             <TextField
@@ -82,7 +87,7 @@ class TrackDetails extends React.Component {
                   <Avatar>
                     <Icon>location_searching</Icon>
                   </Avatar>
-                  <ListItemText primary="Total Distance" secondary={ext['gpxtrkx:Distance'] || ''} />
+                  <ListItemText primary="Total Distance" secondary={ext['gpxtrkx:Distance'] || ''} /> {/* TODO humanize units */}
                 </ListItem>
                 <ListItem>
                   <Avatar>

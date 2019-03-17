@@ -1,9 +1,18 @@
+//Core
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles';
+
+//UI Elements
+import Grid from '@material-ui/core/Grid'
+
+//Development Data
 import DummyData from 'Utils/DummyData'
+
+//Utils
+
+//Components
 
 const styles = theme => ({
   wrapper: {
@@ -34,13 +43,13 @@ class CONTAINER extends React.Component {
     this.sampleFunction = this.sampleFunction.bind(this)
   }
 
-  sampleFunction(x){
-    return x
+  sampleFunction(){
+    console.log(this.state)
   }
   render() {
     const { classes } = this.props;
     return (
-      <Grid container direction="row" className={classNames(classes.wrapper, ``)}>
+      <Grid container direction="row" onClick={this.sampleFunction} className={classNames(classes.wrapper, ``)}>
       </Grid>
     );
   }

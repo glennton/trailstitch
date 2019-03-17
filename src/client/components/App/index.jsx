@@ -1,9 +1,12 @@
+//Core
 import React from 'react'
 import { Route, Switch } from 'react-router-dom';
 import './styles.scss'
 
+//UI Elements
 import Grid from '@material-ui/core/Grid'
 
+//Components
 import Home from 'Routes/Home'
 import Albums from 'Routes/Albums'
 import Stitches from 'Routes/Stitches'
