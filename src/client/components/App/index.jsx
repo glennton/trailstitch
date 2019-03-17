@@ -2,6 +2,8 @@ import React from 'react'
 import { Route, Switch } from 'react-router-dom';
 import './styles.scss'
 
+import Grid from '@material-ui/core/Grid'
+
 import Home from 'Routes/Home'
 import Albums from 'Routes/Albums'
 import Stitches from 'Routes/Stitches'
@@ -14,9 +16,9 @@ import FooterNav from 'Common/FooterNav'
 class App extends React.Component {
   render() {
     return (
-      <div id="main">
+      <Grid id="main">
         <MainNav />
-        <div id="content">
+        <Grid container id="content">
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/albums" component={Albums} />
@@ -24,9 +26,9 @@ class App extends React.Component {
             <Route path="/upload" component={Upload} />
             <Route path="/account" component={Account} />
           </Switch>
-        </div>
+        </Grid>
         <FooterNav />
-      </div>
+      </Grid>
     );
   }
 }

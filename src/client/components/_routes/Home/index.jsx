@@ -21,7 +21,7 @@ class Home extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Grid>
+      <Grid container>
         <Carousel className={`${classes.carouselContainer}`}/>
         <Grid container justify="center" direction="row">
           <About />
