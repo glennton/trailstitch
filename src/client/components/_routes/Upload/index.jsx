@@ -10,6 +10,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Collapse from '@material-ui/core/Collapse';
 
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -17,6 +18,9 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import DummyData from 'Utils/DummyData'
+import DummyGPX from 'Utils/DummyGPX'
+
+import TrackDetails from './TrackDetails'
 
 const xmlOptions = {
   ignoreAttributes: false,
@@ -58,44 +62,65 @@ class Upload extends React.Component {
       dragging: false,
       fileLoaded: false,
       loadedFileName: '',
-      gpxData: {},
-      uploadError: false,
-      tags: [
+      expanded: false,
+      gpx:{
+        gpxMeta:{
+          id: '',
+          userId: '',
+          uploadDate: '',
+          lastModifiedDate: '',
+          days: [],
+          tags:[],
+        },
+        gpxData: {
+          metadata: {
+            link: {
 
-      ]
+            }
+          },
+          trk: {
+            name: "",
+            extensions: {
+              'gpxx:TrackExtension': {},
+              'gpxtrkx:TrackStatsExtension': {}
+            },
+            trkseg: {
+              trkpt: []
+            }
+          }
+        },
+      },
+      uploadError: false,
     }
     this.slides = DummyData(['slides']).slides
-
     this.handleDrag = this.handleDrag.bind(this)
     this.handleDragIn = this.handleDragIn.bind(this)
     this.handleDragOut = this.handleDragOut.bind(this)
     this.handleDrop = this.handleDrop.bind(this)
     this.readFiles = this.readFiles.bind(this)
-    this.validateFiles = this.validateFiles.bind(this)
     this.returnParsedData = this.returnParsedData.bind(this)
     this.parseFiles = this.parseFiles.bind(this)
     this.clearFileLoad = this.clearFileLoad.bind(this)
-    this.setTags = this.setTags.bind(this)
+    this.handleExpandClick = this.handleExpandClick.bind(this)
+    this.test = this.test.bind(this)
 
     this.dropRef = React.createRef()
 
   }
-
-
-  setTags = (arr)=>{
-    const availableTags = ['']
-    arr.map((e,i)=>{
-      //
-    })
+  test=()=>{
+    console.log(this.state.gpx.gpxData.trk.name)
   }
 
+  handleExpandClick = () => {
+    this.setState(state => ({ expanded: !state.expanded }));
+  };
   clearFileLoad = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    this.setState({ fileLoaded: false, gpxData: {}, loadedFileName: '' })
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({ fileLoaded: false, gpx: { gpxData: {} }, loadedFileName: '' })
   }
   parseFiles = (data)=>{
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (parser.validate(data) === true) { 
         resolve(parser.parse(data, xmlOptions))
       } else {
@@ -121,12 +146,6 @@ class Upload extends React.Component {
     })
   }
 
-  validateFiles = (data) => {
-    return new Promise((resolve, reject) => {
-      resolve()
-    })
-  }
-
   returnParsedData = async (data) => {
     const fileName = data.files[0].name
     const readFiles = await this.readFiles(data);
@@ -135,45 +154,49 @@ class Upload extends React.Component {
   }
 
   handleDrag = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
   }
   handleDragIn = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
     this.dragCounter++  
     if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
       this.setState({ dragging: true })
     }
   }
   handleDragOut = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
     this.dragCounter--
     if (this.dragCounter > 0) return
     this.setState({ dragging: false })
   }
   handleDrop = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
     this.setState({ dragging: false });
     this.returnParsedData(e.dataTransfer)
       .then((res)=>{
         e.dataTransfer.clearData()
         this.dragCounter = 0;
-        this.setState({ fileLoaded: true, gpxData: res.data, loadedFileName: res.name })
-        console.log(this.state.gpxData)
-      }).catch((err) => {
+        this.setState({ 
+          fileLoaded: true, 
+          gpx: {gpxData: res.data}, 
+          loadedFileName: res.name 
+        })
+      }).catch(() => {
         e.dataTransfer.clearData()
         this.dragCounter = 0;
         //TODO Make Error Notification
       })
 
   }
+  
   render() {
     const { classes } = this.props;
     return (
-      <Grid container justify="center" direction="row" id="uploadContainer" className={this.state.dragging ? classes.draggingBg : ''}>
+      <Grid container justify="center" direction="row" id="uploadContainer" onClick={this.test} className={this.state.dragging ? classes.draggingBg : ''}>
         <Grid container alignContent="center" className={`${classes.wrapper}`}>
           <Grid container justify="center">
             <Typography paragraph variant="h5">Upload a new GPX File</Typography>
@@ -225,6 +248,9 @@ class Upload extends React.Component {
                     <ExpandMoreIcon />
                   </IconButton>
                 </Grid>
+                <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+                  <TrackDetails gpxData={{ gpxName: this.state.gpx.gpxData.trk.name, gpxMeta: this.state.gpx.gpxData.metadata, gpxExtensions: this.state.gpx.gpxData.trk.extensions['gpxtrkx:TrackStatsExtension'],}}/>
+                </Collapse>
               </Card>
             </div>
           </Grid>
@@ -239,6 +265,15 @@ class Upload extends React.Component {
     e.addEventListener('dragleave', this.handleDragOut)
     e.addEventListener('dragover', this.handleDrag)
     e.addEventListener('drop', this.handleDrop)
+
+    //FOR TESTING ONLY
+    // this.setState({
+    //   gpx:{
+    //     gpxData: DummyGPX,
+    //   },
+    //   fileLoaded: true,
+    //   loadedFileName: 'Track_AA18-06-18 112218.gpx',
+    // })
   }
   componentWillUnmount() {
     let e = this.dropRef.current
