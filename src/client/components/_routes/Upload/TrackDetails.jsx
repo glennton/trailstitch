@@ -42,7 +42,6 @@ class TrackDetails extends React.Component {
     console.log(this.state)
   }
   handleNameChange = () => event => {
-    console.log(event)
     this.setState({ gpxName: event.target.value });
   };
   handleMetaChange = name => event => {

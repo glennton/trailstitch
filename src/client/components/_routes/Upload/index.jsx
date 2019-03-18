@@ -122,7 +122,7 @@ class Upload extends React.Component {
 
   }
   test=()=>{
-    console.log(this.state.gpx.gpxMeta.firstDay, format(parseISO(this.state.gpx.gpxMeta.firstDay), 'MMMM'))
+    console.log(this.state.gpx)
     
   }
 
@@ -214,7 +214,6 @@ class Upload extends React.Component {
   
   render() {
     const { classes } = this.props;
-    console.log(this.state.gpx.gpxMeta.firstDay)
     return (
       <Grid container justify="center" direction="row" id="uploadContainer" onClick={this.test} className={this.state.dragging ? classes.draggingBg : ''}>
         <Grid container alignContent="center" className={`${classes.wrapper}`}>
