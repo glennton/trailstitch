@@ -24,7 +24,7 @@ import DummyData from 'Utils/DummyData'
 import DummyGPX from 'Utils/DummyGPX'
 
 //Utils
-import DescribeGPX from 'Utils/DescribeGPX'
+import describeGPX from 'Utils/describeGPX'
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
 
@@ -165,7 +165,7 @@ class Upload extends React.Component {
     const fileName = data.files[0].name
     const readFiles = await this.readFiles(data);
     const parseFiles = await this.parseFiles(readFiles)
-    const describeFiles = await DescribeGPX(parseFiles.gpx)
+    const describeFiles = await describeGPX(parseFiles.gpx)
     return Promise.all([readFiles, parseFiles]).then(() => { return { data: parseFiles.gpx, name: fileName, meta: describeFiles}})
   }
 
@@ -292,7 +292,7 @@ class Upload extends React.Component {
     e.addEventListener('drop', this.handleDrop)
 
     //FOR TESTING ONLY
-    DescribeGPX(DummyGPX).then((res)=>{
+    describeGPX(DummyGPX).then((res)=>{
       console.log(res)
       this.setState({
         gpx: {

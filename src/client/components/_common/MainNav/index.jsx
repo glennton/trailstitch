@@ -18,17 +18,13 @@ import { withStyles } from '@material-ui/core/styles';
 const styles = theme => ({
   navBarContainer: {
     [theme.breakpoints.up('sm')]: {
-      position: `fixed`,
-      zIndex: 997,
       width: `100%`,
-      top: 0,
-      left: 0,
     }
   },
   mainNavigation: {
     background: 'rgba(0, 0, 0, 1)',
     [theme.breakpoints.up('sm')]: {
-       background: 'rgba(0, 0, 0, .7)',
+       background: 'rgba(0, 0, 0, 1)',
     }
   }
 })

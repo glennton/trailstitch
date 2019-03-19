@@ -7,11 +7,10 @@ import { withStyles } from '@material-ui/core/styles';
 //UI Elements
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
+import SwipeableViews from 'react-swipeable-views';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -23,14 +22,28 @@ import DummyStitch from 'Utils/DummyStitch'
 import { Typography } from '@material-ui/core';
 
 //Utils
+import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
+import convertDMS from 'Utils/convertDMS'
 
 //Components
+import ParseCoords from 'Utils/ParseCoords'
+
+function TabContainer({ children, dir }) {
+  return (
+    <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
+      {children}
+    </Typography>
+  );
+}
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+  dir: PropTypes.string.isRequired,
+};
 
 const styles = theme => ({
   outer:{
-    [theme.breakpoints.up('sm')]: { //600
-      paddingTop: `70px`,
-    },
+    paddingTop: theme.spacing.unit * 2,
   },
   wrapper: {
     width: `100%`,
@@ -41,10 +54,24 @@ const styles = theme => ({
     padding: theme.spacing.unit * 2,
     marginBottom: theme.spacing.unit * 2,
   },
-  detailBox: {
+  detailLeftStatBox: {
     border: `1px solid ${theme.palette.grey.A100}`,
     borderRadius: `5px`,
     marginBottom: theme.spacing.unit,
+  },
+  detailRightContainer:{
+    paddingTop: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit,
+    flex: 1
+  },
+  detailRightHdr:{
+    width: `auto`,
+  },
+  detailRightTabs:{
+    backgroundColor: `#fff`,
+    boxShadow: `none`,
+    border: `1px solid ${theme.palette.grey.A100}`,
+    borderRadius: `5px`,
   },
   Stitches:{
     [theme.breakpoints.up('xs')]: { //0
@@ -64,38 +91,54 @@ class Stitches extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      value: 0,
     }
-    this.sampleFunction = this.sampleFunction.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleChangeIndex = this.handleChangeIndex.bind(this)
     this.returnDays = this.returnDays.bind(this)
   }
 
-  sampleFunction(){
-  }
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
+
+  handleChangeIndex = index => {
+    this.setState({ value: index });
+  };
+
   returnDays(){
-    const { classes } = this.props;
+    const { classes, theme } = this.props;
+    const coordinateElement = (startPoint)=>{
+      return 
+    }
     return(
       DummyStitch.gpxMeta.days.map((e, i)=>
         <Grid item key={`stich-day-${i}`}>
           <Paper className={classes.paper}>
-            <Grid container direction="row">
+            <Grid container>
+              <Grid container direction="row" justify="space-between"> 
+                <Grid container className={classes.detailRightHdr}>
+                  <Typography variant="h6">Day {i + 1} - {format(parseISO(e.date), ' MMMM d, yyyy ')} </Typography>
+                </Grid>
+                <Grid container className={classes.detailRightHdr}>
+                  <ParseCoords coords={convertDMS(e.startPoint['@_lat'], e.startPoint['@_lon']).locCoords}  />
+                </Grid>
+              </Grid>
               <Grid item>
-                <Typography variant="h6">Day {i + 1}</Typography>
-                <Typography variant="body1">Date {e.date}</Typography>
                 <List>
-                  <ListItem className={classes.detailBox}>
+                  <ListItem className={classes.detailLeftStatBox}>
                     <Avatar>
                       <Icon>location_searching</Icon>
                     </Avatar>
                     <ListItemText primary="Distance" secondary={Number.parseFloat(e.distance).toFixed(2) || ''} /> {/* TODO humanize units */}
                   </ListItem>
-                  <ListItem className={classes.detailBox}>
+                  <ListItem className={classes.detailLeftStatBox}>
                     <Avatar>
                       <Icon>flight_takeoff</Icon>
                     </Avatar>
                     <ListItemText primary="Ascent" secondary={Number.parseFloat(e.ele.ascent).toFixed(2) || ''} /> {/* TODO humanize units */}
                   </ListItem>
-                  <ListItem className={classes.detailBox}>
+                  <ListItem className={classes.detailLeftStatBox}>
                     <Avatar>
                       <Icon>flight_land</Icon>
                     </Avatar>
@@ -103,7 +146,30 @@ class Stitches extends React.Component {
                   </ListItem>
                 </List>
               </Grid>
-              <Grid item>
+              <Grid item className={classes.detailRightContainer}>
+                <AppBar position="static" className={classes.detailRightTabs}>
+                  <Tabs
+                    value={this.state.value}
+                    onChange={this.handleChange}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    variant="fullWidth"
+                    centered
+                  >
+                    <Tab label="Elevation" />
+                    <Tab label="Map View" />
+                    <Tab label="Waypoints" />
+                  </Tabs>
+                </AppBar>
+                <SwipeableViews
+                  axis={'x'}
+                  index={this.state.value}
+                  onChangeIndex={this.handleChangeIndex}
+                >
+                  <TabContainer dir="ltr">Elevation</TabContainer>
+                  <TabContainer dir="ltr">Map View</TabContainer>
+                  <TabContainer dir="ltr">Waypoints</TabContainer>
+                </SwipeableViews>              
               </Grid>
             </Grid>
           </Paper>
@@ -116,7 +182,7 @@ class Stitches extends React.Component {
     return (
       <Grid container justify="center" onClick={this.sampleFunction} className={classes.outer}>
         <Grid container direction="column" align="center" className={classNames(classes.wrapper, ``)}>
-          <Grid item xs={10}>
+          <Grid item>
             {this.returnDays()}
           </Grid>
         </Grid>
@@ -133,6 +199,7 @@ class Stitches extends React.Component {
 
 Stitches.propTypes = {
   classes: PropTypes.object,
+  theme: PropTypes.object,
 }
 
 export default withStyles(styles)(Stitches);

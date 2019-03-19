@@ -32,16 +32,25 @@ const DescribeGPX = (data) => {
       }
     }
   }
+  //Const Get Bounds
+  let eleBounds = {top:null, bot:null}
+  let latLonBounds = {}
+  const getEleBounds = (elev) => {
+    eleBounds.top = (elev > eleBounds.top) || (eleBounds.top === null) ? elev : eleBounds.top
+    eleBounds.bot = (elev < eleBounds.bot) || (eleBounds.bot === null) ? elev : eleBounds.bot
+  }
+
   //Day Change
   let days = []
   let dayIndex = 0;
   const onDayChange = (currentKey, nextKey, i) => {
     if(i!=0){ //Not First Day      
       if (nextKey) {//Set Day Start Point (Create New Object) only if not last day or first day
-        days.push({ date: nextKey, startPoint: newData[i + 1], endPoint: {}, ele: {}, distance: 0 })
+        days.push({ date: nextKey, startPoint: newData[i + 1], endPoint: {}, ele: {}, distance: 0, eleBounds:{ top: null, bot: null } })
       }
       days[dayIndex]['endPoint'] = newData[i] //Set Day End Point (Existing Object) only if not first day
       days[dayIndex]['ele'] = elevChange //Set Elevation
+      days[dayIndex]['eleBounds'] = eleBounds //Set Elevation Bounds
       elevChange = { ascent: 0, descent: 0 }; //Reset Elevation
       days[dayIndex]['distance'] = distance //Set Distance
       distance = 0 //Reset Distance
@@ -57,8 +66,9 @@ const DescribeGPX = (data) => {
         const currentKey = e.time.split("T").shift()
         const nextKey = newData[i + 1] ? newData[i + 1].time.split("T").shift() : null        
         if (nextKey) { 
-          calcElevationChange(newData[i].ele, newData[i + 1].ele) 
-          getHaversineDistance(newData[i]["@_lat"], newData[i]["@_lon"], newData[i+1]["@_lat"], newData[i+1]["@_lon"])
+          getEleBounds(e.ele)
+          calcElevationChange(e.ele, newData[i + 1].ele) 
+          getHaversineDistance(e["@_lat"], e["@_lon"], newData[i+1]["@_lat"], newData[i+1]["@_lon"])
         } //Set Elevation except for last item        
         if(currentKey != nextKey || i === 0){ //Set Start and End points
           onDayChange(currentKey, nextKey, i);
