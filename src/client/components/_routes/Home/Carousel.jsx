@@ -16,7 +16,7 @@ import DummyData from 'Utils/DummyData'
 //Utils
 
 //Components
-import ParseCoords from 'Utils/ParseCoords'
+import ParseCoords from 'Utils/mapUtils/ParseCoords'
 
 const styles = theme => ({
   locationHeader:{

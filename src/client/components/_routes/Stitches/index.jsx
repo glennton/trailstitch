@@ -24,10 +24,11 @@ import { Typography } from '@material-ui/core';
 //Utils
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
-import convertDMS from 'Utils/convertDMS'
+import convertDMS from 'Utils/mapUtils/convertDMS'
 
 //Components
-import ParseCoords from 'Utils/ParseCoords'
+import ParseCoords from 'Utils/mapUtils/ParseCoords'
+import Map from 'Common/Map'
 
 function TabContainer({ children, dir }) {
   return (
@@ -66,6 +67,9 @@ const styles = theme => ({
   },
   detailRightHdr:{
     width: `auto`,
+  },
+  detailMapContainer:{
+    minHeight: `300px`,
   },
   detailRightTabs:{
     backgroundColor: `#fff`,
@@ -107,10 +111,8 @@ class Stitches extends React.Component {
   };
 
   returnDays(){
-    const { classes, theme } = this.props;
-    const coordinateElement = (startPoint)=>{
-      return 
-    }
+    const { classes } = this.props;
+
     return(
       DummyStitch.gpxMeta.days.map((e, i)=>
         <Grid item key={`stich-day-${i}`}>
@@ -166,8 +168,14 @@ class Stitches extends React.Component {
                   index={this.state.value}
                   onChangeIndex={this.handleChangeIndex}
                 >
-                  <TabContainer dir="ltr">Elevation</TabContainer>
-                  <TabContainer dir="ltr">Map View</TabContainer>
+                  <TabContainer dir="ltr">
+                    <Grid container className={classes.detailMapContainer}>
+                      <Map gpxDayData={e} defaultCenter={{lat: e.startPoint['@_lat'], lon: e.startPoint['@_lon']}} />
+                    </Grid>
+                  </TabContainer>
+                  <TabContainer dir="ltr">
+                    Map View
+                  </TabContainer>
                   <TabContainer dir="ltr">Waypoints</TabContainer>
                 </SwipeableViews>              
               </Grid>

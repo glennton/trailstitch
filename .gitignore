@@ -2,6 +2,7 @@
 /node_modules/
 **/dist/
 **/auth/
+**/config/API_KEYS*
 
 # OS generated files #
 .DS_Store

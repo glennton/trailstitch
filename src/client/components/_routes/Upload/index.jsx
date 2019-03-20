@@ -24,7 +24,7 @@ import DummyData from 'Utils/DummyData'
 import DummyGPX from 'Utils/DummyGPX'
 
 //Utils
-import describeGPX from 'Utils/describeGPX'
+import describeGPX from 'Utils/mapUtils/describeGPX'
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
 

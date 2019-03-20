@@ -34,7 +34,7 @@ const DescribeGPX = (data) => {
   }
   //Const Get Bounds
   let eleBounds = {top:null, bot:null}
-  let latLonBounds = {}
+  //let latLonBounds = {}
   const getEleBounds = (elev) => {
     eleBounds.top = (elev > eleBounds.top) || (eleBounds.top === null) ? elev : eleBounds.top
     eleBounds.bot = (elev < eleBounds.bot) || (eleBounds.bot === null) ? elev : eleBounds.bot
