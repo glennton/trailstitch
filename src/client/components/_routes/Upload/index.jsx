@@ -236,9 +236,9 @@ class Upload extends React.Component {
                       </Typography>
                       <Typography align="center" variant="body1" gutterBottom>
                         From your GPX track, it looks like you went on a trip between
-                        {this.state.gpx.gpxMeta.firstDay ? format(parseISO(this.state.gpx.gpxMeta.firstDay), ' MMMM d, yyyy ') : ''}
+                        {this.state.gpx.gpxMeta.dateFirst ? format(parseISO(this.state.gpx.gpxMeta.dateFirst), ' MMMM d, yyyy ') : ''}
                         and
-                        {this.state.gpx.gpxMeta.lastDay ? format(parseISO(this.state.gpx.gpxMeta.lastDay), ' MMMM d, yyyy ') : ''}
+                        {this.state.gpx.gpxMeta.dateLast ? format(parseISO(this.state.gpx.gpxMeta.dateLast), ' MMMM d, yyyy ') : ''}
                         traveling over {this.state.gpx.gpxMeta.days.length} days. If this looks slightly off, you will be able to update your data after uploading.
                     </Typography>
                     </Grid>

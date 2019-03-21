@@ -12,6 +12,7 @@ import DummyData from 'Utils/DummyData'
 
 //Utils
 import API_KEYS from 'ClientConfig/API_KEYS'
+import makeGoogleMapRoute from 'Utils/mapUtils/makeGoogleMapRoute'
 
 //Components
 import GoogleMapReact from 'google-map-react';
@@ -24,6 +25,61 @@ const styles = theme => ({
     marginBottom: `3em`,
   }
 })
+const TestMaker = ({ text }) => <div>{text}</div>;
+
+// class Polyline extends React.Component {
+
+//   componentWillUpdate() {
+//     this.line.setMap(null)
+//   }
+
+//   componentWillUnmount() {
+//     this.line.setMap(null)
+//   }
+
+//   getPaths() {
+//     const { origin, destination } = this.props
+
+//     return [
+//       { lat: Number(origin.lat), lng: Number(origin.long) },
+//       { lat: Number(destination.lat), lng: Number(destination.long) }
+//     ];
+//   }
+
+//   render() {
+//     console.log(this.props.maps)
+//     const Polyline = this.props.maps.Polyline
+
+//     const renderedPolyline = this.renderPolyline()
+//     const paths = { path: this.getPaths() }
+
+//     this.line = new Polyline(Object.assign({}, renderedPolyline, paths))
+
+//     this.line.setMap(this.props.map)
+
+//     return null
+//   }
+
+//   renderPolyline() {
+//     throw new Error('Implement renderPolyline method')
+//   }
+
+// }
+
+
+
+// class Normal extends Polyline {
+
+//   renderPolyline() {
+//     return {
+//       geodesic: true,
+//       strokeColor: this.props.color || '#ffffff',
+//       strokeOpacity: 1,
+//       strokeWeight: 4
+//     }
+//   }
+// }
+
 
 class Map extends React.Component {
   constructor(props) {
@@ -37,29 +93,46 @@ class Map extends React.Component {
     this.renderMap = this.renderMap.bind(this)
   }
 
-  sampleFunction(){
+  sampleFunction() {
     console.log(this.state)
   }
-  handleApiLoaded = (map) => {
+
+  handleApiLoaded = (map, maps) => {
     this.map = map
-    // use map and maps objects
-    //this.map.setCenter(this.state.defaultCenter);
-    //console.log('map api loaded', this.state.defaultCenter)
+    this.maps = maps
+    const { dayStartPoint, dayEndPoint} = this.state;
+    const testCoords = [
+      { lat: dayStartPoint.lat, lng: dayStartPoint.lng }, { lat: dayEndPoint.lat, lng: dayEndPoint.lng}
+      ]
+    const Polyline = this.maps.Polyline
+    console.log('testCoords', testCoords)
+    this.line = new Polyline({
+      path: this.state.trackArr,
+      geodesic: true,
+      strokeColor: '#ffffff',
+      strokeOpacity: 1,
+      strokeWeight: 2
+    })
+
+    console.log(this.line)
+    this.line.setMap(this.map)
   };
+
   renderMap = ()=>{
     if (this.state.dayStartPoint && this.state.dayEndPoint){
-      const { dayStartPoint, dayEndPoint} = this.state;
+      const { dayStartPoint, dayEndPoint} = this.state
       return (
         <GoogleMapReact
           //bootstrapURLKeys={{ key: API_KEYS.GOOGLE_MAPS_API_KEY }}
-          defaultCenter={this.state.dayStartPoint}
-          defaultZoom={13}
-          mapTypeId='terrain'
           yesIWantToUseGoogleMapApiInternals
+          defaultCenter={this.state.centerPoint}
+          defaultZoom={12}
           onGoogleApiLoaded={({ map, maps }) => this.handleApiLoaded(map, maps)}
         >
-          <Icon lat={dayStartPoint.lat} lng={dayStartPoint.lng}> place </Icon>
-          <Icon lat={dayEndPoint.lat} lng={dayEndPoint.lng}> place </Icon>
+          {/*<Icon lat={dayStartPoint.lat} lng={dayStartPoint.lng}> place </Icon>
+        <Icon lat={dayEndPoint.lat} lng={dayEndPoint.lng}> place </Icon>*/}
+          <TestMaker lat={dayStartPoint.lat} lng={dayStartPoint.lng} text="My Marker" />
+          <TestMaker lat={dayEndPoint.lat} lng={dayEndPoint.lng} text="My Marker" />
 
         </GoogleMapReact>
       )
@@ -76,16 +149,23 @@ class Map extends React.Component {
     );
   }
   componentDidMount() {
-    console.log('this.props.gpxDayData.startPoint, this.props.gpxDayData.endPoint', this.props, this.props.gpxDayData.startPoint, this.props.gpxDayData.endPoint)
+    const { pointStart, pointEnd, centralLat, centralLon, indexStart, indexEnd } = this.props.gpxDayData
+    //Format in google friendly coordinate array
+    const formattedGoogleCoords = makeGoogleMapRoute(this.props.gpxTrackData, indexStart, indexEnd )
     this.setState({
       dayStartPoint: {
-        lat: Number.parseFloat(this.props.gpxDayData.startPoint['@_lat']),
-        lng: Number.parseFloat(this.props.gpxDayData.startPoint['@_lon'])
+        lat: Number.parseFloat(pointStart['@_lat']),
+        lng: Number.parseFloat(pointStart['@_lon'])
       },
       dayEndPoint: {
-        lat: Number.parseFloat(this.props.gpxDayData.endPoint['@_lat']),
-        lng: Number.parseFloat(this.props.gpxDayData.endPoint['@_lon'])
-      }
+        lat: Number.parseFloat(pointEnd['@_lat']),
+        lng: Number.parseFloat(pointEnd['@_lon'])
+      },
+      centerPoint : {
+        lat: Number.parseFloat(centralLat),
+        lng: Number.parseFloat(centralLon)
+      },
+      trackArr: formattedGoogleCoords
     })
   }
 }
@@ -94,6 +174,8 @@ Map.propTypes = {
   classes: PropTypes.object,
   defaultCenter: PropTypes.object,
   gpxDayData: PropTypes.object,
+  gpxTrackData: PropTypes.array,
+  text: PropTypes.object,
 }
 
 export default withStyles(styles)(Map);

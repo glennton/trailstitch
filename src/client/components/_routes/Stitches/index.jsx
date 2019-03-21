@@ -96,11 +96,20 @@ class Stitches extends React.Component {
     super(props);
     this.state = {
       value: 0,
+      gpx: {
+        gpxMeta: {},
+        gpxData: {}
+      }
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleChangeIndex = this.handleChangeIndex.bind(this)
     this.returnDays = this.returnDays.bind(this)
+    this.sampleFunction = this.sampleFunction.bind(this)
   }
+
+  sampleFunction = (event, value) => {
+    console.log(this.state)
+  };
 
   handleChange = (event, value) => {
     this.setState({ value });
@@ -112,78 +121,80 @@ class Stitches extends React.Component {
 
   returnDays(){
     const { classes } = this.props;
-
-    return(
-      DummyStitch.gpxMeta.days.map((e, i)=>
-        <Grid item key={`stich-day-${i}`}>
-          <Paper className={classes.paper}>
-            <Grid container>
-              <Grid container direction="row" justify="space-between"> 
-                <Grid container className={classes.detailRightHdr}>
-                  <Typography variant="h6">Day {i + 1} - {format(parseISO(e.date), ' MMMM d, yyyy ')} </Typography>
+    if (this.state.gpx.gpxMeta.days){
+      return (
+        this.state.gpx.gpxMeta.days.map((e, i) =>
+          <Grid item key={`stich-day-${i}`}>
+            <Paper className={classes.paper}>
+              <Grid container>
+                <Grid container direction="row" justify="space-between">
+                  <Grid container className={classes.detailRightHdr}>
+                    <Typography variant="h6">Day {i + 1} - {format(parseISO(e.date), ' MMMM d, yyyy ')} </Typography>
+                  </Grid>
+                  <Grid container className={classes.detailRightHdr}>
+                    <ParseCoords coords={convertDMS(e.pointStart['@_lat'], e.pointEnd['@_lon']).locCoords} />
+                  </Grid>
                 </Grid>
-                <Grid container className={classes.detailRightHdr}>
-                  <ParseCoords coords={convertDMS(e.startPoint['@_lat'], e.startPoint['@_lon']).locCoords}  />
+                <Grid item>
+                  <List>
+                    <ListItem className={classes.detailLeftStatBox}>
+                      <Avatar>
+                        <Icon>location_searching</Icon>
+                      </Avatar>
+                      <ListItemText primary="Distance" secondary={Number.parseFloat(e.distance).toFixed(2) || ''} /> {/* TODO humanize units */}
+                    </ListItem>
+                    <ListItem className={classes.detailLeftStatBox}>
+                      <Avatar>
+                        <Icon>flight_takeoff</Icon>
+                      </Avatar>
+                      <ListItemText primary="Ascent" secondary={Number.parseFloat(e.elevationGain).toFixed(2) || ''} /> {/* TODO humanize units */}
+                    </ListItem>
+                    <ListItem className={classes.detailLeftStatBox}>
+                      <Avatar>
+                        <Icon>flight_land</Icon>
+                      </Avatar>
+                      <ListItemText primary="Descent" secondary={Number.parseFloat(e.elevationLoss).toFixed(2) || ''} /> {/* TODO humanize units */}
+                    </ListItem>
+                  </List>
                 </Grid>
-              </Grid>
-              <Grid item>
-                <List>
-                  <ListItem className={classes.detailLeftStatBox}>
-                    <Avatar>
-                      <Icon>location_searching</Icon>
-                    </Avatar>
-                    <ListItemText primary="Distance" secondary={Number.parseFloat(e.distance).toFixed(2) || ''} /> {/* TODO humanize units */}
-                  </ListItem>
-                  <ListItem className={classes.detailLeftStatBox}>
-                    <Avatar>
-                      <Icon>flight_takeoff</Icon>
-                    </Avatar>
-                    <ListItemText primary="Ascent" secondary={Number.parseFloat(e.ele.ascent).toFixed(2) || ''} /> {/* TODO humanize units */}
-                  </ListItem>
-                  <ListItem className={classes.detailLeftStatBox}>
-                    <Avatar>
-                      <Icon>flight_land</Icon>
-                    </Avatar>
-                    <ListItemText primary="Descent" secondary={Number.parseFloat(e.ele.descent).toFixed(2) || ''} /> {/* TODO humanize units */}
-                  </ListItem>
-                </List>
-              </Grid>
-              <Grid item className={classes.detailRightContainer}>
-                <AppBar position="static" className={classes.detailRightTabs}>
-                  <Tabs
-                    value={this.state.value}
-                    onChange={this.handleChange}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    variant="fullWidth"
-                    centered
+                <Grid item className={classes.detailRightContainer}>
+                  <AppBar position="static" className={classes.detailRightTabs}>
+                    <Tabs
+                      value={this.state.value}
+                      onChange={this.handleChange}
+                      indicatorColor="primary"
+                      textColor="primary"
+                      variant="fullWidth"
+                      centered
+                    >
+                      <Tab label="Elevation" />
+                      <Tab label="Map View" />
+                      <Tab label="Waypoints" />
+                    </Tabs>
+                  </AppBar>
+                  <SwipeableViews
+                    axis={'x'}
+                    index={this.state.value}
+                    onChangeIndex={this.handleChangeIndex}
                   >
-                    <Tab label="Elevation" />
-                    <Tab label="Map View" />
-                    <Tab label="Waypoints" />
-                  </Tabs>
-                </AppBar>
-                <SwipeableViews
-                  axis={'x'}
-                  index={this.state.value}
-                  onChangeIndex={this.handleChangeIndex}
-                >
-                  <TabContainer dir="ltr">
-                    <Grid container className={classes.detailMapContainer}>
-                      <Map gpxDayData={e} defaultCenter={{lat: e.startPoint['@_lat'], lon: e.startPoint['@_lon']}} />
-                    </Grid>
+                    <TabContainer dir="ltr">
+                      <Grid container className={classes.detailMapContainer}>
+                        <Map gpxDayData={e} gpxTrackData={this.state.gpx.gpxData.trk.trkseg.trkpt} />
+                      </Grid>
+                    </TabContainer>
+                    <TabContainer dir="ltr">
+                      Map View
                   </TabContainer>
-                  <TabContainer dir="ltr">
-                    Map View
-                  </TabContainer>
-                  <TabContainer dir="ltr">Waypoints</TabContainer>
-                </SwipeableViews>              
+                    <TabContainer dir="ltr">Waypoints</TabContainer>
+                  </SwipeableViews>
+                </Grid>
               </Grid>
-            </Grid>
-          </Paper>
-        </Grid>
+            </Paper>
+          </Grid>
+        )
       )
-    )
+    }else{ return ''}
+
   }
   render() {
     const { classes } = this.props;
@@ -191,7 +202,7 @@ class Stitches extends React.Component {
       <Grid container justify="center" onClick={this.sampleFunction} className={classes.outer}>
         <Grid container direction="column" align="center" className={classNames(classes.wrapper, ``)}>
           <Grid item>
-            {this.returnDays()}
+            {this.returnDays() || ''}
           </Grid>
         </Grid>
         
@@ -200,7 +211,7 @@ class Stitches extends React.Component {
   }
   componentDidMount() {
     this.setState({
-      //
+      gpx: DummyStitch
     })
   }
 }
