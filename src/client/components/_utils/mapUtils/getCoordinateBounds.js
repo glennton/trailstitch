@@ -29,9 +29,6 @@ const getCoordinateBounds = (daysArr, trackData) => {
       }
 
     }
-    console.log(latHighest, latLowest, lonHighest, lonLowest)
-    //return Object.assign(e, { elevationHighest: elevationHighest, elevationLowest: elevationLowest })
-
   })
 }
 

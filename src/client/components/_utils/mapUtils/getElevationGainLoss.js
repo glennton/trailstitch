@@ -1,30 +1,16 @@
-const getElevationGainLoss = (daysArr, trackData) => {
+import BigNumber from "bignumber.js"
 
-  return daysArr.map((e) => {
+const getElevationGainLoss = (ele1, ele2) => {
+  const difference = new BigNumber(ele1).minus(ele2).toNumber() //Get difference
+  const absChange = Math.abs(difference) //Get absolute value of change
 
-    const { indexStart, indexEnd } = e
-
-    let ascent = 0
-    let descent = 0
-
-    for (let i = indexStart; i < indexEnd; i++) {
-
-      const currentElevation = trackData[i]['ele']
-      const nextElevation = trackData[ i+ 1]['ele']
-      const change = nextElevation - currentElevation //Get difference  20 50 = -30
-      const absChange = Math.abs(change) //Get absolute value of change
-
-      if (absChange && change > 0) {
-        ascent = ascent + absChange
-      } else {
-        if (absChange) {
-          descent = descent + absChange
-        }
-      }
-
-    }
-    return Object.assign(e, { elevationGain: ascent, elevationLoss: descent })
-  })
+  let change = { ascent: 0, descent: 0 }
+  if (absChange && difference > 0) {
+    change.ascent = absChange
+  } else {
+    change.descent = absChange
+  }
+  return change
 }
 
 export default getElevationGainLoss

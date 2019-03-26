@@ -5,14 +5,12 @@ import { withStyles } from '@material-ui/core/styles';
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
-import Icon from '@material-ui/core/Icon';
+import Place from '@material-ui/icons/Place';
 
 //Development Data
-import DummyData from 'Utils/DummyData'
 
 //Utils
-import API_KEYS from 'ClientConfig/API_KEYS'
-import makeGoogleMapRoute from 'Utils/mapUtils/makeGoogleMapRoute'
+//import API_KEYS from 'ClientConfig/API_KEYS'
 
 //Components
 import GoogleMapReact from 'google-map-react';
@@ -20,120 +18,139 @@ import GoogleMapReact from 'google-map-react';
 const styles = theme => ({
   wrapper: {
     width: `100%`,
-    minHeight: `300px`,
+    height: `50vh`,
     maxWidth: theme.breakpoints.values.lg,
     marginBottom: `3em`,
   }
 })
-const TestMaker = ({ text }) => <div>{text}</div>;
-
-// class Polyline extends React.Component {
-
-//   componentWillUpdate() {
-//     this.line.setMap(null)
-//   }
-
-//   componentWillUnmount() {
-//     this.line.setMap(null)
-//   }
-
-//   getPaths() {
-//     const { origin, destination } = this.props
-
-//     return [
-//       { lat: Number(origin.lat), lng: Number(origin.long) },
-//       { lat: Number(destination.lat), lng: Number(destination.long) }
-//     ];
-//   }
-
-//   render() {
-//     console.log(this.props.maps)
-//     const Polyline = this.props.maps.Polyline
-
-//     const renderedPolyline = this.renderPolyline()
-//     const paths = { path: this.getPaths() }
-
-//     this.line = new Polyline(Object.assign({}, renderedPolyline, paths))
-
-//     this.line.setMap(this.props.map)
-
-//     return null
-//   }
-
-//   renderPolyline() {
-//     throw new Error('Implement renderPolyline method')
-//   }
-
-// }
-
-
-
-// class Normal extends Polyline {
-
-//   renderPolyline() {
-//     return {
-//       geodesic: true,
-//       strokeColor: this.props.color || '#ffffff',
-//       strokeOpacity: 1,
-//       strokeWeight: 4
-//     }
-//   }
-// }
-
 
 class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      dataLoaded: false,
+      activeDay: null, 
+      activePlot: null
     }
-    this.slides = DummyData(['slides']).slides
-    this.sampleFunction = this.sampleFunction.bind(this)
+    this.placeIcon = {
+      path: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
+      fillColor: '#FF0000',
+      fillOpacity: .6,
+      strokeWeight: 0,
+      scale: 1
+    }
+    this.renderActiveMarker = this.renderActiveMarker.bind(this)
+    this.renderActivePolyLine = this.renderActivePolyLine.bind(this)
     this.handleApiLoaded = this.handleApiLoaded.bind(this)
     this.renderMap = this.renderMap.bind(this)
+    //Map Functions
+    this.renderTrailStartMarkers = this.renderTrailStartMarkers.bind(this)
   }
 
-  sampleFunction() {
-    console.log(this.state)
-  }
-
-  handleApiLoaded = (map, maps) => {
-    this.map = map
-    this.maps = maps
-    const { dayStartPoint, dayEndPoint} = this.state;
-    const testCoords = [
-      { lat: dayStartPoint.lat, lng: dayStartPoint.lng }, { lat: dayEndPoint.lat, lng: dayEndPoint.lng}
-      ]
-    const Polyline = this.maps.Polyline
-    console.log('testCoords', testCoords)
-    this.line = new Polyline({
-      path: this.state.trackArr,
-      geodesic: true,
-      strokeColor: '#ffffff',
-      strokeOpacity: 1,
-      strokeWeight: 2
+  renderPolyLines(){
+    const {days, map, maps} = this.state
+    const Polyline = maps.Polyline
+    days.map((e,i)=>{
+      const lineColor = (i + 1) % 2 ? '#ffffff' : '#aaaaaa'
+      const line = new Polyline({
+        path: e.track,
+        geodesic: true,
+        strokeColor: lineColor,
+        strokeOpacity: 1,
+        strokeWeight: 2
+      })
+      line.setMap(map)
     })
+  }
+  //Render active marker based on hovered plot
+  renderActiveMarker(){
+    const { map, maps } = this.state
+    //Render only if active plot is set
+    if (this.state.activePlot){
+      //First Remove any existing markers
+      if (this.state.activeMarker){
+        this.state.activeMarker.setMap(null);
+      }
+      //Make new marker
+      const Marker = maps.Marker
+      const placeIcon = { ...this.placeIcon }
+      placeIcon.anchor = new maps.Point(14, 25)
+      const activePoint = new Marker({
+        id: 'plotMarker',
+        position: this.state.activePlot,
+        icon: placeIcon,
+      })
+      this.setState({ activeMarker: activePoint })
+      activePoint.setMap(map)
+      map.setCenter(this.state.activePlot)
+    }
+  }
+  //Render active poly line based on hovered plot
+  renderActivePolyLine(){
+    const { map, maps } = this.state
+    //Render only if active plot is set
+    if (this.state.activePlot && this.state.nextActivePlot){
+      //remove any active markers
+      if (this.state.activePolyLine) {
+        this.state.activePolyLine.setMap(null);
+      }
+      //Make new poly line
+      const Polyline = maps.Polyline
+      const activePolyLine = new Polyline({
+        path: [this.state.activePlot, this.state.nextActivePlot],
+        geodesic: true,
+        strokeColor: 'red',
+        strokeOpacity: 1,
+        strokeWeight: 5
+      })
+      this.setState({ activePolyLine: activePolyLine })
+      activePolyLine.setMap(map)
+    }
+  }
+  //Render default start, end markers
+  renderTrailStartMarkers(){
+    const { days, map, maps } = this.state
+    const Marker = maps.Marker
+    const placeIcon = {...this.placeIcon}
+    placeIcon.anchor = new maps.Point(14, 25)
+    days.map((e, i) => {
+      const startCoords = { lat: e.trackPtStart.lat, lng: e.trackPtStart.lng}
+      const endCoords = { lat: e.trackPtEnd.lat, lng: e.trackPtEnd.lng }
+      console.log('marker', startCoords, endCoords)
+      const startPoint = new Marker({
+        position: startCoords,
+        icon: placeIcon,
+      })
+      startPoint.setMap(map)
+      if (i === days.length-1){
+        const endPoint = new Marker({
+          position: endCoords,
+          icon: placeIcon,
+        })
+        endPoint.setMap(map)
+      }
+    })    
 
-    console.log(this.line)
-    this.line.setMap(this.map)
+  }
+  handleApiLoaded = (map, maps) => {
+    this.setState({ map: map, maps: maps, mapLoaded: true })
+    this.state.map.setMapTypeId('terrain');
+    this.renderPolyLines()
+    this.renderTrailStartMarkers()
+    console.log('map init')
   };
 
   renderMap = ()=>{
-    if (this.state.dayStartPoint && this.state.dayEndPoint){
-      const { dayStartPoint, dayEndPoint} = this.state
+    if (this.state.centralCoords){
       return (
         <GoogleMapReact
-          //bootstrapURLKeys={{ key: API_KEYS.GOOGLE_MAPS_API_KEY }}
+          //bootstrapURLKeys={{ key: "API_KEYS.GOOGLE_MAPS_API_KEY" }}
           yesIWantToUseGoogleMapApiInternals
-          defaultCenter={this.state.centerPoint}
-          defaultZoom={12}
+          defaultCenter={this.state.centralCoords}
+          defaultZoom={13}
+          mapTypeId= 'terrain'
           onGoogleApiLoaded={({ map, maps }) => this.handleApiLoaded(map, maps)}
         >
-          {/*<Icon lat={dayStartPoint.lat} lng={dayStartPoint.lng}> place </Icon>
-        <Icon lat={dayEndPoint.lat} lng={dayEndPoint.lng}> place </Icon>*/}
-          <TestMaker lat={dayStartPoint.lat} lng={dayStartPoint.lng} text="My Marker" />
-          <TestMaker lat={dayEndPoint.lat} lng={dayEndPoint.lng} text="My Marker" />
-
         </GoogleMapReact>
       )
     }else{
@@ -144,42 +161,44 @@ class Map extends React.Component {
     const { classes } = this.props;
     return (
       <Grid className={classes.wrapper} onClick={this.sampleFunction}>
-        {this.renderMap()}
+        <Place />
+        {this.state.dataLoaded ? this.renderMap() : '' /*TODO:Set up loader*/ }
       </Grid>
     );
   }
   componentDidMount() {
-    const { pointStart, pointEnd, centralLat, centralLon, indexStart, indexEnd } = this.props.gpxDayData
-    //Format in google friendly coordinate array
-    const formattedGoogleCoords = makeGoogleMapRoute(this.props.gpxTrackData, indexStart, indexEnd )
+    const { days, name, centralCoords } = this.props.gpx
     this.setState({
-      dayStartPoint: {
-        lat: Number.parseFloat(pointStart['@_lat']),
-        lng: Number.parseFloat(pointStart['@_lon'])
-      },
-      dayEndPoint: {
-        lat: Number.parseFloat(pointEnd['@_lat']),
-        lng: Number.parseFloat(pointEnd['@_lon'])
-      },
-      centerPoint : {
-        lat: Number.parseFloat(centralLat),
-        lng: Number.parseFloat(centralLon)
-      },
-      trackArr: formattedGoogleCoords
+      dataLoaded: true,
+      name: name,
+      centralCoords: centralCoords,
+      days: days
     })
   }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.plot != prevProps.plot){
+      const { currentPlot, nextPlot } = this.props.plot || ''
+      this.setState({
+        activePlot: { lat: currentPlot.lat, lng: currentPlot.lng },
+        nextActivePlot: { lat: nextPlot.lat, lng: nextPlot.lng }
+      })
+      this.renderActiveMarker()
+      this.renderActivePolyLine()
+    }
+  }
+
 }
 
 Map.propTypes = {
   classes: PropTypes.object,
-  defaultCenter: PropTypes.object,
-  gpxDayData: PropTypes.object,
-  gpxTrackData: PropTypes.array,
-  text: PropTypes.object,
+  gpx: PropTypes.object,
+  plot: PropTypes.object,
 }
 
 export default withStyles(styles)(Map);
 
-//<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAugtwAcydVFeUNTAjB1SrC9OpSpC5-3uc&callback=initMap"></script>
 //https://www.fullstackreact.com/articles/how-to-write-a-google-maps-react-component/
 //https://developers.google.com/maps/documentation/javascript/examples/elevation-paths
+//https://developers.google.com/maps/documentation/javascript/examples/polyline-simple
+//https://github.com/google-map-react/google-map-react/issues/149

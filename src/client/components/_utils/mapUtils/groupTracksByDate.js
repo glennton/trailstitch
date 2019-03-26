@@ -1,5 +1,5 @@
 //Group days by date, define start index and end index pointers
-const trackIndexesByDate = (data) => {
+const groupTracksByDate = (data) => {
 
   let currentKey = null
   let nextKey = null
@@ -35,4 +35,4 @@ const trackIndexesByDate = (data) => {
   return daysArr
 }
 
-export default trackIndexesByDate
+export default groupTracksByDate

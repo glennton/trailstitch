@@ -17,43 +17,27 @@ class ParseCoords extends React.Component {
   constructor(props) {
     super(props);
     this.state= {
-      styles: {},
-      lat: {
-        valid: false,
-        deg: '',
-        min: '',
-        sec: '',
-        dir: '',
-      },
-      lon: {
-        valid: false,
-        deg: '',
-        min: '',
-        sec: '',
-        dir: '',
-      },
+
     }
     this.splitCoords = this.splitCoords.bind(this)
     this.renderCoords = this.renderCoords.bind(this)
   }
 
-  splitCoords = (x, key) => {
+  splitCoords = (x) => {
     const coords = x.split('|').length >= 4 ? x.split('|') : null
     if(coords){
-      this.setState({
-        [key]:{
-          valid: true,
-          deg: coords[0],
-          min: coords[1],
-          sec: coords[2]
-        }
-      })
+      return {
+        deg: coords[0],
+        min: coords[1],
+        sec: coords[2],
+        dir: coords[3]
+      }
     }
   }
 
   renderCoords(){
     const { classes } = this.props;
-    if(this.state.lat.valid && this.state.lon.valid){
+    if(this.state.lat && this.state.lng){
       return(
         <Grid container align="center" direction="row" className={classNames(this.props.className)}>
           <Grid container alignItems="center" className={classes.coords}>
@@ -66,7 +50,7 @@ class ParseCoords extends React.Component {
           </Grid>
           <Grid container alignItems="center" className={classes.coords}>
             <Typography variant={this.state.variant} style={this.state.styles} className={classes.coordsTxt}> 
-              {this.state.lon.deg}&deg; {this.state.lon.min}&apos; {this.state.lon.sec}&quot; {this.state.lon.dir} 
+              {this.state.lng.deg}&deg; {this.state.lng.min}&apos; {this.state.lng.sec}&quot; {this.state.lng.dir} 
             </Typography>
           </Grid>
         </Grid>
@@ -81,12 +65,16 @@ class ParseCoords extends React.Component {
   }
 
   componentDidMount(){
-    this.setState({
-      styles: this.props.styles ? this.props.styles : {},
-      variant: this.props.variant || 'body1'
-    })
-    this.splitCoords(this.props.coords.lat, 'lat')
-    this.splitCoords(this.props.coords.lon, 'lon')
+  }
+  componentWillReceiveProps() {
+    if (this.props.coords){
+      this.setState({
+        styles: this.props.styles ? this.props.styles : {},
+        variant: this.props.variant || 'body1',
+        lat: this.splitCoords(this.props.coords.lat),
+        lng: this.splitCoords(this.props.coords.lng),
+      })
+    }    
   }
 }
 

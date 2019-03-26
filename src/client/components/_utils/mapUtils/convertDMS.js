@@ -15,10 +15,8 @@ const convertDMS = (lat, lng) => {
   var longitudeCardinal = Math.sign(lng) >= 0 ? "E" : "W";
 
   return {
-    locCoords: {
-      lat: `${latitude}|${latitudeCardinal}`,
-      lon: `${longitude}|${longitudeCardinal}`
-    },
+    lat: `${latitude}|${latitudeCardinal}`,
+    lng: `${longitude}|${longitudeCardinal}`
   }
 }
 

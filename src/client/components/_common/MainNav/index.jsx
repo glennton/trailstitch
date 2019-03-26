@@ -25,7 +25,8 @@ const styles = theme => ({
     background: 'rgba(0, 0, 0, 1)',
     [theme.breakpoints.up('sm')]: {
        background: 'rgba(0, 0, 0, 1)',
-    }
+    },
+    marginBottom: theme.spacing.unit * 4,
   }
 })
 

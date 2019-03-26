@@ -75,38 +75,10 @@ class Upload extends React.Component {
       fileLoaded: false,
       loadedFileName: '',
       expanded: false,
-      gpx:{
-        gpxMeta:{
-          id: '', //Set on server
-          userId: '', //Set on server
-          uploadDate: '', //Set on server
-          lastModifiedDate: '', //Set on server
-          days: [],
-          dayCount: '',
-          
-          tags:[],
-        },
-        gpxData: {
-          metadata: {
-            link: {
-
-            }
-          },
-          trk: {
-            name: "",
-            extensions: {
-              'gpxx:TrackExtension': {},
-              'gpxtrkx:TrackStatsExtension': {}
-            },
-            trkseg: {
-              trkpt: []
-            }
-          }
-        },
-      },
+      gpx: null,
       uploadError: false,
     }
-    this.slides = DummyData(['slides']).slides
+    this.describeGPX = describeGPX
     this.handleDrag = this.handleDrag.bind(this)
     this.handleDragIn = this.handleDragIn.bind(this)
     this.handleDragOut = this.handleDragOut.bind(this)
@@ -162,11 +134,11 @@ class Upload extends React.Component {
   }
 
   returnParsedData = async (data) => {
-    const fileName = data.files[0].name
     const readFiles = await this.readFiles(data);
     const parseFiles = await this.parseFiles(readFiles)
-    const describeFiles = await describeGPX(parseFiles.gpx)
-    return Promise.all([readFiles, parseFiles]).then(() => { return { data: parseFiles.gpx, name: fileName, meta: describeFiles}})
+    const describeGPX = await this.describeGPX(parseFiles.gpx)
+    return Promise.all([readFiles, parseFiles])
+      .then(() => { return describeGPX })
   }
 
   handleDrag = (e) => {
@@ -198,10 +170,7 @@ class Upload extends React.Component {
         this.dragCounter = 0;
         this.setState({ 
           fileLoaded: true, 
-          gpx: {
-            gpxData: res.data,
-            gpxMeta: res.meta
-          }, 
+          gpx: res, 
           loadedFileName: res.name 
         })
       }).catch(() => {
@@ -209,13 +178,12 @@ class Upload extends React.Component {
         this.dragCounter = 0;
         //TODO Make Error Notification
       })
-
   }
   
   render() {
     const { classes } = this.props;
     return (
-      <Grid container justify="center" direction="row" id="uploadContainer" onClick={this.test} className={this.state.dragging ? classes.draggingBg : ''}>
+      <Grid container justify="center" direction="row" id="uploadContainer" className={this.state.dragging ? classes.draggingBg : ''}>
         <Grid container alignContent="center" className={`${classes.wrapper}`}>
           <Grid container justify="center">
             <Typography paragraph variant="h5">Upload a new GPX File</Typography>
@@ -224,25 +192,29 @@ class Upload extends React.Component {
             <div ref={this.dropRef}>
               <Card className={classes.card}>
                 <CardContent>
-                  <Grid container justify="center" className={this.state.fileLoaded ? classes.hide : '' }>
-                    <Typography align="center" className={classes.title} variant="body1" gutterBottom>
-                      {this.state.dragging ? 'Drop here to upload files' : 'Drag a GPX track or waypoints here'}
-                    </Typography>
-                  </Grid>
-                  <Grid container justify="center" className={!this.state.fileLoaded ? classes.hide : ''}>
-                    <Grid item xs={10}>
-                      <Typography align="center" variant="body1" gutterBottom className={classes.bold}>
-                        File Uploaded Successfully!&nbsp;&nbsp;
-                      </Typography>
-                      <Typography align="center" variant="body1" gutterBottom>
-                        From your GPX track, it looks like you went on a trip between
-                        {this.state.gpx.gpxMeta.dateFirst ? format(parseISO(this.state.gpx.gpxMeta.dateFirst), ' MMMM d, yyyy ') : ''}
-                        and
-                        {this.state.gpx.gpxMeta.dateLast ? format(parseISO(this.state.gpx.gpxMeta.dateLast), ' MMMM d, yyyy ') : ''}
-                        traveling over {this.state.gpx.gpxMeta.days.length} days. If this looks slightly off, you will be able to update your data after uploading.
-                    </Typography>
+                  {this.state.fileLoaded ?
+                    <Grid container justify="center" className={!this.state.fileLoaded ? classes.hide : ''}>
+                      <Grid item xs={10}>
+                        <Typography align="center" variant="body1" gutterBottom className={classes.bold}>
+                          File Uploaded Successfully!&nbsp;&nbsp;
+                        </Typography>
+                        <Typography align="center" variant="body1" gutterBottom>
+                          From your GPX track, it looks like you went on a trip between
+                          {this.state.gpx.dateFirst ? format(parseISO(this.state.gpx.dateFirst), ' MMMM d, yyyy ') : ''}
+                          and
+                          {this.state.gpx.dateLast ? format(parseISO(this.state.gpx.dateLast), ' MMMM d, yyyy ') : ''}
+                          traveling over {this.state.gpx.days.length} days. If this looks slightly off, you will be able to update your data after uploading.
+                        </Typography>
+                      </Grid>
                     </Grid>
-                  </Grid>
+                    :
+                    <Grid container justify="center" className={this.state.fileLoaded ? classes.hide : ''}>
+                      <Typography align="center" className={classes.title} variant="body1" gutterBottom>
+                        {this.state.dragging ? 'Drop here to upload files' : 'Drag a GPX track or waypoints here'}
+                      </Typography>
+                    </Grid>
+
+                  }
                 </CardContent>
                 <CardActions>
                   <Grid container direction="column">
@@ -258,24 +230,30 @@ class Upload extends React.Component {
                     </Grid>
                   </Grid>
                 </CardActions>
-                <Grid container justify="center" direction="row" className={!this.state.fileLoaded ? classes.hide : ''}>
-                  <Typography variant="body2" align="center" style={{alignSelf:'center', paddingRight:'1em'}}>
-                    Click here to see/edit track details
-                      </Typography>
-                  <IconButton
-                    className={classnames(classes.expand, {
-                      [classes.expandOpen]: this.state.expanded,
-                    })}
-                    onClick={this.handleExpandClick}
-                    aria-expanded={this.state.expanded}
-                    aria-label="Show more"
-                  >
-                    <ExpandMoreIcon />
-                  </IconButton>
-                </Grid>
-                <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
-                  <TrackDetails gpxData={{ gpxName: this.state.gpx.gpxData.trk.name, gpxMeta: this.state.gpx.gpxData.metadata, gpxExtensions: this.state.gpx.gpxData.trk.extensions['gpxtrkx:TrackStatsExtension'],}}/>
-                </Collapse>
+                {this.state.fileLoaded ?
+                  <Grid>
+                    <Grid container justify="center" direction="row" className={!this.state.fileLoaded ? classes.hide : ''}>
+                      <Typography variant="body2" align="center" style={{ alignSelf: 'center', paddingRight: '1em' }}>
+                        Click here to see/edit track details
+                        </Typography>
+                      <IconButton
+                        className={classnames(classes.expand, {
+                          [classes.expandOpen]: this.state.expanded,
+                        })}
+                        onClick={this.handleExpandClick}
+                        aria-expanded={this.state.expanded}
+                        aria-label="Show more"
+                      >
+                        <ExpandMoreIcon />
+                      </IconButton>
+                    </Grid>
+                    <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+                      <TrackDetails gpx={this.state.gpx} />
+                    </Collapse>
+                  </Grid> 
+                  :
+                  ''
+                }                
               </Card>
             </div>
           </Grid>
@@ -295,10 +273,8 @@ class Upload extends React.Component {
     describeGPX(DummyGPX).then((res)=>{
       console.log(res)
       this.setState({
-        gpx: {
-          gpxData: DummyGPX,
-          gpxMeta: res,
-        },
+        orginalData: DummyGPX,
+        gpx: res,
         fileLoaded: true,
         loadedFileName: 'Track_AA18-06-18 112218.gpx',
       })

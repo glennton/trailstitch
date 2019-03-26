@@ -1,34 +1,27 @@
 //Core
 import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles';
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Avatar from '@material-ui/core/Avatar';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Icon from '@material-ui/core/Icon';
 
 //Development Data
 import DummyStitch from 'Utils/DummyStitch'
 import { Typography } from '@material-ui/core';
 
 //Utils
-import format from 'date-fns/format';
-import parseISO from 'date-fns/parseISO';
-import convertDMS from 'Utils/mapUtils/convertDMS'
 
 //Components
-import ParseCoords from 'Utils/mapUtils/ParseCoords'
 import Map from 'Common/Map'
+import DetailsView from 'Routes/Stitches/DetailsView'
+import SegmentDetail from 'Routes/Stitches/SegmentDetail'
+import Plot from 'Routes/Stitches/Plot'
+import PlotDayNav from 'Routes/Stitches/PlotDayNav'
 
 function TabContainer({ children, dir }) {
   return (
@@ -43,13 +36,12 @@ TabContainer.propTypes = {
 };
 
 const styles = theme => ({
-  outer:{
-    paddingTop: theme.spacing.unit * 2,
-  },
   wrapper: {
+    paddingTop: theme.spacing.unit * 3,
     width: `100%`,
     maxWidth: theme.breakpoints.values.lg,
     marginBottom: `3em`,
+    margin: `0 auto`,
   },
   paper:{
     padding: theme.spacing.unit * 2,
@@ -61,33 +53,16 @@ const styles = theme => ({
     marginBottom: theme.spacing.unit,
   },
   detailRightContainer:{
-    paddingTop: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit,
     flex: 1
   },
   detailRightHdr:{
     width: `auto`,
-  },
-  detailMapContainer:{
-    minHeight: `300px`,
   },
   detailRightTabs:{
     backgroundColor: `#fff`,
     boxShadow: `none`,
     border: `1px solid ${theme.palette.grey.A100}`,
     borderRadius: `5px`,
-  },
-  Stitches:{
-    [theme.breakpoints.up('xs')]: { //0
-    },
-    [theme.breakpoints.up('sm')]: { //600
-    },
-    [theme.breakpoints.up('md')]: { //960
-    },
-    [theme.breakpoints.up('lg')]: { //1280
-    },
-    [theme.breakpoints.up('xl')]: { //1920
-    },
   }
 })
 
@@ -96,20 +71,17 @@ class Stitches extends React.Component {
     super(props);
     this.state = {
       value: 0,
-      gpx: {
-        gpxMeta: {},
-        gpxData: {}
-      }
+      gpx: null,
+      activeDay: null,
+      plot: null,
+      plotDayIndex: null,
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleChangeIndex = this.handleChangeIndex.bind(this)
     this.returnDays = this.returnDays.bind(this)
-    this.sampleFunction = this.sampleFunction.bind(this)
+    this.setPlot = this.setPlot.bind(this)
+    this.setPlotDayIndex = this.setPlotDayIndex.bind(this)
   }
-
-  sampleFunction = (event, value) => {
-    console.log(this.state)
-  };
 
   handleChange = (event, value) => {
     this.setState({ value });
@@ -118,101 +90,109 @@ class Stitches extends React.Component {
   handleChangeIndex = index => {
     this.setState({ value: index });
   };
-
+  setPlot(plot){
+    console.log('setplot')
+    this.setState({ 
+      plot: plot 
+    });
+  }
+  setPlotDayIndex(index) {
+    console.log('setPlotDayIndex')
+    this.setState({
+      plotDayIndex: index
+    });
+  }
   returnDays(){
-    const { classes } = this.props;
-    if (this.state.gpx.gpxMeta.days){
+    if (this.state.dataLoaded){
+      const { classes } = this.props;
       return (
-        this.state.gpx.gpxMeta.days.map((e, i) =>
-          <Grid item key={`stich-day-${i}`}>
-            <Paper className={classes.paper}>
-              <Grid container>
-                <Grid container direction="row" justify="space-between">
-                  <Grid container className={classes.detailRightHdr}>
-                    <Typography variant="h6">Day {i + 1} - {format(parseISO(e.date), ' MMMM d, yyyy ')} </Typography>
-                  </Grid>
-                  <Grid container className={classes.detailRightHdr}>
-                    <ParseCoords coords={convertDMS(e.pointStart['@_lat'], e.pointEnd['@_lon']).locCoords} />
-                  </Grid>
-                </Grid>
-                <Grid item>
-                  <List>
-                    <ListItem className={classes.detailLeftStatBox}>
-                      <Avatar>
-                        <Icon>location_searching</Icon>
-                      </Avatar>
-                      <ListItemText primary="Distance" secondary={Number.parseFloat(e.distance).toFixed(2) || ''} /> {/* TODO humanize units */}
-                    </ListItem>
-                    <ListItem className={classes.detailLeftStatBox}>
-                      <Avatar>
-                        <Icon>flight_takeoff</Icon>
-                      </Avatar>
-                      <ListItemText primary="Ascent" secondary={Number.parseFloat(e.elevationGain).toFixed(2) || ''} /> {/* TODO humanize units */}
-                    </ListItem>
-                    <ListItem className={classes.detailLeftStatBox}>
-                      <Avatar>
-                        <Icon>flight_land</Icon>
-                      </Avatar>
-                      <ListItemText primary="Descent" secondary={Number.parseFloat(e.elevationLoss).toFixed(2) || ''} /> {/* TODO humanize units */}
-                    </ListItem>
-                  </List>
-                </Grid>
-                <Grid item className={classes.detailRightContainer}>
-                  <AppBar position="static" className={classes.detailRightTabs}>
-                    <Tabs
-                      value={this.state.value}
-                      onChange={this.handleChange}
-                      indicatorColor="primary"
-                      textColor="primary"
-                      variant="fullWidth"
-                      centered
-                    >
-                      <Tab label="Elevation" />
-                      <Tab label="Map View" />
-                      <Tab label="Waypoints" />
-                    </Tabs>
-                  </AppBar>
-                  <SwipeableViews
-                    axis={'x'}
-                    index={this.state.value}
-                    onChangeIndex={this.handleChangeIndex}
-                  >
-                    <TabContainer dir="ltr">
-                      <Grid container className={classes.detailMapContainer}>
-                        <Map gpxDayData={e} gpxTrackData={this.state.gpx.gpxData.trk.trkseg.trkpt} />
-                      </Grid>
-                    </TabContainer>
-                    <TabContainer dir="ltr">
-                      Map View
-                  </TabContainer>
-                    <TabContainer dir="ltr">Waypoints</TabContainer>
-                  </SwipeableViews>
-                </Grid>
-              </Grid>
-            </Paper>
+        <Grid container>
+          <Grid container direction="row" justify="space-between">
+            <Grid container className={classes.detailRightHdr}>
+              {/* <Typography variant="h6">Day {i + 1} - {format(parseISO(e.date), ' MMMM d, yyyy ')} </Typography> */}
+            </Grid>
+            <Grid container className={classes.detailRightHdr}>
+              {/* <ParseCoords coords={convertDMS(e.pointStart['@_lat'], e.pointEnd['@_lon']).locCoords} /> */}
+            </Grid>
           </Grid>
-        )
+          <Grid item className={classes.detailRightContainer}>
+            <AppBar position="static" className={classes.detailRightTabs}>
+              <Tabs
+                value={this.state.value}
+                onChange={this.handleChange}
+                indicatorColor="primary"
+                textColor="primary"
+                variant="fullWidth"
+                centered
+              >
+                <Tab label="Stitch Points" />
+                <Tab label="Track Details" />
+                <Tab label="Waypoints" />
+              </Tabs>
+            </AppBar>
+            <SwipeableViews
+              axis={'x'}
+              index={this.state.value}
+              onChangeIndex={this.handleChangeIndex}
+            >
+              <TabContainer dir="ltr">
+                <Grid>
+                  <Plot setPlot={this.setPlot} gpx={this.state.gpx} plotDayIndex={this.state.plotDayIndex} />
+                  <PlotDayNav setPlotDayIndex={this.setPlotDayIndex} gpx={this.state.gpx}/>
+                </Grid>
+                <SegmentDetail plot={this.state.plot} />
+              </TabContainer>
+              <TabContainer dir="ltr">
+                
+                <Grid><p>Track Details</p><DetailsView gpx={this.state.gpx} /></Grid>
+          
+            </TabContainer>
+              <TabContainer dir="ltr">
+                <Grid></Grid>
+              </TabContainer>
+            </SwipeableViews>
+          </Grid>
+        </Grid>
       )
     }else{ return ''}
 
   }
   render() {
     const { classes } = this.props;
+    const dataLoaded = this.state.dataLoaded
     return (
-      <Grid container justify="center" onClick={this.sampleFunction} className={classes.outer}>
-        <Grid container direction="column" align="center" className={classNames(classes.wrapper, ``)}>
-          <Grid item>
-            {this.returnDays() || ''}
-          </Grid>
+      <Grid container direction="row" alignContent="center">
+        <Grid container direction="column" alignContent="center"> 
+          {dataLoaded ? <Map plot={this.state.plot} gpx={this.state.gpx} /> : ''}
         </Grid>
-        
+        { dataLoaded ?
+          <Grid container direction="column" alignContent="center" className={classes.wrapper}>            
+              {/* <Typography>{this.state.gpx.gpxData.trk.name}</Typography> */}
+              <Grid container direction="row" justify="space-between">
+                <Grid container className={classes.detailRightHdr}>
+                  <Typography variant="h6">{this.state.gpx.name}</Typography>
+                  {/* <Typography variant="h6">Day {i + 1} - {format(parseISO(e.date), ' MMMM d, yyyy ')} </Typography> */}
+                </Grid>
+                <Grid container className={classes.detailRightHdr}>
+                  {/* <ParseCoords coords={convertDMS(e.pointStart['@_lat'], e.pointEnd['@_lon']).locCoords} /> */}
+                </Grid>
+              </Grid>
+            {this.returnDays()}
+          </Grid>
+        :
+        ''
+      }   
       </Grid>
     );
   }
   componentDidMount() {
+    
     this.setState({
-      gpx: DummyStitch
+      dataLoaded: true,
+      gpx: DummyStitch,
+      activeDay: 0
     })
+   
   }
 }
 

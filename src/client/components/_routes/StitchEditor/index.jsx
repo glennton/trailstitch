@@ -21,7 +21,7 @@ const styles = theme => ({
     marginBottom: `3em`,
     margin: `0 auto`,
   },
-  CONTAINER:{
+  CONTAINER: {
     [theme.breakpoints.up('xs')]: { //0
     },
     [theme.breakpoints.up('sm')]: { //600
@@ -34,7 +34,7 @@ const styles = theme => ({
     },
   }
 })
-class CONTAINER extends React.Component {
+class StitchEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -44,7 +44,7 @@ class CONTAINER extends React.Component {
     this.sampleFunction = this.sampleFunction.bind(this)
   }
 
-  sampleFunction(){
+  sampleFunction() {
     console.log(this.state)
   }
   render() {
@@ -59,8 +59,8 @@ class CONTAINER extends React.Component {
       //
     })
   }
-  componentWillReceiveProps() {
-    if (this.props) {
+  componentDidUpdate(prevProps) {
+    if (this.props != prevProps) {
       this.setState({
         //
       })
@@ -68,8 +68,9 @@ class CONTAINER extends React.Component {
   }
 }
 
+export default withStyles(styles)(StitchEditor);
 CONTAINER.propTypes = {
   classes: PropTypes.object,
 }
 
-export default withStyles(styles)(CONTAINER);
+export default withStyles(styles)(StitchEditor);
