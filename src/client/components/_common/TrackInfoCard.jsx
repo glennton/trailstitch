@@ -31,38 +31,42 @@ class TrackInfoCard extends React.Component {
 
     }
   }
+  componentWillReceiveProps() {
+    const { title, value, icon } = this.props
+    this.setState({
+      title: title,
+      value: value,
+      icon: icon,
+      dataLoaded: true
+    })
+  }
 
   render() {
-    return this.state.dataLoaded ?     
+    const { dataLoaded, icon, title, value } = this.state
+    return dataLoaded ?     
       (
         <ListItem>
           <Avatar>
-            <Icon>{this.state.icon}</Icon>
+            <Icon>{icon}</Icon>
           </Avatar>
-          <ListItemText primary={this.state.title}secondary={this.state.value} />
+          <ListItemText primary={title} secondary={value} />
         </ListItem>
       )
       :
       'Loading...'
   }
-  componentWillReceiveProps() {
-    this.setState({
-      title: this.props.title,
-      value: this.props.value,
-      icon: this.props.icon,
-      dataLoaded: true
-    })
-  }
 }
 
 TrackInfoCard.propTypes = {
-  classes: PropTypes.object,
-  title: PropTypes.string,
+  classes: PropTypes.shape({
+
+  }).isRequired,
+  title: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
-  ]),
-  icon: PropTypes.string,
+  ]).isRequired,
+  icon: PropTypes.string.isRequired,
 }
 
 export default withStyles(styles)(TrackInfoCard);

@@ -81,7 +81,7 @@ class Plot extends React.Component {
       allPlots: this.plotAll(gpx)
     })
   }
-
+  
   componentDidUpdate(prevProps) {
     const { plotDayIndex, gpx} = this.props
     if (plotDayIndex != prevProps.plotDayIndex) {
@@ -116,7 +116,7 @@ class Plot extends React.Component {
           if (i < allPlots.length - 1){
             return (
               <div 
-                key={`plot-${i}`} 
+                key={`plot-${e.time}`} 
                 data-index={`${i}`} 
                 onMouseEnter={this.setActiveTrackPortion} 
                 className={classNames(classes.plot, plotClass)} 
@@ -167,7 +167,10 @@ Plot.propTypes = {
 
   }).isRequired,
   setPlot: PropTypes.func.isRequired,
-  plotDayIndex: PropTypes.number.isRequired,
+  plotDayIndex: PropTypes.number,
+}
+Plot.defaultProps = {
+  plotDayIndex: null
 }
 
 export default withStyles(styles)(Plot);

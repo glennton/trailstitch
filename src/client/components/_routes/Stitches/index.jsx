@@ -90,11 +90,13 @@ class Stitches extends React.Component {
   handleChangeIndex = (index) => {
     this.setState({ value: index });
   };
+
   setPlot = (plot) => {
     this.setState({ 
       plot: plot 
     });
   }
+  
   setPlotDayIndex = (index) => {
     this.setState({
       plotDayIndex: index
@@ -137,7 +139,7 @@ class Stitches extends React.Component {
               <TabContainer dir="ltr">
                 <Grid>
                   <Plot setPlot={this.setPlot} gpx={gpx} plotDayIndex={plotDayIndex} />
-                  <PlotDayNav setPlotDayIndex={this.setPlotDayIndex} gpx={gpx}/>
+                  <PlotDayNav setPlotDayIndex={this.setPlotDayIndex} gpx={gpx} />
                 </Grid>
                 <SegmentDetail plot={plot} />
               </TabContainer>
@@ -191,10 +193,8 @@ class Stitches extends React.Component {
 Stitches.propTypes = {
   classes: PropTypes.shape({
 
-  }).isRequired,
-  theme: PropTypes.shape({
+  }).isRequired
 
-  }).isRequired,
 }
 
 export default withStyles(styles)(Stitches);

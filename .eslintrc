@@ -1,7 +1,8 @@
 {
   "parser": "babel-eslint",
   "rules": {
-    "no-console": "off"
+    "no-console": "off",
+    "react/no-did-update-set-state": "off"
   },
   "plugins": [
     "react",

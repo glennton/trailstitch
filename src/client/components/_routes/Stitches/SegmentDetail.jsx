@@ -6,7 +6,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
-import { Typography } from '@material-ui/core';
 import List from '@material-ui/core/List';
 
 //Development Data
@@ -30,12 +29,21 @@ const styles = theme => ({
   }
 })
 class SegmentDetail extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor(props){
+    super(props)
     this.state = {
-
+      activePlot: null
     }
-    this.renderCoords = this.renderCoords.bind(this)
+  }
+
+  componentWillReceiveProps() {
+    const { plot } = this.props
+    if (plot) {
+      const { currentPlot } = plot
+      this.setState({
+        activePlot: currentPlot,
+      })
+    }
   }
 
   renderCoords() {
@@ -43,35 +51,34 @@ class SegmentDetail extends React.Component {
   }
   render() {
     const { classes } = this.props;
+    const { activePlot } = this.state
     return (
       <Grid container direction="row" className={classNames(classes.wrapper, ``)}>
-        {this.state.activePlot ?
-          <List className={classes.detailsContainer}>
+        { activePlot ? (
+          <List className={classes.detailsContainer}>        
             {this.renderCoords()}
-            <ParseCoords coords={convertDMS(this.state.activePlot.lat, this.state.activePlot.lng)} styles={{ color: `#000` }} className={`${classes.coordContainer}`} />
-            <TrackInfoCard title={'Segment Ascent'} value={`${this.state.activePlot.ascent ? this.state.activePlot.ascent : '0'}m`} icon={'flight_takeoff'} />
-            <TrackInfoCard title={'Segment Descent'} value={`${this.state.activePlot.descent ? this.state.activePlot.descent : '0'}m`} icon={'flight_land'} />
-            <TrackInfoCard title={'Distance'} value={`${this.state.activePlot.distanceToNextPoint ? this.state.activePlot.distanceToNextPoint : '0'}m`} icon={'location_searching'} />
+            <ParseCoords coords={convertDMS(activePlot.lat, activePlot.lng)} styles={{ color: `#000` }} className={`${classes.coordContainer}`} />
+            <TrackInfoCard title='Segment Ascent' value={`${activePlot.ascent ? activePlot.ascent : '0'}m`} icon='flight_takeoff' />
+            <TrackInfoCard title='Segment Descent' value={`${activePlot.descent ? activePlot.descent : '0'}m`} icon='flight_land' />
+            <TrackInfoCard title='Distance' value={`${activePlot.distanceToNextPoint ? activePlot.distanceToNextPoint : '0'}m`} icon='location_searching' />
           </List>
-          : ''
-        }
+          ): '' }
       </Grid>
     );
   }
-  componentWillReceiveProps() {
-    if (this.props.plot) {
-      const { currentPlot, nextPlot } = this.props.plot || ''
-      this.setState({
-        activePlot: currentPlot,
-        nextActivePlot: { lat: nextPlot.lat, lng: nextPlot.lng }
-      })
-    }
-  }
+
 }
 
 SegmentDetail.propTypes = {
-  classes: PropTypes.object,
-  plot: PropTypes.object,
+  classes: PropTypes.shape({
+
+  }).isRequired,
+  plot: PropTypes.shape({
+
+  }),
+}
+SegmentDetail.defaultProps = {
+  plot: null
 }
 
 export default withStyles(styles)(SegmentDetail);

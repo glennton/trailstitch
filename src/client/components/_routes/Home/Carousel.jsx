@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import DummyData from 'Utils/DummyData'
 
 //Utils
-
+import convertDMS from 'Utils/mapUtils/convertDMS'
 //Components
 import ParseCoords from 'Utils/mapUtils/ParseCoords'
 
@@ -97,8 +97,8 @@ class Carousel extends React.Component {
   renderSlides(){
     const { classes } = this.props;
     return (
-      this.slides.map( (e,i) =>(
-        <Grid container key={`slide-${i}`} className={`${classes.carouselSlide}`}>
+      this.slides.map( (e) =>(
+        <Grid container key={`slide-${e.id}`} className={`${classes.carouselSlide}`}>
           <Grid container className={`${classes.carouselBgContent}`} style={{backgroundImage : `url(${e.imgUrl})`}} />
           <Grid container className={`${classes.slideContent}`}>
             <Grid container className="wrapper" direction="row">
@@ -109,7 +109,7 @@ class Carousel extends React.Component {
                 <Grid container justify="center" className={`${classes.slideHeader}`}>
                   <Grid item sm={10}>
                     <Typography component="h2" variant="h2" align="center" className={classNames(classes.locationHeader, 'txt-white')}>{e.locName}</Typography>
-                    <ParseCoords coords={e.locCoords} styles={{ color: `#fff` }} className={`${classes.coordContainer}`} />
+                    <ParseCoords coords={convertDMS(e.lat, e.lng)} styles={{ color: `#fff` }} className={`${classes.coordContainer}`} />
                     <Typography variant="h6" className="txt-white" align="center">{e.subText}</Typography>
                   </Grid>
                 </Grid>

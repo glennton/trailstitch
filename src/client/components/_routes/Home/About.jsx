@@ -39,7 +39,7 @@ class About extends React.Component {
     return (
       <Grid container className={classes.wrapper} direction="row">
         <Typography paragraph variant="h5">About</Typography>
-        <Typography paragraph ariant="body1">Proident ex qui nulla labore ipsum exercitation anim aliqua sit elit. Mollit anim duis laborum quis tempor non culpa non mollit. Laborum sunt voluptate ipsum commodo officia proident ad ex eu sint in. Ad cupidatat exercitation ut amet consequat ex reprehenderit do consequat dolore in. In tempor sit dolor cillum. Consequat incididunt fugiat reprehenderit ullamco non sit culpa nostrud ipsum.</Typography>
+        <Typography paragraph>Proident ex qui nulla labore ipsum exercitation anim aliqua sit elit. Mollit anim duis laborum quis tempor non culpa non mollit. Laborum sunt voluptate ipsum commodo officia proident ad ex eu sint in. Ad cupidatat exercitation ut amet consequat ex reprehenderit do consequat dolore in. In tempor sit dolor cillum. Consequat incididunt fugiat reprehenderit ullamco non sit culpa nostrud ipsum.</Typography>
       </Grid>
     );
   }

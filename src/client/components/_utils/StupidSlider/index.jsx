@@ -7,22 +7,20 @@ class Slider extends React.Component{
 
   constructor(props){
     super(props);
+    const { children, startSlide } = this.props
+
     //States
     this.state = {
-      activeSlide: this.props.startSlide || 0,
+      activeSlide: startSlide,
       slideWidth: 0,
       stageLeft: 0,
       animateLeft: 0,
       transitionData: {}
     };
-    //Options
-    this.id = this.props.carouselId || '';
-    this.speed = this.props.carouselSpeed || 500;
-    this.padding = this.props.slidePadding || 0;
-    this.easing = this.props.carouselEasing || 'linear';
+    
     //Vars
     this.slideElements = [];
-    this.reactItems = this.props.children || [];
+    this.reactItems = children;
     this.itemCount = this.reactItems.length || 0;
     this.isAnimating = false;
     //Bindings
@@ -33,54 +31,62 @@ class Slider extends React.Component{
   }
 
   getItemElement = (item, index, key) => {
+    const { slidePadding } = this.props
+    const { activeSlide, slideWidth } = this.state
     if(key == undefined) key = `slide-${index}`
-    const obj =
-     <li
-        data-slide-index={index}
-        className={`stupid-carousel-slide ${this.state.activeSlide === index ? 'active' : ''}`}
-        key={key}
-        id={key}
-        style={{
-          width: this.state.slideWidth,
-          order: this.reorderOneSlide(index),
-          padding: `0 ${this.padding}px 0`
-        }}
-        ref={(slide) => {this.slideElements[index] = slide}}
-      >
-        {item}
-      </li>;
+    const obj = 
+      (
+        <li
+          data-slide-index={index}
+          className={`stupid-carousel-slide ${activeSlide === index ? 'active' : ''}`}
+          key={key}
+          id={key}
+          style={{
+            width: slideWidth,
+            order: this.reorderOneSlide(index),
+            padding: `0 ${slidePadding}px 0`
+          }}
+          ref={(slide) => {this.slideElements[index] = slide}}
+        >
+          {item}
+        </li>
+      );
     return obj
   };
+  setDimensions(contentRect){
+    const { slidePadding } = this.props
+    this.setState({ slideWidth: contentRect.bounds.width + (2 * slidePadding) }, () => { this.setState({ animateLeft: - slidePadding })})
+  }
 
   reorderOneSlide(index){
-    //1
-    let order = index - this.state.activeSlide;
+    const { activeSlide } = this.state
+    let order = index - activeSlide;
     if(order < 0) order = this.itemCount + order;
     return order
   }
 
-  setDimensions(contentRect){
-    this.setState({ slideWidth: contentRect.bounds.width + (2 * this.padding) },()=>{this.setState({animateLeft : -this.padding})})
-  }
 
   resetStagePosition(){
-    const { targetIndex } = this.state.transitionData
+    const { transitionData } = this.state
+    const { slidePadding } = this.props
+    const { targetIndex } = transitionData
     this.isAnimating = false;
-    this.setState({animateLeft: -this.padding, stageLeft: 0, activeSlide: targetIndex, transitionData: {direction: 1}}, ()=>{
+    this.setState({ animateLeft: - slidePadding, stageLeft: 0, activeSlide: targetIndex, transitionData: {direction: 1}}, ()=>{
       this.newReorderAllSlides();
     })
   }
 
   _moveStage(){
     const {slideWidth, transitionData} = this.state;
+    const { slidePadding } = this.props
     this.isAnimating = true;
     this.sliderElement.addEventListener('transitionend', this.resetStagePosition);
     if(transitionData.direction){
       //Next
-      this.setState({animateLeft: -(slideWidth * transitionData.distance + (2 * this.padding * transitionData.distance - this.padding) ) });
+      this.setState({ animateLeft: -(slideWidth * transitionData.distance + (2 * slidePadding * transitionData.distance - slidePadding) ) });
     }else{
       //Prev
-      this.setState({animateLeft: slideWidth * transitionData.distance - this.padding });
+      this.setState({ animateLeft: slideWidth * transitionData.distance - slidePadding });
     }
   }
   animateStagePosition(){
@@ -130,8 +136,9 @@ class Slider extends React.Component{
   }
 
   goToSlide(targetIndex = 0){
+    const { activeSlide  } = this.state
     //Only execute if target slide is different from current slide
-    if(targetIndex != this.state.activeSlide){
+    if(targetIndex != activeSlide){
       this.setState({transitionData: this.initTransitionData(targetIndex)},()=>{
         this.newReorderAllSlides();
         this.animateStagePosition()
@@ -140,13 +147,15 @@ class Slider extends React.Component{
   }
 
   nextSlide(){
-    let target = this.state.activeSlide + 1;
+    const { activeSlide } = this.state
+    let target = activeSlide + 1;
     if(target >= this.itemCount) target = this.itemCount - target;
     this.goToSlide(target);
   }
 
   prevSlide(){
-    let target = this.state.activeSlide - 1;
+    const { activeSlide } = this.state
+    let target = activeSlide - 1;
     if(target < 0) target = this.itemCount - target - 2;
     this.goToSlide(target);
   }
@@ -154,35 +163,38 @@ class Slider extends React.Component{
   render(){
     //Declarations
     const { slideWidth, stageLeft, animateLeft} = this.state;
+    const { carouselId, carouselSpeed, carouselEasing } = this.props
     const sliderStyle = {
       width: slideWidth * this.itemCount,
       left: stageLeft,
       marginLeft: `${animateLeft}px`,
-      WebkitTransition: this.isAnimating ? `margin-left ${this.speed}ms ${this.easing}` : '0ms',
-      MozTransition: this.isAnimating ? `margin-left ${this.speed}ms ${this.easing}` : '0ms',
-      OTransition: this.isAnimating ? `margin-left ${this.speed}ms ${this.easing}` : '0ms',
-      transition: this.isAnimating ? `margin-left ${this.speed}ms ${this.easing}` : '0ms',
+      WebkitTransition: this.isAnimating ? `margin-left ${carouselSpeed}ms ${carouselEasing}` : '0ms',
+      MozTransition: this.isAnimating ? `margin-left ${carouselSpeed}ms ${carouselEasing}` : '0ms',
+      OTransition: this.isAnimating ? `margin-left ${carouselSpeed}ms ${carouselEasing}` : '0ms',
+      transition: this.isAnimating ? `margin-left ${carouselSpeed}ms ${carouselEasing}` : '0ms',
     }
     let Slider
-
     if(this.itemCount){
-      Slider = <Measure bounds onResize={(contentRect) => { this.setDimensions(contentRect) }}>
-      {({ measureRef }) =>
-        <div ref={measureRef}>
-          <div id={`${this.id}-slider`} className={`stupid-carousel-slider`} style={sliderStyle} ref={(slider)=>{this.sliderElement = slider}}>
-            <ul id={`${this.id}-list`} className={`stupid-carousel-list`}>
-              {this.reactItems.map((item, index) => {
-                return this.getItemElement(item, index, item.props['data-slideid']);
-              })}
-            </ul>
-          </div>
-        </div>
-      }
-    </Measure>
+      Slider = 
+        (
+          <Measure bounds onResize={(contentRect) => { this.setDimensions(contentRect) }}>
+            {({ measureRef }) => (
+              <div ref={measureRef}>
+                <div id={`${carouselId}-slider`} className='stupid-carousel-slider' style={sliderStyle} ref={(slider)=>{this.sliderElement = slider}}>
+                  <ul id={`${carouselId}-list`} className='stupid-carousel-list'>
+                    {this.reactItems.map((item, index) => {
+                      return this.getItemElement(item, index, item.props['data-slideid']);
+                    })}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </Measure>
+      )
     }
 
     return(
-      <div id={`${this.id}-container`} className={`stupid-carousel-container`}>
+      <div id={`${carouselId}-container`} className='stupid-carousel-container'>
         {Slider}
       </div>
     )
@@ -190,12 +202,20 @@ class Slider extends React.Component{
 }
 
 Slider.propTypes = {
-  startSlide: PropTypes.string,
+  startSlide: PropTypes.number,
   carouselId: PropTypes.string,
   carouselSpeed: PropTypes.number,
   slidePadding: PropTypes.number,
   carouselEasing: PropTypes.string,
-  children: PropTypes.array
+  children: PropTypes.arrayOf(PropTypes.element).isRequired
+}
+
+Slider.defaultProps = {
+  carouselId: '',
+  carouselSpeed: 500,
+  slidePadding: 0,
+  carouselEasing: 'linear',
+  startSlide: 0,
 }
 
 export default Slider

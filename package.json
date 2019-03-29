@@ -68,10 +68,12 @@
   "scripts": {
     "build": "rm -rf dist && webpack --mode development --config ./src/bundler/webpack.server.config.js && webpack --mode development --config ./src/bundler/webpack.client.config.js",
     "start": "node ./dist/server/server.js",
-    "nodemon": "nodemon ./dist/server/server.js",
+    "nodemon": "nodemon --watch ./src/server/ ./dist/server/server.js",
     "watch:backEnd": "webpack --watch --mode development --config ./src/bundler/webpack.server.config.js",
     "watch:frontEnd": "webpack --watch --mode development --config ./src/bundler/webpack.client.config.js",
-    "startAll": "npm-run-all -p nodemon watch:backEnd watch:frontEnd"
+    "devFE": "npm-run-all -p nodemon watch:frontEnd",
+    "devBE": "npm-run-all -p nodemon watch:backEnd",
+    "devAll": "npm-run-all -p nodemon watch:backEnd watch:frontEnd"
   },
   "repository": {
     "type": "git",

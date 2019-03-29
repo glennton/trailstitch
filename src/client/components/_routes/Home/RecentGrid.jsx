@@ -76,8 +76,8 @@ class RecentGrid extends React.Component {
     const { classes } = this.props
     const { expanded } = this.state
     return (
-      this.cards.map((e, i) => (
-        <Grid item xs={12} sm={6} md={4} key={`recent-grid-card-${i}`}>
+      this.cards.map((e) => (
+        <Grid item xs={12} sm={6} md={4} key={`recent-grid-card-${e.id}`}>
           <Card>
             <CardHeader
               avatar={(

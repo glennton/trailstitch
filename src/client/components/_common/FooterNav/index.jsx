@@ -31,10 +31,11 @@ class FooterNav extends React.Component {
   };
   render() {
     const { classes } = this.props;
+    const { value } = this.state
     return (
       <Grid className={classes.footerContainer}>
         <BottomNavigation
-          value={this.state.value}
+          value={value}
           onChange={this.handleChange}
           showLabels          
         >
@@ -48,7 +49,9 @@ class FooterNav extends React.Component {
 }
   
 FooterNav.propTypes = {
-  classes: PropTypes.object,
+  classes: PropTypes.shape({
+
+  }).isRequired,
 }
 
 export default withStyles(styles)(FooterNav);

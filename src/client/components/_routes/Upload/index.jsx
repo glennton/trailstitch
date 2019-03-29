@@ -20,7 +20,6 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 //Development Data
-import DummyData from 'Utils/DummyData'
 import DummyGPX from 'Utils/DummyGPX'
 
 //Utils
@@ -79,35 +78,49 @@ class Upload extends React.Component {
     this.state = {
       dragging: false,
       fileLoaded: false,
-      loadedFileName: '',
       expanded: false,
       gpx: null,
-      uploadError: false,
     }
-    this.describeGPX = describeGPX
-    this.handleDrag = this.handleDrag.bind(this)
-    this.handleDragIn = this.handleDragIn.bind(this)
-    this.handleDragOut = this.handleDragOut.bind(this)
-    this.handleDrop = this.handleDrop.bind(this)
-    this.readFiles = this.readFiles.bind(this)
-    this.returnParsedData = this.returnParsedData.bind(this)
-    this.parseFiles = this.parseFiles.bind(this)
-    this.clearFileLoad = this.clearFileLoad.bind(this)
-    this.handleExpandClick = this.handleExpandClick.bind(this)
-
     this.dropRef = React.createRef()
 
+  }
+
+  componentDidMount() {
+    this.dragCounter = 0
+    let e = this.dropRef.current
+    e.addEventListener('dragenter', this.handleDragIn)
+    e.addEventListener('dragleave', this.handleDragOut)
+    e.addEventListener('dragover', this.handleDrag)
+    e.addEventListener('drop', this.handleDrop)
+
+    //FOR TESTING ONLY
+    describeGPX(DummyGPX).then((res) => {
+      this.setState({
+        gpx: res,
+        fileLoaded: true,
+      })
+    }).catch(err => err /*TODO Add error message*/)
+  }
+
+  componentWillUnmount() {
+    let e = this.dropRef.current
+    e.removeEventListener('dragenter', this.handleDragIn)
+    e.removeEventListener('dragleave', this.handleDragOut)
+    e.removeEventListener('dragover', this.handleDrag)
+    e.removeEventListener('drop', this.handleDrop)
   }
 
   handleExpandClick = () => {
     this.setState(state => ({ expanded: !state.expanded }));
   };
+
   clearFileLoad = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.setState({ fileLoaded: false, gpx: { gpxData: {} }, loadedFileName: '' })
+    this.setState({ fileLoaded: false, gpx: { gpxData: {} }})
   }
-  parseFiles = (data)=>{
+
+  parseFiles = (data) => {
     return new Promise((resolve) => {
       if (parser.validate(data) === true) { 
         resolve(parser.parse(data, xmlOptions))
@@ -116,6 +129,7 @@ class Upload extends React.Component {
       }
     })
   }
+
   readFiles = (data) => {
     const reader = new FileReader();
     return new Promise((resolve, reject) => {
@@ -137,7 +151,7 @@ class Upload extends React.Component {
   returnParsedData = async (data) => {
     const readFiles = await this.readFiles(data);
     const parseFiles = await this.parseFiles(readFiles)
-    const describeGPX = await this.describeGPX(parseFiles.gpx)
+    const describeGPX = await describeGPX(parseFiles.gpx)
     return Promise.all([readFiles, parseFiles])
       .then(() => { return describeGPX })
   }
@@ -146,6 +160,7 @@ class Upload extends React.Component {
     e.preventDefault();
     e.stopPropagation();
   }
+
   handleDragIn = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -154,6 +169,7 @@ class Upload extends React.Component {
       this.setState({ dragging: true })
     }
   }
+
   handleDragOut = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -161,6 +177,7 @@ class Upload extends React.Component {
     if (this.dragCounter > 0) return
     this.setState({ dragging: false })
   }
+
   handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -172,7 +189,6 @@ class Upload extends React.Component {
         this.setState({ 
           fileLoaded: true, 
           gpx: res, 
-          loadedFileName: res.name 
         })
       }).catch(() => {
         e.dataTransfer.clearData()
@@ -183,9 +199,10 @@ class Upload extends React.Component {
   
   render() {
     const { classes } = this.props;
+    const { dragging, fileLoaded, gpx, expanded } = this.state
     return (
-      <div ref={this.dropRef} >
-        {this.state.dragging ? <div className={classes.uploadBgActive}></div> : ''}
+      <div ref={this.dropRef}>
+        {dragging ? <div className={classes.uploadBgActive} /> : ''}
         <Grid container justify="center" direction="row" id="uploadContainer">
           <Grid container alignContent="center" className={`${classes.wrapper}`}>
             <Grid container justify="center">
@@ -195,68 +212,67 @@ class Upload extends React.Component {
               <div>
                 <Card className={classes.card}>
                   <CardContent>
-                    {this.state.fileLoaded ?
-                      <Grid container justify="center" className={!this.state.fileLoaded ? classes.hide : ''}>
+                    {fileLoaded ? (
+                      <Grid container justify="center" className={!fileLoaded ? classes.hide : ''}>
                         <Grid item xs={10}>
-                          <Typography align="center" variant="body1" gutterBottom className={classes.bold}>
+                          <Typography align="center" gutterBottom className={classes.bold}>
                             File Uploaded Successfully!&nbsp;&nbsp;
                           </Typography>
-                          <Typography align="center" variant="body1" gutterBottom>
+                          <Typography align="center" gutterBottom>
                             From your GPX track, it looks like you went on a trip between
-                            {this.state.gpx.dateFirst ? format(parseISO(this.state.gpx.dateFirst), ' MMMM d, yyyy ') : ''}
+                            {gpx.dateFirst ? format(parseISO(gpx.dateFirst), ' MMMM d, yyyy ') : ''}
                             and
-                            {this.state.gpx.dateLast ? format(parseISO(this.state.gpx.dateLast), ' MMMM d, yyyy ') : ''}
-                            traveling over {this.state.gpx.days.length} days. If this looks slightly off, you will be able to update your data after uploading.
+                            {gpx.dateLast ? format(parseISO(gpx.dateLast), ' MMMM d, yyyy ') : ''}
+                            traveling over 
+                            {gpx.days.length} 
+                            days. If this looks slightly off, you will be able to update your data after uploading.
                           </Typography>
                         </Grid>
                       </Grid>
-                      :
-                      <Grid container justify="center" className={this.state.fileLoaded ? classes.hide : ''}>
-                        <Typography align="center" className={classes.title} variant="body1" gutterBottom>
-                          {this.state.dragging ? 'Drop here to upload files' : 'Drag a GPX track or waypoints here'}
-                        </Typography>
-                      </Grid>
-
-                    }
+                      ):(
+                        <Grid container justify="center" className={fileLoaded ? classes.hide : ''}>
+                          <Typography align="center" className={classes.title} gutterBottom>
+                            {dragging ? 'Drop here to upload files' : 'Drag a GPX track or waypoints here'}
+                          </Typography>
+                        </Grid>
+                    )}
                   </CardContent>
                   <CardActions>
                     <Grid container direction="column">
                       <Grid container justify="center">
-                        <Button variant="contained" color={this.state.fileLoaded ? 'primary' : 'default'} className={classes.button}>
+                        <Button variant="contained" color={fileLoaded ? 'primary' : 'default'} className={classes.button}>
                           Upload&nbsp;
                           <CloudUploadIcon className={classes.rightIcon} />
                         </Button>
-                        <Button variant="contained" color="secondary" className={classnames(classes.button, this.state.fileLoaded ? '' : classes.hide)} onClick={this.clearFileLoad}>
+                        <Button variant="contained" color="secondary" className={classnames(classes.button, fileLoaded ? '' : classes.hide)} onClick={this.clearFileLoad}>
                           Cancel&nbsp;
                           <DeleteIcon className={classes.rightIcon} />
                         </Button>
                       </Grid>
                     </Grid>
                   </CardActions>
-                  {this.state.fileLoaded ?
+                  {fileLoaded ?(
                     <Grid>
-                      <Grid container justify="center" direction="row" className={!this.state.fileLoaded ? classes.hide : ''}>
-                        <Typography variant="body2" align="center" style={{ alignSelf: 'center', paddingRight: '1em' }}>
+                      <Grid container justify="center" direction="row" className={!fileLoaded ? classes.hide : ''}>
+                        <Typography align="center" style={{ alignSelf: 'center', paddingRight: '1em' }}>
                           Click here to see/edit track details
-                          </Typography>
+                        </Typography>
                         <IconButton
                           className={classnames(classes.expand, {
-                            [classes.expandOpen]: this.state.expanded,
+                            [classes.expandOpen]: expanded,
                           })}
                           onClick={this.handleExpandClick}
-                          aria-expanded={this.state.expanded}
+                          aria-expanded={expanded}
                           aria-label="Show more"
                         >
                           <ExpandMoreIcon />
                         </IconButton>
                       </Grid>
-                      <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
-                        <TrackDetails gpx={this.state.gpx} />
+                      <Collapse in={expanded} timeout="auto" unmountOnExit>
+                        <TrackDetails gpx={gpx} />
                       </Collapse>
                     </Grid> 
-                    :
-                    ''
-                  }                
+                    ): ''}                
                 </Card>
               </div>
             </Grid>
@@ -265,38 +281,12 @@ class Upload extends React.Component {
       </div>
     );
   }
-  componentDidMount() {
-    this.dragCounter = 0
-    let e = this.dropRef.current
-    e.addEventListener('dragenter', this.handleDragIn)
-    e.addEventListener('dragleave', this.handleDragOut)
-    e.addEventListener('dragover', this.handleDrag)
-    e.addEventListener('drop', this.handleDrop)
-
-    //FOR TESTING ONLY
-    describeGPX(DummyGPX).then((res)=>{
-      console.log(res)
-      this.setState({
-        orginalData: DummyGPX,
-        gpx: res,
-        fileLoaded: true,
-        loadedFileName: 'Track_AA18-06-18 112218.gpx',
-      })
-    }).catch(err=>err /*TODO Add error message*/)
-  }
-
-  componentWillUnmount() {
-    let e = this.dropRef.current
-    e.removeEventListener('dragenter', this.handleDragIn)
-    e.removeEventListener('dragleave', this.handleDragOut)
-    e.removeEventListener('dragover', this.handleDrag)
-    e.removeEventListener('drop', this.handleDrop)
-  }
-
 }
 
 Upload.propTypes = {
-  classes: PropTypes.object,
+  classes: PropTypes.shape({
+
+  }).isRequired,
 }
 
 export default withStyles(styles)(Upload);

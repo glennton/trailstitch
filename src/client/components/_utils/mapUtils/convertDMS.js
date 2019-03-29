@@ -1,22 +1,27 @@
+//Accepts coordinates as (lat, lng)
 const toDegreesMinutesAndSeconds = (coordinate) => {
-  var absolute = Math.abs(coordinate);
-  var degrees = Math.floor(absolute);
-  var minutesNotTruncated = (absolute - degrees) * 60;
-  var minutes = Math.floor(minutesNotTruncated);
-  var seconds = Math.floor((minutesNotTruncated - minutes) * 60);
+  const absolute = Math.abs(coordinate);
+  const degrees = Math.floor(absolute);
+  const minutesNotTruncated = (absolute - degrees) * 60;
+  const minutes = Math.floor(minutesNotTruncated);
+  const seconds = Math.floor((minutesNotTruncated - minutes) * 60);
   return `${degrees}|${minutes}|${seconds}`
 }
 
 const convertDMS = (lat, lng) => {
-  var latitude = toDegreesMinutesAndSeconds(lat);
-  var latitudeCardinal = Math.sign(lat) >= 0 ? "N" : "S";
+  if (lat && lng && typeof(lat) === 'number' && typeof(lng) === 'number') {
+    const latitude = toDegreesMinutesAndSeconds(lat);
+    const latitudeCardinal = Math.sign(lat) >= 0 ? "N" : "S";
 
-  var longitude = toDegreesMinutesAndSeconds(lng);
-  var longitudeCardinal = Math.sign(lng) >= 0 ? "E" : "W";
+    const longitude = toDegreesMinutesAndSeconds(lng);
+    const longitudeCardinal = Math.sign(lng) >= 0 ? "E" : "W";
 
-  return {
-    lat: `${latitude}|${latitudeCardinal}`,
-    lng: `${longitude}|${longitudeCardinal}`
+    return {
+      lat: `${latitude}|${latitudeCardinal}`,
+      lng: `${longitude}|${longitudeCardinal}`
+    }
+  }else{
+    return null
   }
 }
 

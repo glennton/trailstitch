@@ -36,10 +36,7 @@ class MainNav extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      top: false,
       left: false,
-      bottom: false,
-      right: false
     }
     this.navLinks = this.slides = DummyData(['pageNavItems']).pageNavItems
     this.toggleDrawer = this.toggleDrawer.bind(this)
@@ -56,37 +53,39 @@ class MainNav extends React.Component{
   makeNavLinks(){
     const {classes} = this.props
     return(
-      this.navLinks.map((e, i) =>
-        <Button key={`topNav-${i}`}>
+      this.navLinks.map((e) =>(
+        <Button key={`topNav-${e.linkName}`}>
           <NavLink className={classes.mainNavLink} to={e.linkPath}>{e.linkName}</NavLink>
         </Button>
-      )
+      ))
     )
   }
 
   makeMobileNavLinks() {
     return (
-      this.navLinks.map((e, i) =>
-        <ListItem button key={`mobileNav-${i}`}>
+      this.navLinks.map((e) => (
+        <ListItem button key={`mobileNav-${e.linkName}`}>
           <ListItemIcon><MailIcon /></ListItemIcon>
-          <ListItemText primary={e.linkName}/>
+          <ListItemText primary={e.linkName} />
         </ListItem>
-      )
+      ))
     )
   }
 
   render(){
+    const { classes } = this.props
+    const { left } = this.state
     return (
-      <div id="NavBarContainer" className={`${this.props.classes.navBarContainer}`}>
-        <AppBar position="static" className={`${this.props.classes.mainNavigation}`}>
+      <div id="NavBarContainer" className={`${classes.navBarContainer}`}>
+        <AppBar position="static" className={`${classes.mainNavigation}`}>
           <Toolbar>
             <IconButton color="inherit" aria-label="Menu" onClick={this.toggleDrawer('left', true)}>
-              <MenuIcon/>
+              <MenuIcon />
             </IconButton>
             {this.makeNavLinks()}
           </Toolbar>
         </AppBar>
-        <Drawer open={this.state.left} onClose={this.toggleDrawer('left', false)}>
+        <Drawer open={left} onClose={this.toggleDrawer('left', false)}>
           <div
             tabIndex={0}
             role="button"
@@ -104,7 +103,9 @@ class MainNav extends React.Component{
 }
 
 MainNav.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.shape({
+
+  }).isRequired
 }
 
 export default withStyles(styles)(MainNav);

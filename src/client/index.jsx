@@ -6,7 +6,11 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import App from './components/App';
 
-const defaultTheme = createMuiTheme();
+const defaultTheme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  }
+});
 const theme = createMuiTheme({
   typography: {
     useNextVariants: true,

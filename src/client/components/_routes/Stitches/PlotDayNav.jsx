@@ -91,7 +91,7 @@ class PlotDayNav extends React.Component {
           return (
             <button 
               type="button"
-              key={`day-bar-${i}`} 
+              key={`date-${e.date}`} 
               data-index={`${i}`} 
               onClick={this.setActiveDay} 
               className={classNames(classes.day, isActive ? classes.dayActive : '')} 
@@ -115,7 +115,11 @@ PlotDayNav.propTypes = {
   gpx: PropTypes.shape({
 
   }).isRequired,
-  setPlotDayIndex: PropTypes.func.isRequired,
+  setPlotDayIndex: PropTypes.func,
+}
+
+PlotDayNav.defaultProps = {
+  setPlotDayIndex: null
 }
 
 export default withStyles(styles)(PlotDayNav);

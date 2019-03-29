@@ -92,22 +92,20 @@ class StitchEditor extends React.Component {
   render() {
     const { classes } = this.props
     const { dataLoaded, pointData, gpx, unmappedStateCount } = this.state
-    const { points } = pointData
-    const { name } = gpx
     //Count Unmapped Points
     return (
       <Grid container direction="column" className={classNames(classes.wrapper, ``)}> 
         <Grid>
-          { dataLoaded ? <Map waypoints={points} gpx={gpx} /> : ''}
+          {dataLoaded ? <Map waypoints={pointData.points} gpx={gpx} /> : ''}
         </Grid>
         <Grid container>
           <Typography>
             Loaded Data : 
-            {dataLoaded ? name : 'Loading'}
+            {dataLoaded ? gpx.name : 'Loading'}
           </Typography>
           <Typography>
             Points Loaded : 
-            {dataLoaded ? points.length : 'Loading'}
+            {dataLoaded ? pointData.points.length : 'Loading'}
           </Typography>
         </Grid>
         <Grid container>
