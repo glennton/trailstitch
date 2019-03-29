@@ -174,7 +174,7 @@ const DummyStitch = {
         "time": "2018-06-16T22:38:40Z"
       }
     }, {
-      "date": "2018-06-16",
+      "date": "2018-06-17",
       "indexStart": 114,
       "indexEnd": 243,
       "track": [
@@ -336,7 +336,7 @@ const DummyStitch = {
         "time": "2018-06-17T23:35:12Z"
       }
     }, {
-      "date": "2018-06-17",
+      "date": "2018-06-18",
       "indexStart": 244,
       "indexEnd": 370,
       "track": [
@@ -498,7 +498,7 @@ const DummyStitch = {
   "totalDistance": 33.83,
   "dayCount": 3,
   "dateFirst": "2018-06-16",
-  "dateLast": "2018-06-17",
+  "dateLast": "2018-06-18",
   "trackPtCount": 371,
   "centralCoords": {
     "lat": 37.70322386865697,

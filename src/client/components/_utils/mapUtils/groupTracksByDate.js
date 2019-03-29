@@ -13,15 +13,13 @@ const groupTracksByDate = (data) => {
     nextKey = data[i + 1] ? data[i + 1].time.split("T").shift() : null
     
     if (i === 0) {
-      
       //Push first item into array
       daysArr.push({ date: currentKey, indexStart: i, indexEnd: null })
 
     } else if (currentKey !== nextKey) {
-
       //Set end index for current key, start new object for next key (if not end of array)
       if (nextKey) {
-        daysArr.push({ date: currentKey, indexStart: (i + 1), indexEnd: null })
+        daysArr.push({ date: nextKey, indexStart: (i + 1), indexEnd: null })
       }
 
       //Set End Date

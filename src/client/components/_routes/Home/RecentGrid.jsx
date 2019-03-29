@@ -73,35 +73,37 @@ class RecentGrid extends React.Component {
   }
   
   makeCards(){
+    const { classes } = this.props
+    const { expanded } = this.state
     return (
-      this.cards.map((e, i) =>
+      this.cards.map((e, i) => (
         <Grid item xs={12} sm={6} md={4} key={`recent-grid-card-${i}`}>
           <Card>
             <CardHeader
-              avatar={
-                <Avatar aria-label="Recipe" className={this.props.classes.avatar}>
+              avatar={(
+                <Avatar aria-label="Recipe" className={classes.avatar}>
                   R
-              </Avatar>
-              }
-              action={
+                </Avatar>
+              )}
+              action={(
                 <IconButton>
                   <MoreVertIcon />
                 </IconButton>
-              }
+              )}
               title={e.locName}
               subheader="September 14, 2016"
             />
             <CardMedia
-              className={this.props.classes.media}
+              className={classes.media}
               image={`${e.imgUrl}`}
               title="Paella dish"
             />
             <CardContent>
               <Typography component="p">
                 {e.subText}
-            </Typography>
+              </Typography>
             </CardContent>
-            <CardActions className={this.props.classes.actions} disableActionSpacing>
+            <CardActions className={classes.actions} disableActionSpacing>
               <IconButton aria-label="Add to favorites">
                 <FavoriteIcon />
               </IconButton>
@@ -109,23 +111,23 @@ class RecentGrid extends React.Component {
                 <ShareIcon />
               </IconButton>
               <IconButton
-                className={classnames(this.props.classes.expand, {
-                  [this.props.classes.expandOpen]: this.state.expanded,
+                className={classnames(classes.expand, {
+                  [classes.expandOpen]: expanded,
                 })}
                 onClick={this.handleExpandClick}
-                aria-expanded={this.state.expanded}
+                aria-expanded={expanded}
                 aria-label="Show more"
               >
                 <ExpandMoreIcon />
               </IconButton>
             </CardActions>
-            <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
               <CardContent>
                 <Typography paragraph>Method:</Typography>
                 <Typography paragraph>
                   Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
                   minutes.
-              </Typography>
+                </Typography>
                 <Typography paragraph>
                   Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high
                   heat. Add chicken, shrimp and chorizo, and cook, stirring occasionally until lightly
@@ -133,21 +135,22 @@ class RecentGrid extends React.Component {
                   chicken and chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion,
                   salt and pepper, and cook, stirring often until thickened and fragrant, about 10
                   minutes. Add saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-              </Typography>
+                </Typography>
                 <Typography paragraph>
                   Add rice and stir very gently to distribute. Top with artichokes and peppers, and cook
                   without stirring, until most of the liquid is absorbed, 15 to 18 minutes. Reduce heat
                   to medium-low, add reserved shrimp and mussels, tucking them down into the rice, and
                   cook again without stirring, until mussels have opened and rice is just tender, 5 to 7
                   minutes more. (Discard any mussels that don’t open.)
-              </Typography>
+                </Typography>
                 <Typography>
                   Set aside off of the heat to let rest for 10 minutes, and then serve.
-              </Typography>
+                </Typography>
               </CardContent>
             </Collapse>
           </Card>
         </Grid>
+        )
       )
     )
   }
@@ -168,8 +171,9 @@ class RecentGrid extends React.Component {
 }
 
 RecentGrid.propTypes = {
-  classes: PropTypes.object,
-  classnames: PropTypes.string
+  classes: PropTypes.shape({
+
+  }).isRequired,
 }
 
 export default withStyles(styles)(RecentGrid);

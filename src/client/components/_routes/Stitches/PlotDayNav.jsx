@@ -55,13 +55,20 @@ class PlotDayNav extends React.Component {
     this.state = {
       activeIndex: null
     }
-    this.setPlotDayIndex = this.props.setPlotDayIndex
-    this.setActiveDay = this.setActiveDay.bind(this)
+ }
+  componentDidMount() {
+    const { gpx } = this.props
+    this.setState({
+      dataLoaded: true,
+      gpx: gpx,
+    })
   }
 
-  setActiveDay(e){
+  setActiveDay = (e) => {
+    const { setPlotDayIndex } = this.props 
+    const { activeIndex } = this.state
     const index = parseInt(e.currentTarget.dataset.index)
-    if (index === this.state.activeIndex){
+    if (index === activeIndex){
       this.setState({
         activeIndex: false
       })
@@ -69,42 +76,46 @@ class PlotDayNav extends React.Component {
       this.setState({
         activeIndex: index
       })
-      this.setPlotDayIndex(index)
+      setPlotDayIndex(index)
     }
   }
 
   render() {
     const { classes } = this.props;
+    const { dataLoaded, gpx, activeIndex } = this.state
     return (
       <Grid className={classes.dayContainer}>
-        {this.state.dataLoaded ? this.state.gpx.days.map((e, i) => {
-          const width = e.distance / this.state.gpx.totalDistance * 100
-          const isActive = this.state.activeIndex === i
+        {dataLoaded ? gpx.days.map((e, i) => {
+          const width = e.distance / gpx.totalDistance * 100
+          const isActive = activeIndex === i
           return (
-            <div key={`day-bar-${i}`} data-index={`${i}`} onClick={this.setActiveDay} className={classNames(classes.day, isActive ? classes.dayActive : '')} style={{ width: `${width}%` }}>
+            <button 
+              type="button"
+              key={`day-bar-${i}`} 
+              data-index={`${i}`} 
+              onClick={this.setActiveDay} 
+              className={classNames(classes.day, isActive ? classes.dayActive : '')} 
+              style={{ width: `${width}%` }} 
+            >
               <Grid container justify="center">
                 <Typography className={classNames(classes.dayText, isActive ? classes.dayActiveText : '')}>{e.date}</Typography>
               </Grid>
-            </div>
+            </button>
           )
-        })
-        :''
-        }
+        }): '' }
       </Grid>
     );
-  }
-  componentDidMount() {
-    this.setState({
-      dataLoaded: true,
-      gpx: this.props.gpx,
-    })
   }
 }
 
 PlotDayNav.propTypes = {
-  classes: PropTypes.object,
-  gpx: PropTypes.object,
-  setPlotDayIndex: PropTypes.func,
+  classes: PropTypes.shape({
+
+  }).isRequired,
+  gpx: PropTypes.shape({
+
+  }).isRequired,
+  setPlotDayIndex: PropTypes.func.isRequired,
 }
 
 export default withStyles(styles)(PlotDayNav);

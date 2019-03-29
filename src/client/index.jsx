@@ -43,7 +43,7 @@ const theme = createMuiTheme({
       fontWeight: 400,
       letterSpacing: ` 0.05em`
     }
-  }
+  },
 });
 
 ReactDOM.render(

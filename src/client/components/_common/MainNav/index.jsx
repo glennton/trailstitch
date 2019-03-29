@@ -22,12 +22,14 @@ const styles = theme => ({
     }
   },
   mainNavigation: {
-    background: 'rgba(0, 0, 0, 1)',
-    [theme.breakpoints.up('sm')]: {
-       background: 'rgba(0, 0, 0, 1)',
-    },
+    background: theme.palette.primary.dark,
     marginBottom: theme.spacing.unit * 4,
+  },
+  mainNavLink:{
+    color: `#fff`,
+    textDecoration: `none`,
   }
+  
 })
 
 class MainNav extends React.Component{  
@@ -52,10 +54,11 @@ class MainNav extends React.Component{
   }
   
   makeNavLinks(){
+    const {classes} = this.props
     return(
       this.navLinks.map((e, i) =>
         <Button key={`topNav-${i}`}>
-          <NavLink to={e.linkPath}>{e.linkName}</NavLink>
+          <NavLink className={classes.mainNavLink} to={e.linkPath}>{e.linkName}</NavLink>
         </Button>
       )
     )

@@ -43,15 +43,12 @@ class About extends React.Component {
       </Grid>
     );
   }
-  componentDidMount() {
-    this.setState({
-      //
-    })
-  }
 }
 
 About.propTypes = {
-  classes: PropTypes.object,
+  classes: PropTypes.shape({
+
+  }).isRequired,
 }
 
 export default withStyles(styles)(About);

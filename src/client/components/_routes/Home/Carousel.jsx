@@ -97,9 +97,9 @@ class Carousel extends React.Component {
   renderSlides(){
     const { classes } = this.props;
     return (
-      this.slides.map( (e,i) =>
+      this.slides.map( (e,i) =>(
         <Grid container key={`slide-${i}`} className={`${classes.carouselSlide}`}>
-          <Grid container className={`${classes.carouselBgContent}`} style={{backgroundImage : `url(${e.imgUrl})`}}></Grid>
+          <Grid container className={`${classes.carouselBgContent}`} style={{backgroundImage : `url(${e.imgUrl})`}} />
           <Grid container className={`${classes.slideContent}`}>
             <Grid container className="wrapper" direction="row">
               <Grid container className={`${classes.slideTextContent}`}>
@@ -110,35 +110,59 @@ class Carousel extends React.Component {
                   <Grid item sm={10}>
                     <Typography component="h2" variant="h2" align="center" className={classNames(classes.locationHeader, 'txt-white')}>{e.locName}</Typography>
                     <ParseCoords coords={e.locCoords} styles={{ color: `#fff` }} className={`${classes.coordContainer}`} />
-                    <Typography variant="h6" className={`txt-white`} align="center">{e.subText}</Typography>
+                    <Typography variant="h6" className="txt-white" align="center">{e.subText}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
-      )
+      ))
     )
   }
   renderSlideFeatures({gpsTrax = false, pictures = false, blogNotes = false}){
     const { classes } = this.props;
     return (
       <Grid container className={`${classes.slideFeatures}`} justify="center" direction="row">
-        { gpsTrax ? <Grid item className={`${classes.featureItem}`}><Icon className={`${classes.featureIcons}`}>directions</Icon><Typography variant="caption" align="center" className={`${classes.featureTitle} txt-white`}>GPS Tracks</Typography></Grid> : '' }
-        { pictures ? <Grid item className={`${classes.featureItem}`}><Icon className={`${classes.featureIcons}`}>camera_alt</Icon><Typography variant="caption" align="center" className={`${classes.featureTitle} txt-white`}>Photo Album</Typography></Grid> : '' }
-        { blogNotes ? <Grid item className={`${classes.featureItem}`}><Icon className={`${classes.featureIcons}`}>directions</Icon><Typography variant="caption" align="center" className={`${classes.featureTitle} txt-white`}>blogNotes</Typography></Grid> : '' }
+        { gpsTrax ? (
+          <Grid item className={`${classes.featureItem}`}>
+            <Icon className={`${classes.featureIcons}`}>
+              directions
+            </Icon>
+            <Typography variant="caption" align="center" className={`${classes.featureTitle} txt-white`}>
+              GPS Tracks
+            </Typography>
+          </Grid> 
+        ): '' }
+        { pictures ? (
+          <Grid item className={`${classes.featureItem}`}>
+            <Icon className={`${classes.featureIcons}`}>camera_alt</Icon>
+            <Typography variant="caption" align="center" className={`${classes.featureTitle} txt-white`}>
+              Photo Album
+            </Typography>
+          </Grid> 
+        ): '' }
+        { blogNotes ? (
+          <Grid item className={`${classes.featureItem}`}>
+            <Icon className={`${classes.featureIcons}`}>
+              directions
+            </Icon>
+            <Typography variant="caption" align="center" className={`${classes.featureTitle} txt-white`}>
+              blogNotes
+            </Typography>
+          </Grid> 
+        ): '' }
       </Grid>
     )
   }
   render() {
-    const { classes } = this.props;
-    console.log(this.props)
+    const { classes, className } = this.props;
     return (
-      <Grid container className={classNames(this.props.className, `txt-white`)}>
+      <Grid container className={classNames(className, `txt-white`)}>
         <Slider carouselId="featured-carousel" ref={(instance)=>{this.featureCarousel = instance}}>
           {this.renderSlides()}
         </Slider>
-        <Grid container justify="space-between" className={`${classes.carouselNav}`} >
+        <Grid container justify="space-between" className={`${classes.carouselNav}`}>
           <Grid item onClick={() => { this.featureCarousel.prevSlide() }}><Icon className={classes.carouselNavArrowsIcons}>keyboard_arrow_left</Icon></Grid>
           <Grid item onClick={() => { this.featureCarousel.nextSlide() }}><Icon className={classes.carouselNavArrowsIcons}>keyboard_arrow_right</Icon></Grid>        
         </Grid>
@@ -148,8 +172,10 @@ class Carousel extends React.Component {
 }
 
 Carousel.propTypes = {
-  classes: PropTypes.object.isRequired,
-  className: PropTypes.string,
+  classes: PropTypes.shape({
+
+  }).isRequired,
+  className: PropTypes.string.isRequired,
 }
 
 export default withStyles(styles)(Carousel);

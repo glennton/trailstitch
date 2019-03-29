@@ -66,6 +66,10 @@ const data = {
       linkPath: `/upload`
       },
     {
+      linkName: `editor`,
+      linkPath: `/editor`
+    },
+    {
       linkName: `account`,
       linkPath: `/account`
     }

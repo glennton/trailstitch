@@ -21,27 +21,23 @@ const styles = () => ({
   }
 })
 
-class Home extends React.Component {
-  constructor(props) {
-    super(props);
-  } 
-
-  render() {
-    const { classes } = this.props;
-    return (
-      <Grid container>
-        <Carousel className={`${classes.carouselContainer}`}/>
-        <Grid container justify="center" direction="row">
-          <About />
-          <RecentGrid />
-        </Grid>
-      </Grid>  
-    );
-  }
+function Home (props){
+  const { classes } = props;
+  return (
+    <Grid container>
+      <Carousel className={`${classes.carouselContainer}`} />
+      <Grid container justify="center" direction="row">
+        <About />
+        <RecentGrid />
+      </Grid>
+    </Grid>  
+  );
 }
 
 Home.propTypes = {
-  classes: PropTypes.object,
+  classes: PropTypes.shape({
+
+  }).isRequired,
 }
 
 export default withStyles(styles)(Home);

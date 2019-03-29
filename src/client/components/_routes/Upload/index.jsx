@@ -43,8 +43,14 @@ const styles = theme => ({
     maxWidth: theme.breakpoints.values.lg,
     marginBottom: `3em`,
   },
-  draggingBg: {
-    background: `rgba(0,0,0,.5)`,
+  uploadBgActive: {
+    position: `fixed`,
+    top: 0,
+    left: 0,
+    height: `100%`,
+    width: `100%`,
+    background: theme.palette.secondary.main,
+    zIndex: 9999,
   },
   card: {
     width: `100%`,
@@ -88,14 +94,9 @@ class Upload extends React.Component {
     this.parseFiles = this.parseFiles.bind(this)
     this.clearFileLoad = this.clearFileLoad.bind(this)
     this.handleExpandClick = this.handleExpandClick.bind(this)
-    this.test = this.test.bind(this)
 
     this.dropRef = React.createRef()
 
-  }
-  test=()=>{
-    console.log(this.state.gpx)
-    
   }
 
   handleExpandClick = () => {
@@ -183,82 +184,85 @@ class Upload extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Grid container justify="center" direction="row" id="uploadContainer" className={this.state.dragging ? classes.draggingBg : ''}>
-        <Grid container alignContent="center" className={`${classes.wrapper}`}>
-          <Grid container justify="center">
-            <Typography paragraph variant="h5">Upload a new GPX File</Typography>
-          </Grid>
-          <Grid container justify="center">
-            <div ref={this.dropRef}>
-              <Card className={classes.card}>
-                <CardContent>
-                  {this.state.fileLoaded ?
-                    <Grid container justify="center" className={!this.state.fileLoaded ? classes.hide : ''}>
-                      <Grid item xs={10}>
-                        <Typography align="center" variant="body1" gutterBottom className={classes.bold}>
-                          File Uploaded Successfully!&nbsp;&nbsp;
-                        </Typography>
-                        <Typography align="center" variant="body1" gutterBottom>
-                          From your GPX track, it looks like you went on a trip between
-                          {this.state.gpx.dateFirst ? format(parseISO(this.state.gpx.dateFirst), ' MMMM d, yyyy ') : ''}
-                          and
-                          {this.state.gpx.dateLast ? format(parseISO(this.state.gpx.dateLast), ' MMMM d, yyyy ') : ''}
-                          traveling over {this.state.gpx.days.length} days. If this looks slightly off, you will be able to update your data after uploading.
+      <div ref={this.dropRef} >
+        {this.state.dragging ? <div className={classes.uploadBgActive}></div> : ''}
+        <Grid container justify="center" direction="row" id="uploadContainer">
+          <Grid container alignContent="center" className={`${classes.wrapper}`}>
+            <Grid container justify="center">
+              <Typography paragraph variant="h5">Upload a new GPX File</Typography>
+            </Grid>
+            <Grid container justify="center">
+              <div>
+                <Card className={classes.card}>
+                  <CardContent>
+                    {this.state.fileLoaded ?
+                      <Grid container justify="center" className={!this.state.fileLoaded ? classes.hide : ''}>
+                        <Grid item xs={10}>
+                          <Typography align="center" variant="body1" gutterBottom className={classes.bold}>
+                            File Uploaded Successfully!&nbsp;&nbsp;
+                          </Typography>
+                          <Typography align="center" variant="body1" gutterBottom>
+                            From your GPX track, it looks like you went on a trip between
+                            {this.state.gpx.dateFirst ? format(parseISO(this.state.gpx.dateFirst), ' MMMM d, yyyy ') : ''}
+                            and
+                            {this.state.gpx.dateLast ? format(parseISO(this.state.gpx.dateLast), ' MMMM d, yyyy ') : ''}
+                            traveling over {this.state.gpx.days.length} days. If this looks slightly off, you will be able to update your data after uploading.
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                      :
+                      <Grid container justify="center" className={this.state.fileLoaded ? classes.hide : ''}>
+                        <Typography align="center" className={classes.title} variant="body1" gutterBottom>
+                          {this.state.dragging ? 'Drop here to upload files' : 'Drag a GPX track or waypoints here'}
                         </Typography>
                       </Grid>
-                    </Grid>
-                    :
-                    <Grid container justify="center" className={this.state.fileLoaded ? classes.hide : ''}>
-                      <Typography align="center" className={classes.title} variant="body1" gutterBottom>
-                        {this.state.dragging ? 'Drop here to upload files' : 'Drag a GPX track or waypoints here'}
-                      </Typography>
-                    </Grid>
 
-                  }
-                </CardContent>
-                <CardActions>
-                  <Grid container direction="column">
-                    <Grid container justify="center">
-                      <Button variant="contained" color={this.state.fileLoaded ? 'primary' : 'default'} className={classes.button}>
-                        Upload&nbsp;
-                        <CloudUploadIcon className={classes.rightIcon} />
-                      </Button>
-                      <Button variant="contained" color="secondary" className={classnames(classes.button, this.state.fileLoaded ? '' : classes.hide)} onClick={this.clearFileLoad}>
-                        Cancel&nbsp;
-                        <DeleteIcon className={classes.rightIcon} />
-                      </Button>
+                    }
+                  </CardContent>
+                  <CardActions>
+                    <Grid container direction="column">
+                      <Grid container justify="center">
+                        <Button variant="contained" color={this.state.fileLoaded ? 'primary' : 'default'} className={classes.button}>
+                          Upload&nbsp;
+                          <CloudUploadIcon className={classes.rightIcon} />
+                        </Button>
+                        <Button variant="contained" color="secondary" className={classnames(classes.button, this.state.fileLoaded ? '' : classes.hide)} onClick={this.clearFileLoad}>
+                          Cancel&nbsp;
+                          <DeleteIcon className={classes.rightIcon} />
+                        </Button>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                </CardActions>
-                {this.state.fileLoaded ?
-                  <Grid>
-                    <Grid container justify="center" direction="row" className={!this.state.fileLoaded ? classes.hide : ''}>
-                      <Typography variant="body2" align="center" style={{ alignSelf: 'center', paddingRight: '1em' }}>
-                        Click here to see/edit track details
-                        </Typography>
-                      <IconButton
-                        className={classnames(classes.expand, {
-                          [classes.expandOpen]: this.state.expanded,
-                        })}
-                        onClick={this.handleExpandClick}
-                        aria-expanded={this.state.expanded}
-                        aria-label="Show more"
-                      >
-                        <ExpandMoreIcon />
-                      </IconButton>
-                    </Grid>
-                    <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
-                      <TrackDetails gpx={this.state.gpx} />
-                    </Collapse>
-                  </Grid> 
-                  :
-                  ''
-                }                
-              </Card>
-            </div>
+                  </CardActions>
+                  {this.state.fileLoaded ?
+                    <Grid>
+                      <Grid container justify="center" direction="row" className={!this.state.fileLoaded ? classes.hide : ''}>
+                        <Typography variant="body2" align="center" style={{ alignSelf: 'center', paddingRight: '1em' }}>
+                          Click here to see/edit track details
+                          </Typography>
+                        <IconButton
+                          className={classnames(classes.expand, {
+                            [classes.expandOpen]: this.state.expanded,
+                          })}
+                          onClick={this.handleExpandClick}
+                          aria-expanded={this.state.expanded}
+                          aria-label="Show more"
+                        >
+                          <ExpandMoreIcon />
+                        </IconButton>
+                      </Grid>
+                      <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+                        <TrackDetails gpx={this.state.gpx} />
+                      </Collapse>
+                    </Grid> 
+                    :
+                    ''
+                  }                
+                </Card>
+              </div>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </div>
     );
   }
   componentDidMount() {

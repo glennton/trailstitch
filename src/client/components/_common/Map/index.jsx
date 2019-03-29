@@ -30,7 +30,8 @@ class Map extends React.Component {
     this.state = {
       dataLoaded: false,
       activeDay: null, 
-      activePlot: null
+      activePlot: null,
+      waypointsMarkers: []
     }
     this.placeIcon = {
       path: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
@@ -39,6 +40,7 @@ class Map extends React.Component {
       strokeWeight: 0,
       scale: 1
     }
+    this.renderWayPoints = this.renderWayPoints.bind(this)
     this.renderActiveMarker = this.renderActiveMarker.bind(this)
     this.renderActivePolyLine = this.renderActivePolyLine.bind(this)
     this.handleApiLoaded = this.handleApiLoaded.bind(this)
@@ -46,7 +48,39 @@ class Map extends React.Component {
     //Map Functions
     this.renderTrailStartMarkers = this.renderTrailStartMarkers.bind(this)
   }
+  renderWayPoints(){
+    const { map, maps } = this.state
+    //Render only if active plot is set
+    console.log('render', this.state.waypoints)
+    if (this.state.waypoints) {
+      console.log('render', this.state.waypoints)
 
+      //First Remove any existing markers
+      if (this.state.waypointsMarkers) {
+        this.state.waypointsMarkers.map((e, i)=>{
+          e.setMap(null)
+        })
+      }
+      //Make new markers
+      let newMarkers = []
+      this.state.waypoints.map((e,i)=>{
+        console.log(e)
+        const Marker = maps.Marker
+        const placeIcon = { ...this.placeIcon }
+        placeIcon.anchor = new maps.Point(14, 25)
+        const activePoint = new Marker({
+          id: 'plotMarker',
+          position: {lat: e.lat, lng: e.lng},
+          icon: placeIcon,
+        })
+        newMarkers.push(activePoint)
+        activePoint.setMap(map)
+      })
+      this.setState({
+        waypointsMarkers: newMarkers
+      })
+    }
+  }
   renderPolyLines(){
     const {days, map, maps} = this.state
     const Polyline = maps.Polyline
@@ -116,7 +150,6 @@ class Map extends React.Component {
     days.map((e, i) => {
       const startCoords = { lat: e.trackPtStart.lat, lng: e.trackPtStart.lng}
       const endCoords = { lat: e.trackPtEnd.lat, lng: e.trackPtEnd.lng }
-      console.log('marker', startCoords, endCoords)
       const startPoint = new Marker({
         position: startCoords,
         icon: placeIcon,
@@ -168,11 +201,13 @@ class Map extends React.Component {
   }
   componentDidMount() {
     const { days, name, centralCoords } = this.props.gpx
+    const { points } = this.props.waypoints || []
     this.setState({
       dataLoaded: true,
       name: name,
       centralCoords: centralCoords,
-      days: days
+      days: days,
+      waypoints: points
     })
   }
 
@@ -182,9 +217,19 @@ class Map extends React.Component {
       this.setState({
         activePlot: { lat: currentPlot.lat, lng: currentPlot.lng },
         nextActivePlot: { lat: nextPlot.lat, lng: nextPlot.lng }
+      }, ()=>{
+        //Update map after new props are set
+        this.renderActiveMarker()
+        this.renderActivePolyLine()
       })
-      this.renderActiveMarker()
-      this.renderActivePolyLine()
+    }
+    if (this.props.waypoints != prevProps.waypoints) {
+      this.setState({
+        waypoints: this.props.waypoints || ''
+      },()=>{
+        //Update map after new props are set
+        this.renderWayPoints()
+      })
     }
   }
 
@@ -194,6 +239,7 @@ Map.propTypes = {
   classes: PropTypes.object,
   gpx: PropTypes.object,
   plot: PropTypes.object,
+  waypoints: PropTypes.array,
 }
 
 export default withStyles(styles)(Map);

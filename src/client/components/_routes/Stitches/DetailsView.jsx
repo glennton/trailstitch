@@ -12,7 +12,7 @@ import DummyData from 'Utils/DummyData'
 //Utils
 
 //Components
-import TrackInfoCard from 'Common/TrackInfoCard'
+
 const styles = theme => ({
   wrapper: {
     width: `100%`,
@@ -30,35 +30,36 @@ class DetailsView extends React.Component {
     this.slides = DummyData(['slides']).slides
     this.renderElevation = this.renderElevation.bind(this)
   }
-
-
+  componentDidMount() {
+    this.setState({
+      dataLoaded: true,
+    })
+  }
   renderElevation(){
     return (
-      <Grid></Grid>
+      <Grid>
+        Test
+      </Grid>
     )
   }
   render() {
     //const { classes } = this.props;
+    const { dataLoaded } = this.state
     return (
       <Grid container direction="row"> 
-        {this.state.dataLoaded ? this.renderElevation():''}
+        {dataLoaded ? this.renderElevation():''}
       </Grid>
     );
-  }
-  componentDidMount() {
-    const { days, name, centralCoords } = this.props.gpx
-    this.setState({
-      dataLoaded: true,
-      name: name,
-      centralCoords: centralCoords,
-      days: days
-    })
   }
 }
 
 DetailsView.propTypes = {
-  classes: PropTypes.object,
-  gpx: PropTypes.object,
+  classes: PropTypes.shape({
+
+  }).isRequired,
+  gpx: PropTypes.shape({
+
+  }).isRequired,
 }
 
 export default withStyles(styles)(DetailsView);

@@ -8,7 +8,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 
 //Development Data
-import { Typography } from '@material-ui/core';
 
 //Utils
 
@@ -71,48 +70,72 @@ class Plot extends React.Component {
     super(props);
     this.state = {
       dataLoaded: false,
-      activePlot: null,
-      plotScope: 'all', //'all, or index of day',
       allPlots: null
     }
-    this.plotAll = this.plotAll.bind(this)
-    this.plotDay = this.plotDay.bind(this)
-    this.renderPlots = this.renderPlots.bind(this)
-    this.setActiveTrackPortion = this.setActiveTrackPortion.bind(this)
-    this.setPlot = this.props.setPlot
   }
 
-  setActiveTrackPortion(e) {
+  componentDidMount() {
+    const { gpx } = this.props
+    this.setState({
+      dataLoaded: true,
+      allPlots: this.plotAll(gpx)
+    })
+  }
+
+  componentDidUpdate(prevProps) {
+    const { plotDayIndex, gpx} = this.props
+    if (plotDayIndex != prevProps.plotDayIndex) {
+      if (plotDayIndex !== false) {
+        this.setState({
+          allPlots: this.plotDay(gpx.days[plotDayIndex]),
+        })
+      } else {
+        this.setState({
+          allPlots: this.plotAll(gpx),
+        })
+      }
+    }
+  }
+
+  setActiveTrackPortion = (e) => {
+    const { setPlot } = this.props
+    const { allPlots } = this.state
     const plotIndex = parseInt(e.currentTarget.dataset.index)
-    this.setPlot({currentPlot: this.state.allPlots[plotIndex], nextPlot: this.state.allPlots[plotIndex+1]})
+    setPlot({currentPlot: allPlots[plotIndex], nextPlot: allPlots[plotIndex+1]})
     //console.log(this.state)
   }
 
-  renderPlots(){
+  renderPlots = () => {
     const { classes } = this.props;
+    const { allPlots } = this.state
     return (
       <Grid className={classes.plotContainer}>
-        {this.state.allPlots.map((e, i) =>{
+        {allPlots.map((e, i) =>{
           const plotClass = i & 1 ? classes.po : classes.pe
           //Do not render last plot (nothing to compare to)
-          if (i < this.state.allPlots.length - 1){
+          if (i < allPlots.length - 1){
             return (
-              <div key={`plot-${i}`} data-index={`${i}`} onMouseEnter={this.setActiveTrackPortion} className={classNames(classes.plot, plotClass)} style={{ width: `${e.distancePercentage}%` }}>
-              </div>
+              <div 
+                key={`plot-${i}`} 
+                data-index={`${i}`} 
+                onMouseEnter={this.setActiveTrackPortion} 
+                className={classNames(classes.plot, plotClass)} 
+                style={{ width: `${e.distancePercentage}%` }}
+              />
             )
           }
         })}
       </Grid>
     )
   }
-  plotAll(gpx){
+  plotAll = (gpx) => {
     let newArr = []
     gpx.days.map((e) => {
       newArr.push(...this.plotDay(e, gpx.totalDistance))
     })
     return newArr
   }
-  plotDay({ track, distance}, trackDistance){
+  plotDay = ({ track, distance}, trackDistance) => {
     const totalDistance = trackDistance ? trackDistance : distance
     return track.map((e) => {
       const distancePercentage = e.distanceToNextPoint / totalDistance * 100
@@ -123,9 +146,10 @@ class Plot extends React.Component {
     })
   }
   render() {
-    if(this.state.dataLoaded){
+    const { dataLoaded } = this.state
+    if(dataLoaded){
       return (
-        <Grid container direction="row" onClick={this.sampleFunction} className={''}>
+        <Grid container direction="row" onClick={this.sampleFunction}>
           {this.renderPlots()}
         </Grid>
       )
@@ -133,33 +157,17 @@ class Plot extends React.Component {
       return ''
     }     
   }
-  componentDidMount() {    
-    this.setState({
-      dataLoaded: true,
-      gpx: this.props.gpx,
-      allPlots: this.plotAll(this.props.gpx)
-    })
-  }
-  componentDidUpdate(prevProps) {
-    if(this.props.plotDayIndex != prevProps.plotDayIndex){
-      if (this.props.plotDayIndex !== false) {
-        this.setState({
-          allPlots: this.plotDay(this.props.gpx.days[this.props.plotDayIndex]),
-        })
-      } else {
-        this.setState({
-          allPlots: this.plotAll(this.props.gpx),
-        })
-      }
-    }
-  }
 }
 
 Plot.propTypes = {
-  classes: PropTypes.object,
-  gpx: PropTypes.object,
-  setPlot: PropTypes.func,
-  plotDayIndex: PropTypes.number,
+  classes: PropTypes.shape({
+
+  }).isRequired,
+  gpx: PropTypes.shape({
+
+  }).isRequired,
+  setPlot: PropTypes.func.isRequired,
+  plotDayIndex: PropTypes.number.isRequired,
 }
 
 export default withStyles(styles)(Plot);
