@@ -8,9 +8,9 @@ const commonConfig = require('./webpack.common.config');
 const devMode = process.env.NODE_ENV !== 'production'
 
 module.exports = webpackMerge(commonConfig, {
-  entry: {
-    main: `./src/client/index.jsx`
-  },
+  entry: [    
+    'react-hot-loader/patch', `./src/client/index.jsx`
+  ],
   output: {
     path: path.join(__dirname, `../../dist`, `client`),
     publicPath: `/`,
@@ -24,12 +24,7 @@ module.exports = webpackMerge(commonConfig, {
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader'
-          }
-        ]
-
+        loaders: ['react-hot-loader/webpack', 'babel-loader'],
       },
       {
         test: /\.html$/,

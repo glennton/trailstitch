@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { AppContainer } from 'react-hot-loader';
 
 import App from './components/App';
 
@@ -50,12 +51,29 @@ const theme = createMuiTheme({
   },
 });
 
-ReactDOM.render(
-  <MuiThemeProvider theme={theme}>
-    <CssBaseline />
-    <Router>
-      <App />
-    </Router>
-  </MuiThemeProvider>,
-  document.getElementById('app')
-);
+const render = Component => {
+  ReactDOM.render(
+    <AppContainer>
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <Component />
+        </Router>
+      </MuiThemeProvider>
+    </AppContainer>,
+    document.getElementById('app')
+  );
+}
+
+render(App);
+
+// if (module.hot) {
+//   module.hot.accept('./components/App.jsx', () => {
+//     const NextRootContainer = require('./components/App').default;
+//     render(NextRootContainer);
+//   });
+// }
+
+if (module.hot) {
+  module.hot.accept('./components/App', () => { render(App) });
+}

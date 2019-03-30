@@ -27,6 +27,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
+    "react-hot-loader": "^4.8.1",
     "react-measure": "^2.2.4",
     "react-router-dom": "^4.3.1",
     "react-swipeable-views": "^0.13.1",
@@ -62,10 +63,10 @@
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.29.6",
-    "webpack-dev-middleware": "^3.6.1"
+    "webpack-dev-middleware": "^3.6.1",
+    "webpack-dev-server": "^3.2.1"
   },
   "scripts": {
-    "test": "webpack --config ./src/bundler/webpack.client.config.js",
     "deleteDist": "rm -rf dist",
     "build:backEnd": "webpack --mode=development --config ./src/bundler/webpack.server.config.js",
     "build:frontEnd": "webpack --mode=development --config ./src/bundler/webpack.client.config.js",
@@ -76,7 +77,8 @@
     "watch:frontEnd": "webpack --watch --mode development --config ./src/bundler/webpack.client.config.js",
     "devFE": "npm-run-all -p nodemon watch:frontEnd",
     "devBE": "npm-run-all -p nodemon watch:backEnd",
-    "devAll": "npm-run-all -p nodemon watch:backEnd watch:frontEnd"
+    "devAll": "npm-run-all -p nodemon watch:backEnd watch:frontEnd",
+    "test": "webpack-dev-server --hot --mode development --config ./src/bundler/webpack.client.config.js"
   },
   "repository": {
     "type": "git",
