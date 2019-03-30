@@ -1,4 +1,3 @@
-const webpack = require('webpack');
 const path = require("path")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
@@ -17,8 +16,9 @@ module.exports = webpackMerge(commonConfig, {
     publicPath: `/`,
     filename: `[name].js`
   },
+  mode: 'development',
   target: `web`,
-  devtool: `#source-map`,
+  devtool: `inline-source-map`,
   module: {
     rules: [
       {
@@ -27,9 +27,6 @@ module.exports = webpackMerge(commonConfig, {
         use: [
           {
             loader: 'babel-loader'
-          },
-          {
-            loader: 'eslint-loader'
           }
         ]
 

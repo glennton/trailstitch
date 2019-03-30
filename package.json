@@ -31,7 +31,6 @@
     "react-router-dom": "^4.3.1",
     "react-swipeable-views": "^0.13.1",
     "uuid": "^3.3.2",
-    "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
     "webpack-merge": "^4.2.1",
     "webpack-node-externals": "^1.7.2"
@@ -62,10 +61,15 @@
     "npm-run-all": "^4.1.5",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
+    "webpack": "^4.29.6",
     "webpack-dev-middleware": "^3.6.1"
   },
   "scripts": {
-    "build": "rm -rf dist && webpack --mode development --config ./src/bundler/webpack.server.config.js && webpack --mode development --config ./src/bundler/webpack.client.config.js",
+    "test": "webpack --config ./src/bundler/webpack.client.config.js",
+    "deleteDist": "rm -rf dist",
+    "build:backEnd": "webpack --mode=development --config ./src/bundler/webpack.server.config.js",
+    "build:frontEnd": "webpack --mode=development --config ./src/bundler/webpack.client.config.js",
+    "buildAll": "npm-run-all -p deleteDist build:backEnd build:frontEnd",
     "start": "node ./dist/server/server.js",
     "nodemon": "nodemon --watch ./src/server/ ./dist/server/server.js",
     "watch:backEnd": "webpack --watch --mode development --config ./src/bundler/webpack.server.config.js",

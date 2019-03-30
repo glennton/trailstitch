@@ -120,7 +120,7 @@ class StitchEditor extends React.Component {
         </Grid>
         <Grid container>
           <Grid item sm={6} md={3}>
-            <Typography variant="h6">Drag Here to Upload Pointss</Typography>
+            <Typography variant="h6">Drag Here to Upload Points</Typography>
           </Grid>
           <Grid item sm={6} md={3}>
             {dataLoaded ? (
