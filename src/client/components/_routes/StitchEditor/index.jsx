@@ -9,12 +9,23 @@ import Grid from '@material-ui/core/Grid'
 import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 
+
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+
+
+
 //Development Data
 import DummyStitch from 'Utils/DummyStitch'
 import DummyPoints from 'Utils/DummyPoints'
 
 //Utils
 import getHaversineDistance from 'Utils/mapUtils/getHaversineDistance'
+import uuidv4 from 'uuid/v4'
 //Components
 import Map from 'Common/Map'
 
@@ -30,10 +41,9 @@ class StitchEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      pointData: {}
     }
     this.countUnmappedPoints = this.countUnmappedPoints.bind(this)
-    this.mapPoints = this.mapPoints.bind(this)
   }
   componentDidMount() {
     this.setState({
@@ -44,12 +54,20 @@ class StitchEditor extends React.Component {
     })
   }
 
-  mapPoints(){
+  renderPointEditor = (points) => {
+    console.log(points)
+    return points.map((e)=>(
+      <ListItem button key={e.uuid}>
+        <ListItemText primary="Trash" />
+      </ListItem>
+    ))
+  }
+
+  mapPoints = () => {
     let newPointsArr = []
     const { pointData, gpx } = this.state;
-    const { points } = pointData;
     const { days } = gpx
-    points.map((waypoint)=>{
+    pointData.points.map((waypoint)=>{
       const lat1 = waypoint.lat
       const lng1 = waypoint.lng
       let nearestTrackPoint = { distance: null, trackPoint: null, index: null}
@@ -72,17 +90,18 @@ class StitchEditor extends React.Component {
           })
         }
       })
-      newPointsArr.push({ ...waypoint, nearestTrackPoint, isMapped: true})
+      newPointsArr.push({ ...waypoint, nearestTrackPoint, isMapped: true, uuid: uuidv4()})
     })
-    this.setState({
+    this.setState((prevState)=>({
       pointData: {
-        points: newPointsArr,
+        ...prevState.pointData,
+        mappedPoints: newPointsArr,
       },
       unmappedStateCount: this.countUnmappedPoints(newPointsArr)
-    })
+    }))
   }
 
-  countUnmappedPoints(points) {
+  countUnmappedPoints = (points) => {
     let tally = 0
     points.map((e) => {
       if (e.isMapped === false) { tally++ }
@@ -92,29 +111,45 @@ class StitchEditor extends React.Component {
   render() {
     const { classes } = this.props
     const { dataLoaded, pointData, gpx, unmappedStateCount } = this.state
+    console.log('render' )
     //Count Unmapped Points
     return (
-      <Grid container direction="column" className={classNames(classes.wrapper, ``)}> 
+      <Grid container direction="column" className={classNames(classes.wrapper, ``)} spacing={16}> 
         <Grid>
-          {dataLoaded ? <Map waypoints={pointData.points} gpx={gpx} /> : ''}
+          {pointData && gpx ? <Map waypoints={pointData.points} gpx={gpx} /> : ''}
         </Grid>
         <Grid container>
-          <Typography>
-            Loaded Data : 
-            {dataLoaded ? gpx.name : 'Loading'}
-          </Typography>
-          <Typography>
-            Points Loaded : 
-            {dataLoaded ? pointData.points.length : 'Loading'}
-          </Typography>
+          <Grid item sm={6} md={3}>
+            <Typography variant="h6">Drag Here to Upload Pointss</Typography>
+          </Grid>
+          <Grid item sm={6} md={3}>
+            {dataLoaded ? (
+              <>
+                <Typography>
+                  Loaded Data:&nbsp;
+                  {gpx.name}
+                </Typography>
+                <Typography>
+                  Points Loaded:&nbsp;
+                  {pointData.points.length}
+                </Typography>
+                <Typography>
+                  There are&nbsp;
+                  {unmappedStateCount} 
+                  &nbsp;unmapped points.
+                </Typography>
+                <Button onClick={() => this.mapPoints()}>Click here to map now.</Button>
+              </>
+            ):''}
+          </Grid>
+
         </Grid>
         <Grid container>
-          <Typography>
-            There are 
-            {unmappedStateCount} 
-            unmapped points.
-          </Typography>
-          <Button onClick={()=>this.mapPoints()}>Click here to map now.</Button>
+          {pointData.mappedPoints ? (
+            <List>
+              {this.renderPointEditor(pointData.mappedPoints)}
+            </List>
+          ): ''}
         </Grid>
       </Grid>
     );

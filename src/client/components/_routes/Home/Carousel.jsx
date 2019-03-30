@@ -90,9 +90,24 @@ const styles = theme => ({
 class Carousel extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      carouselCounter: 0
+    }
     this.slides = DummyData(['slides']).slides
     this.renderSlides = this.renderSlides.bind(this)
     this.renderSlideFeatures = this.renderSlideFeatures.bind(this)
+  }
+  
+  handleNextSlide = () => {
+    this.setState((prevState) => ({
+      carouselCounter: prevState.carouselCounter + 1
+    }))
+  }
+
+  handlePrevSlide = () => {
+    this.setState((prevState) => ({
+      carouselCounter: prevState.carouselCounter - 1
+    }))
   }
   renderSlides(){
     const { classes } = this.props;
@@ -157,14 +172,15 @@ class Carousel extends React.Component {
   }
   render() {
     const { classes, className } = this.props;
+    const { carouselCounter } = this.state
     return (
       <Grid container className={classNames(className, `txt-white`)}>
-        <Slider carouselId="featured-carousel" ref={(instance)=>{this.featureCarousel = instance}}>
+        <Slider carouselId="featured-carousel" counter={carouselCounter}>
           {this.renderSlides()}
         </Slider>
         <Grid container justify="space-between" className={`${classes.carouselNav}`}>
-          <Grid item onClick={() => { this.featureCarousel.prevSlide() }}><Icon className={classes.carouselNavArrowsIcons}>keyboard_arrow_left</Icon></Grid>
-          <Grid item onClick={() => { this.featureCarousel.nextSlide() }}><Icon className={classes.carouselNavArrowsIcons}>keyboard_arrow_right</Icon></Grid>        
+          <Grid item onClick={this.handlePrevSlide}><Icon className={classes.carouselNavArrowsIcons}>keyboard_arrow_left</Icon></Grid>
+          <Grid item onClick={this.handleNextSlide}><Icon className={classes.carouselNavArrowsIcons}>keyboard_arrow_right</Icon></Grid>        
         </Grid>
       </Grid>
     );

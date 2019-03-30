@@ -37,6 +37,9 @@ const xmlOptions = {
 }
 
 const styles = theme => ({
+  dropContainer: {
+    width: '100%',
+  },
   wrapper: {
     width: `100%`,
     maxWidth: theme.breakpoints.values.lg,
@@ -201,7 +204,7 @@ class Upload extends React.Component {
     const { classes } = this.props;
     const { dragging, fileLoaded, gpx, expanded } = this.state
     return (
-      <div ref={this.dropRef}>
+      <div ref={this.dropRef} className={classes.dropContainer}>
         {dragging ? <div className={classes.uploadBgActive} /> : ''}
         <Grid container justify="center" direction="row" id="uploadContainer">
           <Grid container alignContent="center" className={`${classes.wrapper}`}>
