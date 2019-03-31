@@ -2,10 +2,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles';
+import compose from 'recompose/compose';
+import { hot } from 'react-hot-loader'
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
-import Place from '@material-ui/icons/Place';
 
 //Development Data
 
@@ -14,6 +15,9 @@ import Place from '@material-ui/icons/Place';
 
 //Components
 import GoogleMapReact from 'google-map-react';
+import Snackbar from '@material-ui/core/Snackbar';
+import { Typography } from '@material-ui/core';
+
 
 const styles = theme => ({
   wrapper: {
@@ -28,8 +32,8 @@ class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      errorOpen : false,
       dataLoaded: false,
-      activePlot: null,
       waypointsMarkers: []
     }
     this.placeIcon = {
@@ -49,41 +53,52 @@ class Map extends React.Component {
       dataLoaded: true,
       centralCoords: centralCoords,
       days: days,
-      waypoints: points
+      waypoints: points,
     })
   }
 
   componentDidUpdate(prevProps) {
-    const { plot, waypoints } = this.props
-    if (plot != prevProps.plot) {
-      const { currentPlot, nextPlot } = plot || ''
-      this.setState({
-        activePlot: { lat: currentPlot.lat, lng: currentPlot.lng },
-        nextActivePlot: { lat: nextPlot.lat, lng: nextPlot.lng }
-      }, () => {
-        //Update map after new props are set
-        this.renderActiveMarker()
-        this.renderActivePolyLine()
-      })
-    }
-    if (waypoints != prevProps.waypoints) {
-      this.setState({
-        waypoints: waypoints || ''
-      }, () => {
-        //Update map after new props are set
-        this.renderWayPoints()
-      })
+    const { map, maps, errorOpen } = this.state
+    const { plot, waypoints, focus } = this.props
+    if (map, maps ){
+      if (errorOpen) {
+        this.setState({
+          errorOpen: false,
+          errorMessage: null,
+        })
+      }
+      if (map && focus && focus != prevProps.focus) {
+        this.refocusMap(focus)
+        this.renderActiveMarker(focus)
+      }
+      if (plot && plot != prevProps.plot) {
+        const { currentPlot, nextPlot } = plot || ''
+        const activePlot = { lat: currentPlot.lat, lng: currentPlot.lng }
+        const nextActivePlot = { lat: nextPlot.lat, lng: nextPlot.lng }
+        this.renderActiveMarker(activePlot)
+        this.renderActivePolyLine(activePlot, nextActivePlot)
+
+      }
+      if (waypoints && waypoints != prevProps.waypoints) {
+        this.renderWayPoints(waypoints)
+      }
     }
   }
 
-  renderWayPoints = () => {
-    const { map, maps, waypoints, waypointsMarkers } = this.state
-    //Render only if active plot is set
-    console.log('render', waypoints)
-    if (waypoints) {
-      console.log('render', waypoints)
+  refocusMap = (focusPlot) => {
+    const { map, waypointsMarkers } = this.state
+    if (map && waypointsMarkers) {
+      waypointsMarkers.map((e) => {
+        e.setMap(null)
+      })
+    }
+    map.setCenter(focusPlot)
+  }
 
-      //First Remove any existing markers
+  renderWayPoints = (waypoints) => {
+    const { map, maps, waypointsMarkers } = this.state
+    //First Remove any existing markers
+    if ( map && maps ){
       if (waypointsMarkers) {
         waypointsMarkers.map((e)=>{
           e.setMap(null)
@@ -92,7 +107,6 @@ class Map extends React.Component {
       //Make new markers
       let newMarkers = []
       waypoints.map((e)=>{
-        console.log(e)
         const Marker = maps.Marker
         const placeIcon = { ...this.placeIcon }
         placeIcon.anchor = new maps.Point(14, 25)
@@ -110,23 +124,25 @@ class Map extends React.Component {
     }
   }
   renderPolyLines = () => {
-    const {days, map, maps} = this.state
-    const Polyline = maps.Polyline
-    days.map((e,i)=>{
-      const lineColor = (i + 1) % 2 ? '#ffffff' : '#aaaaaa'
-      const line = new Polyline({
-        path: e.track,
-        geodesic: true,
-        strokeColor: lineColor,
-        strokeOpacity: 1,
-        strokeWeight: 2
+    const { days, map, maps } = this.state
+    if (map, maps) {
+      const Polyline = maps.Polyline
+      days.map((e,i)=>{
+        const lineColor = (i + 1) % 2 ? '#ffffff' : '#aaaaaa'
+        const line = new Polyline({
+          path: e.track,
+          geodesic: true,
+          strokeColor: lineColor,
+          strokeOpacity: 1,
+          strokeWeight: 2
+        })
+        line.setMap(map)
       })
-      line.setMap(map)
-    })
+    }
   }
   //Render active marker based on hovered plot
-  renderActiveMarker = () => {
-    const { map, maps, activePlot, activeMarker } = this.state
+  renderActiveMarker = (activePlot) => {
+    const { map, maps, activeMarker } = this.state
     //Render only if active plot is set
     if (activePlot){
       //First Remove any existing markers
@@ -148,8 +164,7 @@ class Map extends React.Component {
     }
   }
   //Render active poly line based on hovered plot
-  renderActivePolyLine = () => {
-    const { activePlot, nextActivePlot } = this.state
+  renderActivePolyLine = (activePlot, nextActivePlot) => {
     //Render only if active plot is set
     if (activePlot && nextActivePlot, activePlot, nextActivePlot){
       const { activePolyLine, map, maps } = this.state
@@ -221,11 +236,20 @@ class Map extends React.Component {
   }
   render() {
     const { classes } = this.props;
-    const { dataLoaded } = this.state
+    const { dataLoaded, errorOpen, errorMessage } = this.state
     return (
       <Grid className={classes.wrapper} onClick={this.sampleFunction}>
-        <Place />
         {dataLoaded ? this.renderMap() : '' /*TODO:Set up loader*/ }
+        <Snackbar 
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={errorOpen}
+          message={
+            <Typography>{errorMessage}</Typography>
+          }
+        />
       </Grid>
     );
   }
@@ -244,13 +268,20 @@ Map.propTypes = {
   waypoints: PropTypes.arrayOf(PropTypes.shape({
 
   })),
+  focus: PropTypes.shape({
+
+  }),
 }
 Map.defaultProps = {
   plot: null,
   waypoints: null,
+  focus: null,
 }
 
-export default withStyles(styles)(Map);
+export default compose(
+  hot(module),
+  withStyles(styles)
+)(Map)
 
 //https://www.fullstackreact.com/articles/how-to-write-a-google-maps-react-component/
 //https://developers.google.com/maps/documentation/javascript/examples/elevation-paths

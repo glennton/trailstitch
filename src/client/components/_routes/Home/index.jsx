@@ -2,6 +2,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles';
+import compose from 'recompose/compose';
+import { hot } from 'react-hot-loader'
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
@@ -40,4 +42,7 @@ Home.propTypes = {
   }).isRequired,
 }
 
-export default withStyles(styles)(Home);
+export default compose(
+  hot(module),
+  withStyles(styles)
+)(Home)

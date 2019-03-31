@@ -53,14 +53,15 @@ const theme = createMuiTheme({
 
 const render = Component => {
   ReactDOM.render(
-    <AppContainer>
-      <MuiThemeProvider theme={theme}>
-        <CssBaseline />
-        <Router>
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <AppContainer>
           <Component />
-        </Router>
-      </MuiThemeProvider>
-    </AppContainer>,
+        </AppContainer>
+      </Router>
+    </MuiThemeProvider>
+    ,
     document.getElementById('app')
   );
 }

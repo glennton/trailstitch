@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles';
 import parser from 'fast-xml-parser'
 import classnames from 'classnames'
+import compose from 'recompose/compose';
+import { hot } from 'react-hot-loader'
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
@@ -292,6 +294,9 @@ Upload.propTypes = {
   }).isRequired,
 }
 
-export default withStyles(styles)(Upload);
+export default compose(
+  hot(module),
+  withStyles(styles)
+)(Upload)
 
 // Drag and drop: https://medium.com/@650egor/simple-drag-and-drop-file-upload-in-react-2cb409d88929

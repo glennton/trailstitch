@@ -1,4 +1,6 @@
 import React from 'react'
+import compose from 'recompose/compose';
+import { hot } from 'react-hot-loader'
 
 class Account extends React.Component {
   constructor(props) {
@@ -17,4 +19,6 @@ class Account extends React.Component {
   }
 }
 
-export default Account
+export default compose(
+  hot(module),
+)(Account)

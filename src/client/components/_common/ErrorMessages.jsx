@@ -3,6 +3,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles';
+import compose from 'recompose/compose';
+import { hot } from 'react-hot-loader'
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
@@ -20,22 +22,10 @@ const styles = theme => ({
     maxWidth: theme.breakpoints.values.lg,
     marginBottom: `3em`,
     margin: `0 auto`,
-  },
-  CONTAINER:{
-    [theme.breakpoints.up('xs')]: { //0
-    },
-    [theme.breakpoints.up('sm')]: { //600
-    },
-    [theme.breakpoints.up('md')]: { //960
-    },
-    [theme.breakpoints.up('lg')]: { //1280
-    },
-    [theme.breakpoints.up('xl')]: { //1920
-    },
   }
 })
-
-class CONTAINER extends React.Component {
+class ErrorMessages extends React.Component {
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -43,7 +33,6 @@ class CONTAINER extends React.Component {
     }
     this.sampleFunction = this.sampleFunction.bind(this)
   }
-
   componentDidMount() {
     this.setState({
       //
@@ -57,21 +46,23 @@ class CONTAINER extends React.Component {
     }
   }
 
+  sampleFunction() {
+    console.log(this.state)
+  }
   render() {
     const { classes } = this.props;
     return (
       <Grid container direction="row" onClick={this.sampleFunction} className={classNames(classes.wrapper, ``)}>
-        <>
-        </>
       </Grid>
     );
   }
 }
 
-CONTAINER.propTypes = {
-  classes: PropTypes.shape({
-
-  }).isRequired,
+ErrorMessages.propTypes = {
+  classes: PropTypes.object,
 }
 
-export default withStyles(styles)(CONTAINER);
+export default compose(
+  hot(module),
+  withStyles(styles)
+)(ErrorMessages)

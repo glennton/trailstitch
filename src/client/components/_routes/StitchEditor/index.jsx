@@ -1,23 +1,19 @@
+//Code marker types in map component, if not defined, set default
+//create stepper 
 //Core
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles';
+import compose from 'recompose/compose';
+import { hot } from 'react-hot-loader'
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
 import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-
-
-
+import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
-
-
 
 //Development Data
 import DummyStitch from 'Utils/DummyStitch'
@@ -26,8 +22,11 @@ import DummyPoints from 'Utils/DummyPoints'
 //Utils
 import getHaversineDistance from 'Utils/mapUtils/getHaversineDistance'
 import uuidv4 from 'uuid/v4'
+import convertDMS from 'Utils/mapUtils/convertDMS'
+
 //Components
 import Map from 'Common/Map'
+import ParseCoords from 'Utils/mapUtils/ParseCoords'
 
 const styles = theme => ({
   wrapper: {
@@ -35,13 +34,18 @@ const styles = theme => ({
     maxWidth: theme.breakpoints.values.lg,
     marginBottom: `3em`,
     margin: `0 auto`,
+  },
+  stitchPoint: {
+    width: `100%`,
+    padding: 2 * theme.spacing.unit,
   }
 })
 class StitchEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pointData: {}
+      pointData: {},
+      focusPlot: null,
     }
     this.countUnmappedPoints = this.countUnmappedPoints.bind(this)
   }
@@ -55,12 +59,19 @@ class StitchEditor extends React.Component {
   }
 
   renderPointEditor = (points) => {
-    console.log(points)
+    const { classes } = this.props
     return points.map((e)=>(
-      <ListItem button key={e.uuid}>
-        <ListItemText primary="Trash" />
-      </ListItem>
+      <Paper key={e.uuid} className={classes.stitchPoint} onMouseEnter={() => this.centerMapToPoint({lat: e.lat, lng: e.lng})}>
+        <ParseCoords coords={convertDMS(e.lat, e.lng)} styles={{ color: `#000` }} className={`${classes}`} />
+      </Paper>
     ))
+  }
+
+  centerMapToPoint = (coords) => {
+    this.setState({
+      focusPlot: coords
+    });
+    console.log(coords)
   }
 
   mapPoints = () => {
@@ -110,13 +121,11 @@ class StitchEditor extends React.Component {
   }
   render() {
     const { classes } = this.props
-    const { dataLoaded, pointData, gpx, unmappedStateCount } = this.state
-    console.log('render' )
+    const { dataLoaded, pointData, gpx, unmappedStateCount, focusPlot } = this.state
     //Count Unmapped Points
     return (
       <Grid container direction="column" className={classNames(classes.wrapper, ``)} spacing={16}> 
         <Grid>
-          {pointData && gpx ? <Map waypoints={pointData.points} gpx={gpx} /> : ''}
         </Grid>
         <Grid container>
           <Grid item sm={6} md={3}>
@@ -145,11 +154,16 @@ class StitchEditor extends React.Component {
 
         </Grid>
         <Grid container>
-          {pointData.mappedPoints ? (
-            <List>
-              {this.renderPointEditor(pointData.mappedPoints)}
-            </List>
-          ): ''}
+          <Grid item sm={3}>
+            {pointData.mappedPoints ? (
+              <List>
+                {this.renderPointEditor(pointData.mappedPoints)}
+              </List>
+            ) : ''}
+          </Grid>
+          <Grid item sm={9}>
+            {pointData && gpx ? <Map focus={focusPlot} waypoints={pointData.mappedPoints} gpx={gpx} /> : ''}
+          </Grid>
         </Grid>
       </Grid>
     );
@@ -162,4 +176,7 @@ StitchEditor.propTypes = {
   }).isRequired,
 }
 
-export default withStyles(styles)(StitchEditor);
+export default compose(
+  hot(module),
+  withStyles(styles)
+)(StitchEditor)

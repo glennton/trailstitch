@@ -3,6 +3,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles';
+import compose from 'recompose/compose';
+import { hot } from 'react-hot-loader'
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
@@ -74,4 +76,7 @@ CONTAINER.propTypes = {
   }).isRequired,
 }
 
-export default withStyles(styles)(CONTAINER);
+export default compose(
+  hot(module),
+  withStyles(styles)
+)(CONTAINER)
