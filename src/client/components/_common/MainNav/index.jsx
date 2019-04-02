@@ -1,6 +1,12 @@
+//Core
 import React from 'react'
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import { NavLink } from 'react-router-dom'
+import compose from 'recompose/compose';
+import { hot } from 'react-hot-loader'
+
+//UI Elements
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
@@ -12,8 +18,15 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
+
+//Development Data
 import DummyData from 'Utils/DummyData'
-import { withStyles } from '@material-ui/core/styles';
+
+//import DummyData from 'Utils/DummyData'
+
+//Utils
+
+//Components
 
 const styles = theme => ({
   navBarContainer: {
@@ -108,4 +121,7 @@ MainNav.propTypes = {
   }).isRequired
 }
 
-export default withStyles(styles)(MainNav);
+export default compose(
+  hot(module),
+  withStyles(styles)
+)(MainNav)
