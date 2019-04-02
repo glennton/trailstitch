@@ -57,9 +57,13 @@ const data = {
       linkPath: `/albums`
       },
     {
+      linkName: `My Routes`,
+      linkPath: `/myroutes`
+    },
+    {
       linkName: `stitches`,
       linkPath: `/stitches`
-      },
+    },
     {
       linkName: `upload`,
       linkPath: `/upload`
