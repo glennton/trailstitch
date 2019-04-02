@@ -8,6 +8,7 @@ import { hot } from 'react-hot-loader'
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
+//import HUE from '@material-ui/core/colors/HUE';
 
 //Development Data
 //import DummyData from 'Utils/DummyData'
@@ -22,6 +23,8 @@ const styles = theme => ({
     maxWidth: theme.breakpoints.values.lg,
     marginBottom: `3em`,
     margin: `0 auto`,
+    paddingLeft: 2 * theme.spacing.unit,
+    paddingRight: 2 * theme.spacing.unit,
   },
   CONTAINER:{
     [theme.breakpoints.up('xs')]: { //0
@@ -43,7 +46,6 @@ class CONTAINER extends React.Component {
     this.state = {
 
     }
-    this.sampleFunction = this.sampleFunction.bind(this)
   }
 
   componentDidMount() {
@@ -62,7 +64,7 @@ class CONTAINER extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Grid container direction="row" onClick={this.sampleFunction} className={classNames(classes.wrapper, ``)}>
+      <Grid container direction="row" className={classNames(classes.wrapper, ``)}>
         <>
         </>
       </Grid>
