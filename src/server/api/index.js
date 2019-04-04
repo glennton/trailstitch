@@ -1,9 +1,9 @@
-import db from './database'
+import DB from './database'
 import graphQL from './graphQL'
 
 const api = async app => {
   try{
-    await db()
+    await DB()
     graphQL(app)
   }catch(err){
     console.log(err)

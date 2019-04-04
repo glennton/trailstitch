@@ -141,6 +141,11 @@ class MyRoutes extends React.Component {
     this.setState({ routeOptionAnchorEl: null });
   };
 
+  handleDeleteRoute = () => {
+    this.setState({ routeOptionAnchorEl: null });
+    //DELETE
+  }
+
   renderRecentRoutes = () => {
     const { slides, routeOptionAnchorEl } = this.state
     const { classes } = this.props
@@ -161,7 +166,7 @@ class MyRoutes extends React.Component {
                   onClose={this.handleRouteMenuClose}
                 >
                   <MenuItem onClick={this.handleRouteMenuClose} className={classes.optionsMenuItem}>Edit Route</MenuItem>
-                  <MenuItem onClick={this.handleRouteMenuClose} className={classNames(classes.optionsMenuItem, classes.optionsDelete)}>Delete Route</MenuItem>
+                  <MenuItem onClick={this.handleDeleteRoute} className={classNames(classes.optionsMenuItem, classes.optionsDelete)}>Delete Route</MenuItem>
                 </Menu>
               </Grid>
               <Grid 

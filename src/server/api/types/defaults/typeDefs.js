@@ -4,6 +4,9 @@ const typeDefs = gql`
   type Query {
     _empty: String
   }
+  type _id {
+    _id: String
+  }
   type Mutation {
     _empty: String
   }

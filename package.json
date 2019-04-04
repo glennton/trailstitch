@@ -18,6 +18,7 @@
     "fast-xml-parser": "^3.12.14",
     "google-map-react": "^1.1.2",
     "graphql": "^14.1.1",
+    "graphql-tag": "^2.10.1",
     "graphql-tools": "^4.0.4",
     "html-webpack-plugin": "^3.2.0",
     "material-ui-pickers": "^2.2.4",
@@ -26,6 +27,7 @@
     "node-fetch": "^2.3.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.3",
+    "react-apollo": "^2.5.3",
     "react-dom": "^16.8.3",
     "react-hot-loader": "^4.8.1",
     "react-measure": "^2.2.4",
@@ -33,6 +35,7 @@
     "react-swipeable-views": "^0.13.1",
     "recompose": "^0.30.0",
     "uuid": "^3.3.2",
+    "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
     "webpack-merge": "^4.2.1",
     "webpack-node-externals": "^1.7.2"
@@ -63,23 +66,17 @@
     "npm-run-all": "^4.1.5",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
-    "webpack": "^4.29.6",
     "webpack-dev-middleware": "^3.6.1",
     "webpack-dev-server": "^3.2.1"
   },
   "scripts": {
     "deleteDist": "rm -rf dist",
-    "build:backEnd": "webpack --mode=development --config ./src/bundler/webpack.server.config.js",
-    "build:frontEnd": "webpack --mode=development --config ./src/bundler/webpack.client.config.js",
-    "buildAll": "npm-run-all -p deleteDist build:backEnd build:frontEnd",
-    "start": "node ./dist/server/server.js",
-    "nodemon": "nodemon --watch ./src/server/ ./dist/server/server.js",
-    "watch:backEnd": "webpack --watch --mode development --config ./src/bundler/webpack.server.config.js",
-    "watch:frontEnd": "webpack --watch --mode development --config ./src/bundler/webpack.client.config.js",
-    "devFE": "npm-run-all -p nodemon watch:frontEnd",
-    "devBE": "npm-run-all -p nodemon watch:backEnd",
-    "devAll": "npm-run-all -p nodemon watch:backEnd watch:frontEnd",
-    "test": "webpack-dev-server --hot --mode development --config ./src/bundler/webpack.client.config.js"
+    "watch:backEnd": "nodemon --watch dist/server/server.js dist/server/server.js",
+    "build:backEnd": "webpack --watch --mode development --config ./src/bundler/webpack.server.config.js",
+    "watch:frontEnd": "webpack-dev-server --hot --mode development --config ./src/bundler/webpack.client.config.js",
+    "build:frontEnd": "webpack --watch --mode development --config ./src/bundler/webpack.client.config.js",
+    "devServer": "npm-run-all -p build:backEnd watch:backEnd build:frontEnd",
+    "devClient": "npm-run-all -p build:backEnd watch:backEnd watch:frontEnd"
   },
   "repository": {
     "type": "git",

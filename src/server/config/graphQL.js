@@ -1,5 +1,5 @@
 const graphQLConfig = {
-  playgroundURI: `/graphql`
+  endpoint: `/graphql`
 }
 
 export default graphQLConfig

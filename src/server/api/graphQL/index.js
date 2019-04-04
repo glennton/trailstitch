@@ -9,7 +9,7 @@ const apolloServer = new ApolloServer({
 
 //Connect apollo to app, set playground url
 const graphQL = (app) => {
-  apolloServer.applyMiddleware({ app, path: graphQLConfig.playgroundURI})
+  apolloServer.applyMiddleware({ app, path: graphQLConfig.endpoint})
 }
 
 export default graphQL

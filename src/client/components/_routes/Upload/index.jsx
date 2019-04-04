@@ -6,6 +6,7 @@ import parser from 'fast-xml-parser'
 import classnames from 'classnames'
 import compose from 'recompose/compose';
 import { hot } from 'react-hot-loader'
+import { Mutation } from "react-apollo";
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
@@ -31,6 +32,7 @@ import parseISO from 'date-fns/parseISO';
 
 //Components
 import TrackDetails from './TrackDetails'
+import CREATE_GPX from './CREATE_GPX'
 
 
 
@@ -205,6 +207,7 @@ class Upload extends React.Component {
   render() {
     const { classes } = this.props;
     const { dragging, fileLoaded, gpx, expanded } = this.state
+    console.log('gpx', gpx)
     return (
       <div ref={this.dropRef} className={classes.dropContainer}>
         {dragging ? <div className={classes.uploadBgActive} /> : ''}
@@ -214,72 +217,78 @@ class Upload extends React.Component {
               <Typography paragraph variant="h5">Upload a new GPX File</Typography>
             </Grid>
             <Grid container justify="center">
-              <div>
-                <Card className={classes.card}>
-                  <CardContent>
-                    {fileLoaded ? (
-                      <Grid container justify="center" className={!fileLoaded ? classes.hide : ''}>
-                        <Grid item xs={10}>
-                          <Typography align="center" gutterBottom className={classes.bold}>
-                            File Uploaded Successfully!&nbsp;&nbsp;
-                          </Typography>
-                          <Typography align="center" gutterBottom>
-                            From your GPX track, it looks like you went on a trip between
-                            {gpx.dateFirst ? format(parseISO(gpx.dateFirst), ' MMMM d, yyyy ') : ''}
-                            and
-                            {gpx.dateLast ? format(parseISO(gpx.dateLast), ' MMMM d, yyyy ') : ''}
-                            traveling over 
-                            {gpx.days.length} 
-                            days. If this looks slightly off, you will be able to update your data after uploading.
-                          </Typography>
+              <Mutation mutation={CREATE_GPX}>
+                {(createGpxRoute, { data }) => (
+
+
+                  <Card className={classes.card}>
+                    <CardContent>
+                      {fileLoaded ? (
+                        <Grid container justify="center" className={!fileLoaded ? classes.hide : ''}>
+                          <Grid item xs={10}>
+                            <Typography align="center" gutterBottom className={classes.bold}>
+                              File Uploaded Successfully!&nbsp;&nbsp;
+                            </Typography>
+                            <Typography align="center" gutterBottom>
+                              From your GPX track, it looks like you went on a trip between
+                              {gpx.dateFirst ? format(parseISO(gpx.dateFirst), ' MMMM d, yyyy ') : ''}
+                              and
+                              {gpx.dateLast ? format(parseISO(gpx.dateLast), ' MMMM d, yyyy ') : ''}
+                              traveling over 
+                              {gpx.days.length} 
+                              days. If this looks slightly off, you will be able to update your data after uploading.
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                        ):(
+                          <Grid container justify="center" className={fileLoaded ? classes.hide : ''}>
+                            <Typography align="center" className={classes.title} gutterBottom>
+                              {dragging ? 'Drop here to upload files' : 'Drag a GPX track or waypoints here'}
+                            </Typography>
+                          </Grid>
+                      )}
+                    </CardContent>
+                    <CardActions>
+                      <Grid container direction="column">
+                        <Grid container justify="center">
+                          <Button variant="contained" color={fileLoaded ? 'primary' : 'default'} className={classes.button} onClick={()=>{createGpxRoute({variables: gpx})}}>
+                            Upload&nbsp;
+                            <CloudUploadIcon className={classes.rightIcon} />
+                          </Button>
+                          <Button variant="contained" color="secondary" className={classnames(classes.button, fileLoaded ? '' : classes.hide)} onClick={this.clearFileLoad}>
+                            Cancel&nbsp;
+                            <DeleteIcon className={classes.rightIcon} />
+                          </Button>
                         </Grid>
                       </Grid>
-                      ):(
-                        <Grid container justify="center" className={fileLoaded ? classes.hide : ''}>
-                          <Typography align="center" className={classes.title} gutterBottom>
-                            {dragging ? 'Drop here to upload files' : 'Drag a GPX track or waypoints here'}
+                    </CardActions>
+                    {fileLoaded ?(
+                      <Grid>
+                        <Grid container justify="center" direction="row" className={!fileLoaded ? classes.hide : ''}>
+                          <Typography align="center" style={{ alignSelf: 'center', paddingRight: '1em' }}>
+                            Click here to see/edit track details
                           </Typography>
+                          <IconButton
+                            className={classnames(classes.expand, {
+                              [classes.expandOpen]: expanded,
+                            })}
+                            onClick={this.handleExpandClick}
+                            aria-expanded={expanded}
+                            aria-label="Show more"
+                          >
+                            <ExpandMoreIcon />
+                          </IconButton>
                         </Grid>
-                    )}
-                  </CardContent>
-                  <CardActions>
-                    <Grid container direction="column">
-                      <Grid container justify="center">
-                        <Button variant="contained" color={fileLoaded ? 'primary' : 'default'} className={classes.button}>
-                          Upload&nbsp;
-                          <CloudUploadIcon className={classes.rightIcon} />
-                        </Button>
-                        <Button variant="contained" color="secondary" className={classnames(classes.button, fileLoaded ? '' : classes.hide)} onClick={this.clearFileLoad}>
-                          Cancel&nbsp;
-                          <DeleteIcon className={classes.rightIcon} />
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </CardActions>
-                  {fileLoaded ?(
-                    <Grid>
-                      <Grid container justify="center" direction="row" className={!fileLoaded ? classes.hide : ''}>
-                        <Typography align="center" style={{ alignSelf: 'center', paddingRight: '1em' }}>
-                          Click here to see/edit track details
-                        </Typography>
-                        <IconButton
-                          className={classnames(classes.expand, {
-                            [classes.expandOpen]: expanded,
-                          })}
-                          onClick={this.handleExpandClick}
-                          aria-expanded={expanded}
-                          aria-label="Show more"
-                        >
-                          <ExpandMoreIcon />
-                        </IconButton>
-                      </Grid>
-                      <Collapse in={expanded} timeout="auto" unmountOnExit>
-                        <TrackDetails gpx={gpx} />
-                      </Collapse>
-                    </Grid> 
-                    ): ''}                
-                </Card>
-              </div>
+                        <Collapse in={expanded} timeout="auto" unmountOnExit>
+                          <TrackDetails gpx={gpx} />
+                        </Collapse>
+                      </Grid> 
+                      ): ''}                
+                  </Card>
+                )}
+
+
+              </Mutation>
             </Grid>
           </Grid>
         </Grid>

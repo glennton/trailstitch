@@ -25,6 +25,9 @@ const styles = theme => ({
     height: `50vh`,
     maxWidth: theme.breakpoints.values.lg,
     marginBottom: `3em`,
+  },
+  errorMsg: {
+    color: '#fff'
   }
 })
 
@@ -34,7 +37,9 @@ class Map extends React.Component {
     this.state = {
       errorOpen : false,
       dataLoaded: false,
-      waypointsMarkers: []
+      waypointsMarkers: [],
+      startPoints: [],
+      endPoints: [],
     }
     this.placeIcon = {
       path: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
@@ -46,14 +51,12 @@ class Map extends React.Component {
   }
   
   componentDidMount() {
-    const { gpx, waypoints } = this.props
+    const { gpx } = this.props
     const { days, centralCoords } = gpx
-    const { points } = waypoints || []
     this.setState({
       dataLoaded: true,
       centralCoords: centralCoords,
-      days: days,
-      waypoints: points,
+      days: days,      
     })
   }
 
@@ -187,7 +190,7 @@ class Map extends React.Component {
   }
   //Render default start, end markers
   renderTrailStartMarkers = () => {
-    const { days, map, maps } = this.state
+    const { days, map, maps, tempStartPoints, tempEndPoints } = this.state
     const Marker = maps.Marker
     const placeIcon = {...this.placeIcon}
     placeIcon.anchor = new maps.Point(14, 25)
@@ -199,23 +202,59 @@ class Map extends React.Component {
         icon: placeIcon,
       })
       startPoint.setMap(map)
+      this.setState(prevState => ({
+        startPoints: [...prevState.startPoints, startPoint]
+      }))
       if (i === days.length-1){
         const endPoint = new Marker({
           position: endCoords,
           icon: placeIcon,
         })
         endPoint.setMap(map)
-      }
-    })    
+        this.setState(prevState => ({
+          endPoints: [...prevState.endPoints, endPoint]
+        }))
 
+      }
+      //Reset Temp Points
+      this.setState({
+        tempStartPoints: [],
+        tempEndPoints: []
+      })
+    })    
+  }
+  hideTrailPoints = () => {
+    const { startPoints, endPoints } = this.state
+    this.setState({
+      tempStartPoints: startPoints,
+      tempEndPoints: endPoints,
+      startPoints: [],
+      endPoints: []
+    })
+  }
+  showTrailPoints = () => {
+    const { startPoints, endPoints } = this.state
+    this.setState({
+      startPoints: tempStartPoints,
+      endPoints: tempEndPoints
+    })
   }
   handleApiLoaded = (map, maps) => {
-    map.setMapTypeId('terrain');
-    this.setState({ map: map, maps: maps },()=>{
-      this.renderPolyLines()
-      this.renderTrailStartMarkers()
-    })
+    try{
+      map.setMapTypeId('terrain');
+      this.setState({ map: map, maps: maps }, () => {
+        this.renderPolyLines()
+        this.renderTrailStartMarkers()
+      })
+    }catch(err){
+      console.log('err', err)
+      this.setState({
+        errorOpen: true,
+        errorMessage: 'There was an error connecting to Google Maps.',
+      })
+    }
   };
+
 
   renderMap = () => {
     const { centralCoords } = this.state
@@ -247,7 +286,7 @@ class Map extends React.Component {
           }}
           open={errorOpen}
           message={
-            <Typography>{errorMessage}</Typography>
+            <Typography className={classes.errorMsg}>{errorMessage}</Typography>
           }
         />
       </Grid>

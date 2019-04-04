@@ -35,7 +35,7 @@ class ErrorMessages extends React.Component {
   }
   componentDidMount() {
     this.setState({
-      //
+      
     })
   }
   componentWillReceiveProps() {
@@ -52,7 +52,8 @@ class ErrorMessages extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Grid container direction="row" onClick={this.sampleFunction} className={classNames(classes.wrapper, ``)}>
+      <Grid container direction="row"  className={classNames(classes.wrapper, ``)}>
+      
       </Grid>
     );
   }

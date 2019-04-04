@@ -1,91 +1,88 @@
+
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
-const styles = () => ({
-  coords: {
-    padding: `0 .2em`,
-    width: `auto`,
-  }
+const styles = theme => ({
+  coord: {
+    marginRight: theme.spacing.unit * .4,
+    lineHeight: '1.77',
+  },
+  icon: {
+    marginRight: theme.spacing.unit
+  },
+  coordSet: {
+    marginRight: theme.spacing.unit
+  },
 })
 
-class ParseCoords extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state= {
+const ParseCoords = props => {
+  const { coords = { lat: null, lng: null }, classes, color, variant, alignContent, justifycontent, direction } = props
 
-    }
-    this.splitCoords = this.splitCoords.bind(this)
-    this.renderCoords = this.renderCoords.bind(this)
-  }
-
-  componentDidMount() {
-    const { coords, styles } = this.props
-    if (coords && coords.lat && coords.lng) {
-      this.setState({
-        styles: styles ? styles : {},
-        lat: this.splitCoords(coords.lat),
-        lng: this.splitCoords(coords.lng),
-        dataLoaded: true,
-      })
-    }
-  }
-
-  splitCoords = (x) => {
-    const coords = x.split('|').length >= 4 ? x.split('|') : null
-    if(coords){
+  //Calc Lat and Lng
+  const splitCoords = (x) => {
+    const newCoords = x.split('|').length >= 4 ? x.split('|') : null;
+    if (coords) {
       return {
-        deg: coords[0],
-        min: coords[1],
-        sec: coords[2],
-        dir: coords[3]
+        deg: newCoords[0],
+        min: newCoords[1],
+        sec: newCoords[2],
+        dir: newCoords[3]
       }
     }
   }
+  const lat = coords ? splitCoords(coords.lat) : null;
+  const lng = coords ? splitCoords(coords.lng) : null;
 
-  renderCoords(){
-    const { lat, lng, dataLoaded, styles } = this.state
-    const { classes } = this.props;
-    return dataLoaded ? (
-      <Grid container align="center" direction="row">
-        <Grid container alignItems="center" className={classes.coords}>
-          <Icon>place</Icon>
-        </Grid> 
-        <Grid container alignItems="center" className={classes.coords}>
-          <Typography style={styles} className={classes.coordsTxt}> 
-            {lat.deg}
-            &deg;&nbsp;
-            {lat.min}
-            &apos;&nbsp;
-            {lat.sec}
-            &quot;&nbsp;
-            {lat.dir} 
-          </Typography>
-        </Grid>
-        <Grid container alignItems="center" className={classes.coords}>
-          <Typography style={styles} className={classes.coordsTxt}> 
-            {lng.deg}
-            &deg;&nbsp;
-            {lng.min}
-            &apos;&nbsp;
-            {lng.sec}
-            &quot;&nbsp;
-            {lng.dir} 
-          </Typography>
-        </Grid>
+  return lat && lng ? (
+    <Grid container alignContent={alignContent} direction={direction} justify={justifycontent}>
+      <Grid item>
+        <Icon className={classes.icon} style={{ color: color }}>place</Icon>
       </Grid>
-    ) : ''
-  }
+      <Grid item>
+        <Typography className={classes.coordSet} variant={variant ? variant : ''} style={{ color: color }}>
+          <span className={classes.coord}>
+            {lat.deg}
+            &deg;
+          </span>
+          <span className={classes.coord}>
+            {lat.min}
+            &apos;
+          </span>
+          <span className={classes.coord}>
+            {lat.sec}
+            &quot;
+          </span>
+          <span className={classes.coord}>
+            {lat.dir}
+          </span>
+        </Typography>
+      </Grid>
+      <Grid item>
+        <Typography className={classes.coordSet} variant={variant ? variant : ''} style={{ color: color }}>
+          <span className={classes.coord}>
+            {lng.deg}
+            &deg;
+          </span>
+          <span className={classes.coord}>
+            {lng.min}
+            &apos;
+          </span>
+          <span className={classes.coord}>
+            {lng.sec}
+            &quot;
+          </span>
+          <span className={classes.coord}>
+            {lng.dir}
+          </span>
+        </Typography>
+      </Grid>
+    </Grid>
+  ) : ''
 
-  render() {
-    return (
-      this.renderCoords() || ''
-    );
-  }
 
 
 }
@@ -94,14 +91,23 @@ ParseCoords.propTypes = {
   coords: PropTypes.shape({
 
   }),
-  styles: PropTypes.shape({
-
-  }).isRequired,
   classes: PropTypes.shape({
 
   }).isRequired,
+  color: PropTypes.string,
+  variant: PropTypes.string,
+  alignContent: PropTypes.string,
+  justifycontent: PropTypes.string,
+  direction: PropTypes.string,
 }
 ParseCoords.defaultProps = {
-  coords: null
+  coords: null,
+  color: "#000",
+  variant: "",
+  alignContent: "center",
+  justifycontent: "center",
+  direction: "row",
 }
+
+//export default ParseCoords
 export default withStyles(styles)(ParseCoords);

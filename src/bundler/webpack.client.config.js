@@ -18,7 +18,6 @@ module.exports = webpackMerge(commonConfig, {
   },
   mode: 'development',
   target: `web`,
-  devtool: `inline-source-map`,
   devServer: {
     hot: true,
     contentBase: path.join(__dirname, `../../dist`, `client`),

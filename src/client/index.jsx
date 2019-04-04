@@ -1,66 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { AppContainer } from 'react-hot-loader';
 
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from 'react-apollo';
+
 import App from './components/App';
+import theme from './theme'
 
-const defaultTheme = createMuiTheme({
-  typography: {
-    useNextVariants: true,
-  }
-});
-const theme = createMuiTheme({
-  typography: {
-    useNextVariants: true,
-    h1: {
-      textTransform: "uppercase",
-      fontWeight: 600,
-      letterSpacing:` 0.15em`
-    },
-    h2: {
-      textTransform: "uppercase",
-      fontWeight: 600,
-      letterSpacing: ` 0.15em`,
-      fontSize: `3.75em`,
-      [defaultTheme.breakpoints.down('sm')]: {
-
-      }
-    },
-    h3: {
-      textTransform: "uppercase",
-      fontWeight: 600,
-      letterSpacing: ` 0.15em`,
-    },
-    h4: {
-      textTransform: "uppercase",
-      fontWeight: 600,
-      letterSpacing: ` 0.15em`
-    },
-    h5: {
-      textTransform: "uppercase",
-      fontWeight: 600,
-      letterSpacing: ` 0.15em`
-    },
-    h6: {
-      fontWeight: 400,
-      letterSpacing: ` 0.05em`
-    }
-  },
-});
+const client = new ApolloClient({
+  uri: '//localhost:8080/graphql'
+})
 
 const render = Component => {
   ReactDOM.render(
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <AppContainer>
-          <Component />
-        </AppContainer>
-      </Router>
-    </MuiThemeProvider>
+    <ApolloProvider client={client}>
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <AppContainer>
+            <Component />
+          </AppContainer>
+        </Router>
+      </MuiThemeProvider>
+    </ApolloProvider>  
     ,
     document.getElementById('app')
   );
