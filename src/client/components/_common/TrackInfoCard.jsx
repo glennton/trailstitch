@@ -8,6 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Icon from '@material-ui/core/Icon';
+import Typography from '@material-ui/core/Typography';
 
 //Development Data
 //import DummyData from 'Utils/DummyData'
@@ -31,7 +32,7 @@ class TrackInfoCard extends React.Component {
 
     }
   }
-  componentWillReceiveProps() {
+  componentDidMount() {
     const { title, value, icon } = this.props
     this.setState({
       title: title,
@@ -39,21 +40,30 @@ class TrackInfoCard extends React.Component {
       icon: icon,
       dataLoaded: true
     })
+  }  
+  componentWillReceiveProps() {
+    const { title, value, icon } = this.props
+    this.setState({
+      title: title,
+      value: value,
+      icon: icon,
+    })
   }
 
   render() {
     const { dataLoaded, icon, title, value } = this.state
+    const { primaryColor, secondaryColor } = this.props
     return dataLoaded ?     
       (
         <ListItem>
-          <Avatar>
+          <Avatar style={{ backgroundColor: secondaryColor }}>
             <Icon>{icon}</Icon>
           </Avatar>
-          <ListItemText primary={title} secondary={value} />
+          <ListItemText primary={title} secondary={value} primaryTypographyProps={{ style: { color: primaryColor } }} secondaryTypographyProps={{ style: { color: primaryColor } }} />
         </ListItem>
       )
       :
-      'Loading...'
+      ''
   }
 }
 
@@ -67,6 +77,13 @@ TrackInfoCard.propTypes = {
     PropTypes.number,
   ]).isRequired,
   icon: PropTypes.string.isRequired,
+  primaryColor: PropTypes.string,
+  secondaryColor: PropTypes.string,
+
+}
+TrackInfoCard.defaultProps = {
+  primaryColor: "#000",
+  secondaryColor: "#FFF",
 }
 
 export default withStyles(styles)(TrackInfoCard);

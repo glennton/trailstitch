@@ -20,3 +20,11 @@
     color: #000;
   }
 }
+
+/* Overrides - LAST RESORT*/
+/* Color Reset */
+.dangerously-reset-border-color{
+  *, *::before, *::after {
+     border-color: inherit;
+  }
+}

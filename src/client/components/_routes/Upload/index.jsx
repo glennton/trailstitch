@@ -2,7 +2,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles';
-import parser from 'fast-xml-parser'
 import classnames from 'classnames'
 import compose from 'recompose/compose';
 import { hot } from 'react-hot-loader'
@@ -26,7 +25,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DummyGPX from 'Utils/DummyGPX'
 
 //Utils
-import describeGPX from 'Utils/mapUtils/describeGPX'
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
 
@@ -34,11 +32,7 @@ import parseISO from 'date-fns/parseISO';
 import TrackDetails from './TrackDetails'
 import CREATE_GPX from './CREATE_GPX'
 
-
-
-const xmlOptions = {
-  ignoreAttributes: false,
-}
+import readGpxUpload from 'Common/HandleGPXDrag/readGpxUpload'
 
 const styles = theme => ({
   dropContainer: {
@@ -81,7 +75,7 @@ const styles = theme => ({
 
 class Upload extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       dragging: false,
       fileLoaded: false,
@@ -100,13 +94,13 @@ class Upload extends React.Component {
     e.addEventListener('dragover', this.handleDrag)
     e.addEventListener('drop', this.handleDrop)
 
-    //FOR TESTING ONLY
-    describeGPX(DummyGPX).then((res) => {
-      this.setState({
-        gpx: res,
-        fileLoaded: true,
-      })
-    }).catch(err => err /*TODO Add error message*/)
+    // //FOR TESTING ONLY
+    // describeGPX(DummyGPX).then((res) => {
+    //   this.setState({
+    //     gpx: res,
+    //     fileLoaded: true,
+    //   })
+    // }).catch(err => err /*TODO Add error message*/)
   }
 
   componentWillUnmount() {
@@ -125,42 +119,6 @@ class Upload extends React.Component {
     e.preventDefault();
     e.stopPropagation();
     this.setState({ fileLoaded: false, gpx: { gpxData: {} }})
-  }
-
-  parseFiles = (data) => {
-    return new Promise((resolve) => {
-      if (parser.validate(data) === true) { 
-        resolve(parser.parse(data, xmlOptions))
-      } else {
-        throw new Error("File is not a valid GPX file")
-      }
-    })
-  }
-
-  readFiles = (data) => {
-    const reader = new FileReader();
-    return new Promise((resolve, reject) => {
-      //Check files
-      if (!window.FileReader) { throw new Error("Browser not supported") }
-      if (!data.files) { throw new Error("Error Loading Files") }
-      if (data.files.length != 1) { throw new Error("May only upload one file at a time") }
-      reader.onerror = () => {
-        reader.abort();
-        reject(new DOMException("Problem parsing input file."));
-      };
-      reader.onload = () => {
-        resolve(reader.result);
-      };
-      reader.readAsText(data.files[0]);
-    })
-  }
-
-  returnParsedData = async (data) => {
-    const readFiles = await this.readFiles(data);
-    const parseFiles = await this.parseFiles(readFiles)
-    const describeGPX = await describeGPX(parseFiles.gpx)
-    return Promise.all([readFiles, parseFiles])
-      .then(() => { return describeGPX })
   }
 
   handleDrag = (e) => {
@@ -187,18 +145,16 @@ class Upload extends React.Component {
 
   handleDrop = (e) => {
     e.preventDefault();
-    e.stopPropagation();
     this.setState({ dragging: false });
-    this.returnParsedData(e.dataTransfer)
+    readGpxUpload(e)
       .then((res)=>{
-        e.dataTransfer.clearData()
         this.dragCounter = 0;
         this.setState({ 
           fileLoaded: true, 
           gpx: res, 
         })
-      }).catch(() => {
-        e.dataTransfer.clearData()
+      }).catch((err) => {
+        console.log(err)
         this.dragCounter = 0;
         //TODO Make Error Notification
       })

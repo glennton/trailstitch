@@ -16,24 +16,29 @@ import Upload from 'Routes/Upload'
 import Account from 'Routes/Account'
 import MainNav from 'Common/MainNav'
 import FooterNav from 'Common/FooterNav'
-
+import HandleGPXDrag from 'Common/HandleGPXDrag'
+import { SnackbarProvider } from 'notistack';
 
 function App() {
   return (
     <Grid id="main">
-      <MainNav />
-      <Grid container id="content">
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/albums" component={Albums} />
-          <Route path="/myroutes" component={MyRoutes} />
-          <Route path="/stitches" component={Stitches} />
-          <Route path="/upload" component={Upload} />
-          <Route path="/account" component={Account} />
-          <Route path="/editor" component={StitchEditor} />
-        </Switch>
-      </Grid>
-      <FooterNav />
+      <SnackbarProvider maxSnack={3}>
+        <HandleGPXDrag>
+          <MainNav />
+          <Grid container id="content">
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/albums" component={Albums} />
+              <Route path="/myroutes" component={MyRoutes} />
+              <Route path="/stitches" component={Stitches} />
+              <Route path="/upload" component={Upload} />
+              <Route path="/account" component={Account} />
+              <Route path="/editor" component={StitchEditor} />
+            </Switch>
+          </Grid>
+          <FooterNav />
+        </HandleGPXDrag>
+      </SnackbarProvider>
     </Grid>
   );
 }
