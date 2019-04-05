@@ -1,24 +1,32 @@
 import gpx1dot1 from 'Utils/mapUtils/GPXSchemasParsers/gpx1dot1'
 
-// const removeEmptyFields = (obj) => {
-//   // obj.reduce((a, e)=>{
-//   //   console.log(e)
-//   // })
-// }
-
 const normalizeGPXData = (data) => {
   let parsedData = {
     info: null,
     track: null,
     name: null,
   }
-  //removeEmptyFields(data)
-  if (data['@_xmlns'] && data['@_xmlns'] === 'http://www.topografix.com/GPX/1/1'){
-    parsedData.info = gpx1dot1.info(data)
-    parsedData.name = data.trk.name
-    parsedData.track = data.trk.trkseg.trkpt
+
+  const removeEmptyValues = (obj) => {
+    for (const key in obj) {
+      const value = obj[key];
+      if (typeof value === "object") {
+        removeEmptyValues(value);
+      } else if (!value && value !== 0) {
+        delete obj[key];
+      }
+    }
+    return obj
   }
-  console.log('parsedData', parsedData)
+
+  removeEmptyValues(data)
+  if (data['@_xmlns'] && data['@_xmlns'] === 'http://www.topografix.com/GPX/1/1'){
+    parsedData.info = removeEmptyValues(gpx1dot1.info(data))
+    parsedData.name = removeEmptyValues(data.trk.name)
+    parsedData.track = removeEmptyValues(data.trk.trkseg.trkpt)
+  }else{
+    throw new Error('Invalid File Format')
+  }
   return parsedData
 }
 

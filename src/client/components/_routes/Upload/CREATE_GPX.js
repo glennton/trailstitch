@@ -14,7 +14,7 @@ const CREATE_GPX = gql`
     $overallElevationHighest: Float,
     $overallElevationLowest: Float,
     $info: InfoInput,
-    # $days: [DayInput]
+    $days: [DayInput]
   ) {
     createGpxRoute(
       name: $name,
@@ -29,7 +29,7 @@ const CREATE_GPX = gql`
       overallElevationHighest: $overallElevationHighest,
       overallElevationLowest: $overallElevationLowest,
       info: $info,
-      # days: $days,
+      days: $days,
     ) {
       _id
     }

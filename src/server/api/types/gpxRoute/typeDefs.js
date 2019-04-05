@@ -20,36 +20,6 @@ const typeDefs = gql`
     days: [Day]
   }  
 
-  type LatLng {
-    lat: Float,
-    lng: Float
-  }
-  
-  input LatLngInput {
-    lat: Float,
-    lng: Float
-  }
-
-  type TrackPoint {
-    lat: Float,
-    lng: Float,
-    ele: Float,
-    time: String,
-    distanceToNextPoint: Float,
-    ascent: Float,
-    descent: Float
-  }
-
-  input TrackPointInput {
-    lat: Float,
-    lng: Float,
-    ele: Float,
-    time: String,
-    distanceToNextPoint: Float,
-    ascent: Float,
-    descent: Float
-  }
-
   type Day {
     date: String,
     indexStart: Int,
@@ -62,7 +32,7 @@ const typeDefs = gql`
     centralCoords: LatLng,
     trackPtStart: TrackPoint,
     trackPtEnd: TrackPoint,
-    track: TrackPoint,
+    track: [TrackPoint],
   }
 
   input DayInput {
@@ -77,7 +47,7 @@ const typeDefs = gql`
     centralCoords: LatLngInput,
     trackPtStart: TrackPointInput,
     trackPtEnd: TrackPointInput,
-    track: TrackPointInput,
+    track: [TrackPointInput],
   }
 
   type Info {

@@ -110,6 +110,7 @@ class StitchEditor extends React.Component {
       },
       unmappedStateCount: this.countUnmappedPoints(newPointsArr)
     }))
+    console.log('mappedPoints', newPointsArr)
   }
 
   countUnmappedPoints = (points) => {

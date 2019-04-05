@@ -1,14 +1,5 @@
 import mongoose from 'mongoose'
-
-const TrackPointSchema = {
-  lat: Number,
-  lng: Number,
-  ele: Number,
-  time: String,
-  distanceToNextPoint: Number,
-  ascent: Number,
-  descent: Number
-}
+import TrackPointSchema from '../common/commonDbSchemas'
 
 // Set user schema
 const dbSchema = new mongoose.Schema({
@@ -59,7 +50,7 @@ const dbSchema = new mongoose.Schema({
       },
       trackPtStart: TrackPointSchema,
       trackPtEnd: TrackPointSchema,
-      track: TrackPointSchema,
+      track: [TrackPointSchema],
     }
   ]
 })

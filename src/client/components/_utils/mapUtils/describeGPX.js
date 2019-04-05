@@ -11,12 +11,10 @@ import BigNumber from "bignumber.js"
 
 //import getCoordinateBounds from 'Utils/mapUtils/getCoordinateBounds'
 const DescribeGPX = (data) => {
-  console.log(data)
   const parsedData = normalizeGPXData(data)
-  console.log('parsedData', parsedData)
-  const originalGPXTrack = data.trk.trkseg.trkpt
-  const originalGPXInfo = normalizeGPXData(data).info
-  const originalTripName = data.trk.name || `New Track - ${format(new Date(2014, 1, 11), 'MM/dd/yyyy')}`
+  const originalGPXTrack = parsedData.track
+  const originalGPXInfo = parsedData.info
+  const originalTripName = parsedData.name || `New Track - ${format(new Date(2014, 1, 11), 'MM/dd/yyyy')}`
   
   return new Promise((resolve) => {
     try {
