@@ -3,29 +3,29 @@ import dbSchema from './dbSchema'
 
 const Model = mongoose.model('gpxRecords', dbSchema, 'gpxRecords');
 
-class GpxRecord extends Model {
+class gpxMedia extends Model {
   static async createBlankRecord() {
     try {
-      const GpxRecord = new Model({
+      const gpxMedia = new Model({
 
       })
-      const newGpxRecord = await GpxRecord.save();
-      return newGpxRecord._id
+      const newGpxMedia = await gpxMedia.save();
+      return newGpxMedia._id
     } catch (err) {
       throw err;
     }
   }
-  static async createGpxRecord(GpxRecord) {
+  static async createGpxRecord(gpxMedia) {
     try {
-      const newGpxRecord = await GpxRecord.save();
-      return newGpxRecord._id
+      const newGpxMedia = await gpxMedia.save();
+      return newGpxMedia._id
     } catch (err) {
       throw err;
     }
   }
 }
 
-export default GpxRecord
+export default gpxMedia
 
 
 
