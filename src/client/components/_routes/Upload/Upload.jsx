@@ -29,10 +29,10 @@ import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
 
 //Components
-import TrackDetails from './TrackDetails'
-import CREATE_GPX from './CREATE_GPX'
-
 import readGpxUpload from 'Common/HandleGPXDrag/readGpxUpload'
+import CREATE_GPX from 'GQL/CREATE_GPX'
+import TrackDetails from './TrackDetails'
+
 
 const styles = theme => ({
   dropContainer: {

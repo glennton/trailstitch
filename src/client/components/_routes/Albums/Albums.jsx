@@ -1,4 +1,5 @@
 import React from 'react'
+//import { jssWrapper, jssWrapperPadding } from 'Styles/globalStyles'
 
 class Albums extends React.Component {
   constructor(props){

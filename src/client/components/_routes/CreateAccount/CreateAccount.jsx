@@ -14,15 +14,15 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Button from '@material-ui/core/Button';
 import validator from 'validator';
+import { jssWrapper, jssModalWrapperOuter, jssModalWrapperInner } from 'Styles/globalStyles'
 
 //Development Data
-import CREATE_USER from './CREATE_USER'
+import CREATE_USER from 'GQL/CREATE_USER'
 //import DummyData from 'Utils/DummyData'
 
 //Utils
 import validatePassword from './passwordValidation'
 //Components
-import { jssWrapper, jssModalWrapperOuter, jssModalWrapperInner} from '../../_styles/globalStyles'
 
 const styles = theme => ({
   wrapper: {
@@ -66,18 +66,6 @@ class CreateAccount extends React.Component {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  componentDidMount() {
-    this.setState({
-      //
-    })
-  }
-  componentWillReceiveProps() {
-    if (this.props) {
-      this.setState({
-        //
-      })
-    }
-  }
   checkPassword = (value) => {
     const { isValid = false, errorMessage = ''} = validatePassword(value)
     if ( isValid ){
@@ -143,7 +131,7 @@ class CreateAccount extends React.Component {
         }else{
           this.handleSubmitFormErrors(payload)
         }
-      }).catch((err)=>{
+      }).catch(()=>{
         this.handleSubmitFormErrors()
       })
     }
@@ -155,10 +143,8 @@ class CreateAccount extends React.Component {
         if (e.type === "duplicateEmail" && !emailError){
           this.setState({
             emailError: "This email has already been registered, please enter a new email address."
-
           })
         }
-
       })
     }else{
       //showgenericerror
@@ -206,7 +192,7 @@ class CreateAccount extends React.Component {
     return (
       <Grid container direction="row" className={classes.wrapper}>
         <Mutation mutation={CREATE_USER}>
-          {(createUser, { data }) => (
+          {(createUser) => (
             <form autoComplete="on" className={classNames(classes.wrapper, classes.formContainer)} onSubmit={this.handleSubmitForm(createUser)}>
               <Grid container className={classes.modalWrapperOuter}>
                 <Grid container className={classes.modalWrapperInner} spacing={16}>

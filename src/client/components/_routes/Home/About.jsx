@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 //UI Elements
 import Grid from '@material-ui/core/Grid'
 import { Typography } from '@material-ui/core';
-
+import { jssWrapper, jssWrapperPadding } from 'Styles/globalStyles'
 //Development Data
 import DummyData from 'Utils/DummyData'
 
@@ -14,11 +14,10 @@ import DummyData from 'Utils/DummyData'
 
 //Components
 
-const styles = theme => ({
-  wrapper: {
-    width: `100%`,
-    maxWidth: theme.breakpoints.values.lg,
-    marginBottom: `3em`,
+const styles = () => ({
+  aboutWrapper: {
+    ...jssWrapper,
+    ...jssWrapperPadding,
   },
 })
 class About extends React.Component {
@@ -37,7 +36,7 @@ class About extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Grid container className={classes.wrapper} direction="row">
+      <Grid container className={classes.aboutWrapper} direction="row">
         <Typography paragraph variant="h5">About</Typography>
         <Typography paragraph>Proident ex qui nulla labore ipsum exercitation anim aliqua sit elit. Mollit anim duis laborum quis tempor non culpa non mollit. Laborum sunt voluptate ipsum commodo officia proident ad ex eu sint in. Ad cupidatat exercitation ut amet consequat ex reprehenderit do consequat dolore in. In tempor sit dolor cillum. Consequat incididunt fugiat reprehenderit ullamco non sit culpa nostrud ipsum.</Typography>
       </Grid>

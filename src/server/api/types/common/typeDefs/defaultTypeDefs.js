@@ -17,6 +17,7 @@ const defaultTypeDefs = gql `
   type ResponseMessage {
     type: String,
     message: String
+    value: String
   }
 `
 

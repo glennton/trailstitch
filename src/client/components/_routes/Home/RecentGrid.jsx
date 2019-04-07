@@ -20,6 +20,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
+import { jssWrapper, jssWrapperPadding } from 'Styles/globalStyles'
 
 //Development Data
 import DummyData from 'Utils/DummyData'
@@ -29,9 +30,9 @@ import DummyData from 'Utils/DummyData'
 //Components
 
 const styles = theme => ({
-  wrapper: {
-    width: `100%`,
-    maxWidth: `${theme.breakpoints.values.lg}px`,
+  recentWrapper: {
+    ...jssWrapper,
+    ...jssWrapperPadding
   },
   card: {
     maxWidth: 400,
@@ -158,7 +159,7 @@ class RecentGrid extends React.Component {
     const { classes } = this.props;
     return (
       <Grid container justify="center">
-        <Grid className={`${classes.wrapper}`}>
+        <Grid className={`${classes.recentWrapper}`}>
           <Typography paragraph variant="h5">Recent Trips</Typography>
           <Grid container spacing={16}>
             {this.makeCards()}

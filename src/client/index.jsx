@@ -8,7 +8,7 @@ import { AppContainer } from 'react-hot-loader';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 
-import App from './components/App';
+import App from './components/App/App';
 import theme from './theme'
 
 const client = new ApolloClient({
@@ -42,5 +42,5 @@ render(App);
 // }
 
 if (module.hot) {
-  module.hot.accept('./components/App', () => { render(App) });
+  module.hot.accept('./components/App/App', () => { render(App) });
 }

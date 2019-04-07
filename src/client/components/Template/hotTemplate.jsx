@@ -7,6 +7,7 @@ import compose from 'recompose/compose';
 import { hot } from 'react-hot-loader'
 
 //UI Elements
+import { jssWrapper, jssModalWrapperOuter } from 'Styles/globalStyles'
 import Grid from '@material-ui/core/Grid'
 //import HUE from '@material-ui/core/colors/HUE';
 
@@ -17,27 +18,11 @@ import Grid from '@material-ui/core/Grid'
 
 //Components
 
-const styles = theme => ({
-  wrapper: {
-    width: `100%`,
-    maxWidth: theme.breakpoints.values.lg,
-    marginBottom: `3em`,
-    margin: `0 auto`,
-    paddingLeft: 2 * theme.spacing.unit,
-    paddingRight: 2 * theme.spacing.unit,
+const styles = () => ({
+  CONTAINERWrapper: {
+    ...jssWrapper, 
+    ...jssModalWrapperOuter
   },
-  CONTAINER:{
-    [theme.breakpoints.up('xs')]: { //0
-    },
-    [theme.breakpoints.up('sm')]: { //600
-    },
-    [theme.breakpoints.up('md')]: { //960
-    },
-    [theme.breakpoints.up('lg')]: { //1280
-    },
-    [theme.breakpoints.up('xl')]: { //1920
-    },
-  }
 })
 
 class CONTAINER extends React.Component {
@@ -64,7 +49,7 @@ class CONTAINER extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Grid container direction="row" className={classNames(classes.wrapper, ``)}>
+      <Grid container direction="row" className={classes.CONTAINERWrapper}>
         <>
         </>
       </Grid>

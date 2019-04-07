@@ -13,8 +13,21 @@ class User extends Model {
       throw error;
     }
   }
+  static async login({email}) {
+    try {
+      return Model.findOne({
+        email,
+      }, [
+        'firstName',
+        'lastName',
+        'email',
+        'password'
+      ]);
+    } catch (error) {
+      throw error;
+    }
+  }
   static async createUser(NewUser) {
-    console.log(NewUser)
     try {
       const UserResponse = await NewUser.save();
       return UserResponse._id

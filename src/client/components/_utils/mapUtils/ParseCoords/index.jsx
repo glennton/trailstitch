@@ -43,7 +43,7 @@ const ParseCoords = props => {
         <Icon className={classes.icon} style={{ color: color }}>place</Icon>
       </Grid>
       <Grid item>
-        <Typography className={classes.coordSet} variant={variant ? variant : ''} style={{ color: color }}>
+        <Typography className={classes.coordSet} variant={variant ? variant : 'body1'} style={{ color: color }}>
           <span className={classes.coord}>
             {lat.deg}
             &deg;
@@ -62,7 +62,7 @@ const ParseCoords = props => {
         </Typography>
       </Grid>
       <Grid item>
-        <Typography className={classes.coordSet} variant={variant ? variant : ''} style={{ color: color }}>
+        <Typography className={classes.coordSet} variant={variant ? variant : 'body1'} style={{ color: color }}>
           <span className={classes.coord}>
             {lng.deg}
             &deg;

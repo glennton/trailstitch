@@ -9,6 +9,7 @@ module.exports = {
       Common: path.resolve(__dirname, `../client/components/_common`),
       Styles: path.resolve(__dirname, `../client/components/_styles`),
       Utils: path.resolve(__dirname, `../client/components/_utils`),
+      GQL: path.resolve(__dirname, `../client/components/_gql`),
       ClientConfig: path.resolve(__dirname, `../client/config`),
       Config: path.resolve(__dirname, `../server/config`),
       Auth: path.resolve(__dirname, `../server/auth`)

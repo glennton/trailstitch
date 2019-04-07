@@ -5,6 +5,14 @@ export const jssWrapper = {
   maxWidth: theme.breakpoints.values.lg,
   margin: `0 auto`,
 }
+export const jssWrapperPadding = {
+  paddingLeft: 4 * theme.spacing.unit,
+  paddingRight: 4 * theme.spacing.unit,
+  [theme.breakpoints.up('lg')]: { //1280
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
+}
 
 export const jssModalWrapperOuter = {
   flexBasis: '100vw',

@@ -6,6 +6,14 @@ const defaultTheme = createMuiTheme({
   }
 });
 const theme = createMuiTheme({
+  palette: {  
+    background: {
+      light: '#f1f9fd'
+    },
+    border: {
+      light: defaultTheme.palette.grey[300]
+    },
+  },
   typography: {
     useNextVariants: true,
     h1: {

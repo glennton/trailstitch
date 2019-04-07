@@ -22,6 +22,10 @@ const typeDefs = gql`
       password: String!,
       email: String!,
     ): Response
+    login(
+      password: String!,
+      email: String!,
+    ): Response
   }
 `;
 

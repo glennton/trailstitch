@@ -40,6 +40,8 @@ const styles = theme => ({
   },
   slideTextContent:{
     flexDirection: 'column-reverse',
+    position: 'relative',
+    overflow: 'hidden',
   },
   slideFeatures:{
     borderTop: `1px solid #fff`,
@@ -63,6 +65,7 @@ const styles = theme => ({
   carouselNav:{
     zIndex: 2,
     background: `#000`,
+    overflow: 'visible',
     [theme.breakpoints.up('sm')]: {
       position: `absolute`,
       top: `50%`,
