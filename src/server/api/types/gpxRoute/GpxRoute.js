@@ -9,7 +9,7 @@ class GpxRoute extends Model {
       const gpxRoute = await GpxRoute.save();
       return gpxRoute._id
     } catch (err) {
-      return err;
+      throw err;
     }
   }
 }

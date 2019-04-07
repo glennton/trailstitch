@@ -9,7 +9,7 @@ class GpxWaypoints extends Model {
       const gpxWaypoints = await GpxWaypoints.save();
       return gpxWaypoints._id
     } catch (err) {
-      return err;
+      throw err;
     }
   }
 }

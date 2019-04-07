@@ -7,23 +7,21 @@ const typeDefs = gql`
 
   type User {
     _id: ID!,
-    userId: String,
     firstName: String,
     lastName: String,
     email: String,
     gpxRecord: ID
   }
-  type Query {
+  extend type Query {
     getOneUser(_id: String!): User
   }
-  type Mutation {
+  extend type Mutation {
     createUser(
-      userId: String!,
       firstName: String,
       lastName: String,
       password: String!,
       email: String!,
-    ): User
+    ): Response
   }
 `;
 

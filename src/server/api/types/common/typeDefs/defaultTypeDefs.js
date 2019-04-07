@@ -10,6 +10,14 @@ const defaultTypeDefs = gql `
   type Mutation {
     _empty: String
   }
+  type Response {
+    success: Boolean,
+    payload: [ResponseMessage]
+  }
+  type ResponseMessage {
+    type: String,
+    message: String
+  }
 `
 
 export default defaultTypeDefs

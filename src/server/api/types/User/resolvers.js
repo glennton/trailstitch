@@ -1,8 +1,13 @@
 import validator from 'validator';
-import { ApolloError } from 'apollo-server'
+import { UserInputError } from 'apollo-server'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import {JWT_SECRET} from 'Auth/jwt'
 import validatePassword from 'Config/validatePassword'
 import User from './User'
 import GpxRecord from '../gpxRecord/GpxRecord'
+import { instanceOf } from 'prop-types';
+
 
 const resolvers = {
   Query: {
@@ -12,46 +17,52 @@ const resolvers = {
   },
   Mutation: {
     async createUser(root, params){
-      const { userId, password, firstName, lastName, email } = params
-      const validateFields = async (email, password) =>{
+      const { password, firstName, lastName, email } = params
+      const validateFields = async (email) =>{
         //Email Validation
-        if (validator.isEmail(email) === false){ throw new ApolloError('Not a valid email address') }
+        if (validator.isEmail(email) === false){ throw new UserInputError('Not a valid email address', { message: 'Error: Email is not valid', type: 'emailNotValid' }) }
       }
-      const defineNewUser = async (recordId) => {
+      const defineNewUser = async (hashedPassword) => {
         try {
           return new User({
-            userId, 
-            password, 
+            password: hashedPassword,
             firstName, 
             lastName, 
             email: validator.normalizeEmail(email),
-            gpxRecord: recordId
           });
         } catch (error) {
           throw error;
         }
       };
-      const checkForDuplicates = ({ userId, email }) => {
-        if (userId && email) { throw new ApolloError('Email Address and Username provided already exists.') }
-        if (userId && !email) { throw new ApolloError('Username provided already exists.') }
-        if (!userId && email) { throw new ApolloError('Email address provided already exists.') }
+      const checkForDuplicates = ({ email }) => {
+        if (email) { throw new UserInputError('Duplicate Email', { message: 'Error: Email already exists', type: 'duplicateEmail' }) }
       }
       try{
         const fieldsIsValid = await validateFields(email, password)
-        const passwordIsValid  = await validatePassword(userId, password)
-        const userIdExists = await User.checkIfUserFieldExists({ userId })
+        const passwordIsValid  = await validatePassword(password)
         const userEmailExists = await User.checkIfUserFieldExists({ email })
-        const duplicateCheck = await Promise.all([userIdExists, userEmailExists, fieldsIsValid, passwordIsValid])
+        const duplicateCheck = await Promise.all([userEmailExists, fieldsIsValid, passwordIsValid])
           .then((res) => {
-            return { userId: res[0], email: res[1], }
+            return { email: res[0] }
           })
           .catch(err => err)
         await checkForDuplicates(duplicateCheck)
-        const recordID = await GpxRecord.createBlankRecord()
-        const NewUser = await defineNewUser(recordID)
-        return await User.createUser(NewUser)
+        const hashedPassword = await bcrypt.hash(params.password, 10);
+        const NewUser = await defineNewUser(hashedPassword)
+        const NewUserId = await User.createUser(NewUser)
+        const recordId = await GpxRecord.createBlankRecord()
+        await User.attachRecord(NewUserId, recordId)
+        return { success: true }
       }catch(err){
-        return err
+        let returnObj = { success: false, payload: [] }
+        console.log('err', err)
+        if (err instanceof UserInputError){
+          const { message, type } = err
+          returnObj.payload.push({ message, type })
+          console.log('push')
+        }
+        console.log(returnObj)
+        return returnObj
       }
     }
   }

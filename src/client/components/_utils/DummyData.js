@@ -73,6 +73,10 @@ const data = {
       linkPath: `/editor`
     },
     {
+      linkName: `create account`,
+      linkPath: `/create`
+    },
+    {
       linkName: `account`,
       linkPath: `/account`
     }

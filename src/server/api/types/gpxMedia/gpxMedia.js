@@ -26,6 +26,3 @@ class gpxMedia extends Model {
 }
 
 export default gpxMedia
-
-
-

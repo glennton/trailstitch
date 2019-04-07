@@ -1,6 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools'
 import typeDefs from './typeDefs'
-import gpxTypeDefs from '../common/gpxTypeDefs'
+import gpxTypeDefs from '../common/typeDefs/gpxTypeDefs'
 import resolvers from './resolvers'
 
 //Make and export schema

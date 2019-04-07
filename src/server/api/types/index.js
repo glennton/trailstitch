@@ -7,7 +7,7 @@ const schemas = mergeSchemas({
   schemas: [
     gpxRoute,
     testSchema,
-    User
+    User,
   ]
 })
 

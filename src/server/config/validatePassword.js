@@ -1,7 +1,7 @@
 import passwordValidator from 'password-validator'
 import { ApolloError } from 'apollo-server'
 
-const validatePassword = async ( username, password ) => {
+const validatePassword = ( password ) => {
 
   try{
     
@@ -15,7 +15,6 @@ const validatePassword = async ( username, password ) => {
 
     const result = passwordSchema.validate(password, { list: true })
 
-    console.log('result', result)
     if (Array.isArray(result) && result.length === 0) {
       return
     }else{

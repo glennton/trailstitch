@@ -27,6 +27,11 @@ import CloseIcon from '@material-ui/icons/Close';
 import TrackDetails from 'Common/TrackDetails'
 
 const styles = theme => ({
+  dropContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+  },
   uploadBgActive: {
     position: `fixed`,
     top: 0,

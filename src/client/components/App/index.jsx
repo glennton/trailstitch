@@ -16,12 +16,13 @@ import Upload from 'Routes/Upload'
 import Account from 'Routes/Account'
 import MainNav from 'Common/MainNav'
 import FooterNav from 'Common/FooterNav'
+import CreateAccount from 'Routes/CreateAccount'
 import HandleGPXDrag from 'Common/HandleGPXDrag'
 import { SnackbarProvider } from 'notistack';
 
 function App() {
   return (
-    <Grid id="main">
+    <Grid container id="main" direction="column">
       <SnackbarProvider maxSnack={3}>
         <HandleGPXDrag>
           <MainNav />
@@ -34,6 +35,7 @@ function App() {
               <Route path="/upload" component={Upload} />
               <Route path="/account" component={Account} />
               <Route path="/editor" component={StitchEditor} />
+              <Route path="/create" component={CreateAccount} />
             </Switch>
           </Grid>
           <FooterNav />
