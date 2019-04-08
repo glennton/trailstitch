@@ -13,6 +13,7 @@ module.exports = webpackMerge(commonConfig, {
     filename: `[name].js`
   },
   target: `node`,
+  devtool: `inline-source-map`,
   node: {
     // Need this when working with express, otherwise the build fails
     __dirname: false, // if you don't put this is, __dirname

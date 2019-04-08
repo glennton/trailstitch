@@ -1,10 +1,15 @@
 //Core
-import React from 'react'
+import React, { useState} from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles';
 import compose from 'recompose/compose';
 import { hot } from 'react-hot-loader'
-import { Mutation } from "react-apollo";
+import { Mutation, graphql } from "react-apollo";
+
+import getToken from 'GraphQLStore/Login/getToken'
+import setToken from 'GraphQLStore/Login/setToken'
+//import { useMutation } from 'react-apollo-hooks';
+
 //UI Elements
 import Typography from '@material-ui/core/Typography'
 import Popover from '@material-ui/core/Popover'
@@ -17,12 +22,15 @@ import Button from '@material-ui/core/Button'
 
 //Utils
 import LOGIN from 'GQL/Login'
+import validateForEmptyFields from 'Utils/forms/validateForEmptyFields'
+import parsePayload from 'Utils/GraphQL/parsePayload'
+
 //Components
 
 const styles = theme => ({
   popoverContainer: {
     padding: 2 * theme.spacing.unit,
-    minWidth: '250px',
+    width: '250px',
   },
   formContainer: {
     display: 'flex',
@@ -32,42 +40,46 @@ const styles = theme => ({
   input: {
     flex: '1',
     marginBottom: theme.spacing.unit,
+  },
+  errorMessage: {
+    color: theme.palette.error.main,
+    marginBottom: theme.spacing.unit
   }
 })
 
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user:{
-        email: { value: '', errorMessage: null },
-        password: { value: '', errorMessage: null },
-      }
+const Login = props => {
+
+  const { classes, onClose, anchorEl, openState, currentUser, setToken } = props;
+  const [email, setEmailState] = useState({ value: '', errorMessage: null })
+  const [password, setPasswordState] = useState({ value: '', errorMessage: null })
+  const [authError, setAuthError ] = useState(false)
+  console.log('currentUser', currentUser)
+  const fieldValidation = [
+    {
+      fieldData: email,
+      setState: setEmailState,
+    },
+    {
+      fieldData: password,
+      setState: setPasswordState,
     }
-  }
+  ]
 
-  handleChange = (field) => (event) => {
-    const value = event.target.value
-    //if (field === 'password') { this.checkPassword(value) }
-    //if (field === 'email') { this.checkEmail(value) }
-    this.setState(prevState => ({
-      user: {
-        ...prevState.user,
-        [field]: {
-          value,
-        },
-      }
-    }))
-  };
-  handleSubmitForm = (login) => (event) => {
+  // const loginMutation = useMutation(LOGIN, {
+  //   variables: {
+  //     email: email.value,
+  //     password: password.value,
+  //   }
+  // })
+
+  //const [passwordError, setPasswordErrorState] = useState(null)
+
+  const handleSubmitForm = (login) => (event) => {
     event.preventDefault();
-    const { user } = this.state
-    const errors = this.checkForErrors()
-    const validatedSuccessful = errors.every((e) => e)
 
+    const validatedSuccessful = validateForEmptyFields(fieldValidation)
     if (validatedSuccessful) {
-      const { email, password } = user
-      console.log(email, password)
+      setAuthError(false)
       login(
         {
           variables: {
@@ -76,130 +88,95 @@ class Login extends React.Component {
           }
         }
       ).then(({ data }) => {
-        console.log(data)
         const { login } = data
         const { success, payload } = login
-        if (success) {
-          this.handleSuccessfulSubmit()
+        const tokenPayload = parsePayload(payload, "token")
+        if (success && tokenPayload) {
+          handleSuccessfulSubmit(tokenPayload.value)
         } else {
-          this.handleSubmitFormErrors(payload)
+          const error = parsePayload(payload, "authError").message
+          handleSubmitFormErrors(error)
         }
       }).catch(() => {
-        this.handleSubmitFormErrors()
+        handleSubmitFormErrors()
       })
     }
-  }
-  handleSubmitFormErrors = (errPayload) => {
-    if (errPayload.length > 0) {
-      errPayload.map((e) => {
-        if (e.type === "duplicateEmail" && !emailError) {
-          this.setState({
-            emailError: "This email has already been registered, please enter a new email address."
-          })
-        }
-      })
-    } else {
-      //showgenericerror
-    }
-  }
-  handleSuccessfulSubmit = () => {
+
 
   }
-  checkForErrors = () => {
-    const { user, passwordError, emailError } = this.state
-    return Object.keys(user).map((key) => {
-      const field = user[key]
-      const { value, errorMessage } = field
-      if (!value && !errorMessage) {
-        this.setState(prevState => ({
-          user: {
-            ...prevState.user,
-            [key]: {
-              ...prevState.user[key],
-              errorMessage: 'Field cannot be empty.',
-            },
-          }
-        }))
-        return false
-      }
-      if (value) {
-        this.setState(prevState => ({
-          user: {
-            ...prevState.user,
-            [key]: {
-              ...prevState.user[key],
-              errorMessage: null,
-            },
-          }
-        }))
-        return value && !passwordError && !emailError
-      }
-      return false
-    })
+  const handleSubmitFormErrors = (errPayload = 'We apologize, an unknown error has occured. Please try logging in again.') => {    
+    setAuthError(errPayload)
+  }
+  const handleSuccessfulSubmit = (token) => {
+    console.log({ variables: { token } })
+    setToken({variables: {token}})
   }
 
-  render() {
-    const { classes, onClose, anchorEl, openState, } = this.props;
-    const { user } = this.state
-    return (
-      <Popover
-        id="simple-popper"
-        open={openState}
-        anchorEl={anchorEl()}
-        onClose={onClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}        
-      >
-        <Grid container className={classes.popoverContainer} direction="column">
-          <Typography className={classes.typography}>Have an account?</Typography>
-          <Mutation mutation={LOGIN}>
-            {(login) => (
-              <form className={classes.formContainer} autoComplete="on" onSubmit={this.handleSubmitForm(login)}>
-                <FormControl className={classes.input} error={user.email.errorMessage != null}>
-                  <Input
-                    id="outlined-email-input"
-                    label="Email"
-                    placeholder="Email"
-                    className={classes.input}
-                    value={user.email.value || ''}
-                    onChange={this.handleChange('email')}
-                    type="email"
-                    autoComplete="email"
-                    variant="outlined"
-                  />
-                </FormControl>
-                <FormControl className={classes.input} error={user.password.errorMessage != null}>
-                  <Input
-                    id="outlined-password-input"
-                    label="Password"
-                    placeholder="Password"
-                    className={classes.input}
-                    value={user.password.value || ''}
-                    type="password"
-                    autoComplete="current-password"
-                    onChange={this.handleChange('password')}
-                    variant="outlined"
-                  />
-                </FormControl>
-                <Grid container justify="flex-end">
-                  <Button variant="contained" type="submit" value="Submit" size="medium" color="primary" className={classes.submitBtn}>
-                    Continue
-                  </Button>
+  return (
+    <Popover
+      id="simple-popper"
+      open={Boolean(openState && anchorEl())}
+      anchorEl={anchorEl()}
+      onClose={onClose}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'center',
+      }}
+    >
+      <Grid container className={classes.popoverContainer} direction="column">
+        <Typography className={classes.typography}>Have an account?</Typography>
+        <Mutation mutation={LOGIN}>
+          {(login) => (
+            <form className={classes.formContainer} autoComplete="on" onSubmit={handleSubmitForm(login)}>
+              <FormControl className={classes.input} error={email.errorMessage != null}>
+                <Input
+                  id="outlined-email-input"
+                  label="Email"
+                  placeholder="Email"
+                  className={classes.input}
+                  value={email.value || ''}
+                  onChange={() => { setEmailState({ ...email, value: event.target.value })}}
+                  type="email"
+                  autoComplete="email"
+                  variant="outlined"
+                />
+              </FormControl>
+              <FormControl className={classes.input} error={password.errorMessage != null}>
+                <Input
+                  id="outlined-password-input"
+                  label="Password"
+                  placeholder="Password"
+                  className={classes.input}
+                  value={password.value || ''}
+                  type="password"
+                  autoComplete="current-password"
+                  onChange={() => { setPasswordState({ ...email, value: event.target.value }) }}
+                  variant="outlined"
+                />
+              </FormControl>
+              {authError ? (
+                <Grid>
+                  <Typography variant="caption" className={classes.errorMessage}>
+                    {authError}
+                  </Typography>
                 </Grid>
-              </form>
-            )}
+              ) : ''}               
+              <Grid container justify="flex-end">
+                <Button variant="contained" type="submit" value="Submit" size="medium" color="primary" className={classes.submitBtn}>
+                  Continue
+                </Button>
+              </Grid>
+            </form>
+          )}
 
-          </Mutation>  
-        </Grid>
-      </Popover>
-    );
-  }
+        </Mutation>
+      </Grid>
+    </Popover>
+  );
 }
 
 Login.propTypes = {
@@ -212,6 +189,13 @@ Login.propTypes = {
 }
 
 export default compose(
+  graphql(setToken, {name: 'setToken'}),
+  graphql(getToken, {
+    props: ({data: {currentUser, loading} }) => ({
+      currentUser,
+      loading
+    })
+  }),
   hot(module),
   withStyles(styles)
 )(Login)

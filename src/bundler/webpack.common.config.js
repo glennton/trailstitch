@@ -1,7 +1,6 @@
 const path = require("path")
 
 module.exports = {
-  devtool: `inline-source-map`,
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
@@ -10,6 +9,7 @@ module.exports = {
       Styles: path.resolve(__dirname, `../client/components/_styles`),
       Utils: path.resolve(__dirname, `../client/components/_utils`),
       GQL: path.resolve(__dirname, `../client/components/_gql`),
+      GraphQLStore: path.resolve(__dirname, `../client/graphQLStore`),
       ClientConfig: path.resolve(__dirname, `../client/config`),
       Config: path.resolve(__dirname, `../server/config`),
       Auth: path.resolve(__dirname, `../server/auth`)

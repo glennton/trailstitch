@@ -5,27 +5,26 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { AppContainer } from 'react-hot-loader';
 
-import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
 
 import App from './components/App/App';
 import theme from './theme'
-
-const client = new ApolloClient({
-  uri: '//localhost:8080/graphql'
-})
+import clientStore from 'GraphQLStore'
 
 const render = Component => {
   ReactDOM.render(
-    <ApolloProvider client={client}>
-      <MuiThemeProvider theme={theme}>
-        <CssBaseline />
-        <Router>
-          <AppContainer>
-            <Component />
-          </AppContainer>
-        </Router>
-      </MuiThemeProvider>
+    <ApolloProvider client={clientStore}>
+      <ApolloHooksProvider client={clientStore}>
+        <MuiThemeProvider theme={theme}>
+          <CssBaseline />
+          <Router>
+            <AppContainer>
+              <Component />
+            </AppContainer>
+          </Router>
+        </MuiThemeProvider>
+      </ApolloHooksProvider>
     </ApolloProvider>  
     ,
     document.getElementById('app')
@@ -33,13 +32,6 @@ const render = Component => {
 }
 
 render(App);
-
-// if (module.hot) {
-//   module.hot.accept('./components/App.jsx', () => {
-//     const NextRootContainer = require('./components/App').default;
-//     render(NextRootContainer);
-//   });
-// }
 
 if (module.hot) {
   module.hot.accept('./components/App/App', () => { render(App) });

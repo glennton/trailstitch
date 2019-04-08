@@ -5,6 +5,7 @@
     "react/no-did-update-set-state": "off"
   },
   "plugins": [
+    "react-hooks",
     "react",
     "jsx-a11y"
   ],

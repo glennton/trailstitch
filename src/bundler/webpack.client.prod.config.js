@@ -1,6 +1,7 @@
 const path = require("path")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const webpackMerge = require('webpack-merge');
 const commonConfig = require('./webpack.common.config');
@@ -13,12 +14,12 @@ module.exports = webpackMerge(commonConfig, {
   ],
   output: {
     path: path.join(__dirname, `../../dist`, `client`),
-    publicPath: `/`,
+    publicPath: `./`,
     filename: `[name].js`
   },
-  mode: 'development',
+  mode: 'production',
   target: `web`,
-  devtool: `eval`,
+  devtool: 'cheap-module-source-map',
   devServer: {
     hot: true,
     contentBase: path.join(__dirname, `../../dist`, `client`),
@@ -62,6 +63,7 @@ module.exports = webpackMerge(commonConfig, {
     ]
   },
   plugins: [
+    new BundleAnalyzerPlugin(),
     new HtmlWebPackPlugin({
       template: `./src/client/index.html`,
       filename: `./index.html`,
