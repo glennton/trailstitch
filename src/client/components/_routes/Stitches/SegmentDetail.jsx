@@ -8,8 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 import List from '@material-ui/core/List';
 
-//Development Data
-//import DummyData from 'Utils/DummyData'
+//GraphQL Store
 
 //Utils
 import convertDMS from 'Utils/mapUtils/convertDMS'

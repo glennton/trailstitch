@@ -6,16 +6,16 @@ import PropTypes from 'prop-types'
 import Grid from '@material-ui/core/Grid'
 import List from '@material-ui/core/List';
 import TextField from '@material-ui/core/TextField';
-import { Typography } from '@material-ui/core';
+import TrackInfoCard from 'Common/TrackInfoCard'
 
-//Development Data
+//GraphQL Store
 
 //Utils
 import DateFnsUtils from '@date-io/date-fns'; //TODO change to moment if possible
 import { MuiPickersUtilsProvider, DatePicker } from 'material-ui-pickers';
 
 //Component
-import TrackInfoCard from 'Common/TrackInfoCard'
+
 
 class TrackDetails extends React.Component {
   constructor(props) {
@@ -24,9 +24,9 @@ class TrackDetails extends React.Component {
       gpx: null,
     }
   }
-  
   componentDidMount() {
     const { gpx } = this.props
+    console.log('gpx', gpx)
     this.setState({
       gpx: gpx,
       dataLoaded: true

@@ -22,7 +22,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { jssWrapper, jssWrapperPadding } from 'Styles/globalStyles'
 
-//Development Data
+//GraphQL Store
 import DummyData from 'Utils/DummyData'
 
 //Utils

@@ -21,8 +21,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-//Development Data
-import DummyGPX from 'Utils/DummyGPX'
+//GraphQL Store
 
 //Utils
 import format from 'date-fns/format';

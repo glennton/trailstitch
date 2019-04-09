@@ -17,14 +17,12 @@ import Button from '@material-ui/core/Button'
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton'
 
-//Development Data
-import getToken from 'GraphQLStore/Login/getToken'
-import setToken from 'GraphQLStore/Login/setToken'
-
-//import DummyData from 'Utils/DummyData'
+//GraphQL Store
+import GET_TOKEN from 'GraphQLStore/Login/GET_TOKEN'
+import SET_TOKEN from 'GraphQLStore/Login/SET_TOKEN'
+import LOGIN from 'GraphQLStore/Login/LOGIN'
 
 //Utils
-import LOGIN from 'GQL/Login'
 import validateForEmptyFields from 'Utils/forms/validateForEmptyFields'
 import parsePayload from 'Utils/GraphQL/parsePayload'
 import { useCookies } from 'react-cookie';
@@ -61,10 +59,12 @@ const styles = theme => ({
 
 const Login = props => {
 
-  const { classes, signedUser, setToken } = props;
+  const { classes, signedUser, SET_TOKEN } = props;
+
   const popoverTarget = React.createRef()
+
   const [cookies, setCookie] = useCookies(['user']);
-  console.log('currentUser111', signedUser )
+
   //Form States
   const [email, setEmailState] = useState({ value: '', errorMessage: null })
   const [password, setPasswordState] = useState({ value: '', errorMessage: null })
@@ -137,9 +137,9 @@ const Login = props => {
     setFormError(errPayload)
   }
   const handleSuccessfulSubmit = (token) => {
-    setToken({variables: {token}}).then(({data})=>{
+    SET_TOKEN({variables: {token}}).then(({data})=>{
       setCookie('user', token)
-      const signedUser = data.setToken
+      const signedUser = data['SET_TOKEN']
       setAuth(signedUser.authenticated)
     })
   }
@@ -250,8 +250,8 @@ Login.propTypes = {
 }
 
 export default compose(
-  graphql(setToken, {name: 'setToken'}),
-  graphql(getToken, {
+  graphql(SET_TOKEN, {name: 'SET_TOKEN'}),
+  graphql(GET_TOKEN, {
     props: ({ data: { signedUser, loading} }) => ({
       signedUser,
       loading

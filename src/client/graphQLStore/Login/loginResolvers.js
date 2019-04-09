@@ -5,7 +5,6 @@ export default {
   Mutation: {
     setToken: (_, { token }, { cache }) => {
       const decodedToken = jwt.decode(token);
-      console.log('decodedToken', decodedToken)
       const query = gql `
         query signedUser{
           signedUser @client {
@@ -26,7 +25,6 @@ export default {
           iat: decodedToken.iat,
         }
       }
-      console.log('resolver', data)
       cache.writeData({ query, data })
       return data.signedUser
     },

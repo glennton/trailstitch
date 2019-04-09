@@ -9,8 +9,7 @@ import { hot } from 'react-hot-loader'
 //UI Elements
 import Grid from '@material-ui/core/Grid'
 
-//Development Data
-//import DummyData from 'Utils/DummyData'
+//GraphQL Store
 
 //Utils
 

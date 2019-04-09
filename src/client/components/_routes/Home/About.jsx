@@ -7,7 +7,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 import { Typography } from '@material-ui/core';
 import { jssWrapper, jssWrapperPadding } from 'Styles/globalStyles'
-//Development Data
+
+//GraphQL Store
 import DummyData from 'Utils/DummyData'
 
 //Utils

@@ -4,7 +4,7 @@ const typeDefs = gql`
 
   # Type Declarations
   type GpxRoute {
-    _id: ID!,
+    ownerId: ID!,
     name: String,
     totalDistance: Float,
     dayCount: Int,
@@ -91,7 +91,8 @@ const typeDefs = gql`
 
   type Mutation {
     createGpxRoute(
-      name: String!,
+      ownerId: ID!,
+      name: String,
       totalDistance: Float,
       dayCount: Int,
       dateFirst: String,

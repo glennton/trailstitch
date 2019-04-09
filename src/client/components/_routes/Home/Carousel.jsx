@@ -10,7 +10,7 @@ import Icon from '@material-ui/core/Icon';
 import Slider from 'Utils/StupidSlider'
 import Typography from '@material-ui/core/Typography';
 
-//Development Data
+//GraphQL Store
 import DummyData from 'Utils/DummyData'
 
 //Utils

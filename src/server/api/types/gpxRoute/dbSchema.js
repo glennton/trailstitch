@@ -1,10 +1,12 @@
 import mongoose from 'mongoose'
 import TrackPointSchema from '../common/commonDbSchemas'
 
+const Schema = mongoose.Schema
+
 // Set user schema
-const dbSchema = new mongoose.Schema({
+const dbSchema = new Schema({
   name: String,
-  id: String,
+  ownerId: { type: Schema.Types.ObjectId, ref: 'User' },
   totalDistance: Number,
   dayCount: Number,
   dateFirst: String,

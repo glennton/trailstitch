@@ -10,8 +10,7 @@ import { hot } from 'react-hot-loader'
 import Grid from '@material-ui/core/Grid'
 //import HUE from '@material-ui/core/colors/HUE';
 
-//Development Data
-//import DummyData from 'Utils/DummyData'
+//GraphQL Store
 
 //Utils
 

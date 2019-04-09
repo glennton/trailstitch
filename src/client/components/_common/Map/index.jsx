@@ -7,16 +7,18 @@ import { hot } from 'react-hot-loader'
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
+import { Typography } from '@material-ui/core';
+import Snackbar from '@material-ui/core/Snackbar';
 
-//Development Data
+//GraphQL Store
 
 //Utils
 //import API_KEYS from 'ClientConfig/API_KEYS'
 
 //Components
 import GoogleMapReact from 'google-map-react';
-import Snackbar from '@material-ui/core/Snackbar';
-import { Typography } from '@material-ui/core';
+
+
 
 
 const styles = theme => ({

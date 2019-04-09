@@ -1,5 +1,5 @@
 //Core
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import readGpxUpload from 'Common/HandleGPXDrag/readGpxUpload'
@@ -8,7 +8,7 @@ import { withSnackbar } from 'notistack';
 import classnames from 'classnames'
 import { hot } from 'react-hot-loader'
 
-//Development Data
+//GraphQL Store
 import DummyGPX from 'Utils/DummyGPX'
 
 //UI Elements
@@ -16,6 +16,9 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography';
 import pink from '@material-ui/core/colors/pink';
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button'
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import Cancel from '@material-ui/icons/Cancel';
 
 //Utils
 import describeGPX from 'Utils/mapUtils/describeGPX'
@@ -39,7 +42,7 @@ const styles = theme => ({
     height: `100%`,
     width: `100%`,
     background: theme.palette.secondary.main,
-    zIndex: 9999,
+    zIndex: 1000,
   },
   uploadText: {
     color: pink[50],
@@ -59,136 +62,142 @@ const styles = theme => ({
     top: 2 * theme.spacing.unit,
     right: 2 * theme.spacing.unit,
     color: '#fff'
+  },
+  buttonContainer: {
+    paddingTop: 2 * theme.spacing.unit,
+    paddingBottom: 2 * theme.spacing.unit,
   }
 })
 
-class HandleGPXDrag extends React.Component {
+const HandleGPXDrag = (props) => {
+  const { children, classes, enqueueSnackbar } = props
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      dragging: false,
-      fileLoaded: false,
-      expanded: false,
-      gpx: null,
-      uploadOverlayActive: false,
-    }
-    this.dropRef = React.createRef()
-  }
+  const dropRef = React.createRef()
+  const [isExpanded, setIsExpanded] = useState(false)
+  //const [dragIncrementer, setDragIncrementer] = useState(1)
+  const [gpx, setGpx] = useState(null)
+  const [isOverlayActive, setIsOverlayActive] = useState(false)
+ 
+  let counter = 0
 
-  componentDidMount() {
-    console.log(this.dropRef)
-    this.dragCounter = 0
-    let e = this.dropRef.current
-    e.addEventListener('dragenter', this.handleDragIn)
-    e.addEventListener('dragleave', this.handleDragOut)
-    e.addEventListener('dragover', this.handleDrag)
-    e.addEventListener('drop', this.handleDrop)
+ 
+  useEffect(() => {
 
     //FOR TESTING ONLY
-    // describeGPX(DummyGPX).then((res) => {
-    //   this.setState({
-    //     gpx: res,
-    //     fileLoaded: true,
-    //   })
-    // }).catch(err => err /*TODO Add error message*/)
-  }
+    //
+    //
+    describeGPX(DummyGPX).then((res) => {
+      setGpx(res)
+    }).catch(err => err /*TODO Add error message*/)
+    setIsOverlayActive(true)
+    //
+    //
+    //FOR TESTING ONLY
 
-  componentWillUnmount() {
-    let e = this.dropRef.current
-    e.removeEventListener('dragenter', this.handleDragIn)
-    e.removeEventListener('dragleave', this.handleDragOut)
-    e.removeEventListener('dragover', this.handleDrag)
-    e.removeEventListener('drop', this.handleDrop)
-  }
-
-  handleExpandClick = () => {
-    this.setState(state => ({ expanded: !state.expanded }));
+    let e = dropRef.current
+    if (e){
+      e.addEventListener('dragenter', handleDragIn)
+      e.addEventListener('dragleave', handleDragOut)
+      e.addEventListener('dragover', handleDrag)
+      e.addEventListener('drop', handleDrop)
+    }
+  }, [dropRef.current])
+  
+  const handleExpandClick = () => {
+    setIsExpanded(!isExpanded)
   };
 
-  clearFileLoad = (e) => {
+  const clearFileLoad = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.setState({ fileLoaded: false, gpx: { gpxData: {} } })
+    setIsOverlayActive(false)
+    setGpx(null)
   }
 
-  handleDrag = (e) => {
+  const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
   }
 
-  handleDragIn = (e) => {
+  const handleDragIn = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.dragCounter++
+    counter++
     if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-      this.setState({ uploadOverlayActive: true })
+      setIsOverlayActive(true)
     }
   }
-
-  handleDragOut = (e) => {
+  const handleDragOut = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.dragCounter--
-    if (this.dragCounter > 0) return
-    this.setState({ uploadOverlayActive: false })
+    counter--
+    if (counter > 0) return
+    setIsOverlayActive(false)
   }
 
-  handleDrop = (e) => {
-    const { enqueueSnackbar } = this.props
+  const handleDrop = (e) => {
     e.preventDefault();
     readGpxUpload(e)
       .then((res) => {
-        console.log(res)
         enqueueSnackbar('Done!')
-        this.dragCounter = 0;
-        this.setState({
-          fileLoaded: true,
-          gpx: res,
-        })
+        counter = 0
+        setGpx(res)
       }).catch((err) => {
         console.log(err)
-        this.setState({ uploadOverlayActive: false });
-        this.dragCounter = 0;
+        setIsOverlayActive(false)
+        counter = 0
         //TODO Make Error Notification
       })
   }
-
-  render() {
-    const { children, classes } = this.props
-    const { uploadOverlayActive, fileLoaded, gpx } = this.state
-    
-    return(
-      <div ref={this.dropRef} className={classes.dropContainer}>
-        {children}
-        {uploadOverlayActive ? (
-          <Grid container className={classes.uploadBgActive}>
-            <IconButton className={classes.closeIcon} onClick={this.clearFileLoad}>
-              <CloseIcon />
-            </IconButton>
-            <Grid container alignContent="center" justify="center">
-              {!fileLoaded ? (
-                <Typography variant="h4" className={classes.uploadText}> Drop anywhere </Typography>
-              ): ''}
-              {fileLoaded ? (
-                <Grid item className={classes.uploadConfirmationBox}>
+ 
+  return(
+    <div ref={dropRef} className={classes.dropContainer}>
+      {children}
+      {isOverlayActive ? (
+        <Grid container className={classes.uploadBgActive}>
+          <IconButton className={classes.closeIcon} onClick={clearFileLoad}>
+            <CloseIcon />
+          </IconButton>
+          <Grid container alignContent="center" justify="center">
+            {!gpx ? (
+              <Typography variant="h4" className={classes.uploadText}> Drop anywhere </Typography>
+            ): ''}
+            {gpx ? (
+              <Grid item className={classes.uploadConfirmationBox}>
+                <Grid>
                   <Typography align="center" variant="h6" className={classes.uploadText}>Ready to upload!</Typography>
                   <Typography align="center" variant="subtitle1" gutterBottom className={classes.uploadText}>
                     {`From your GPX track, it looks like you went on a trip on
                     ${gpx.dateFirst ? format(parseISO(gpx.dateFirst), ' MMMM d, yyyy ') : ''}
                     traveling over 
                     ${gpx.days.length} 
-                    days.`}                     
+                    days. You can edit this later.`}                     
                   </Typography>
+                </Grid>  
+                <Grid container justify="center" spacing={32} className={classes.buttonContainer}>
+                  <Grid item>
+                    <Button variant="contained" color="primary" className={classes.button}>
+                      <CloudUploadIcon className={classes.rightIcon} />
+                        &nbsp;&nbsp;Upload
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button variant="outlined" color="default" className={classes.button}>
+                      <Cancel className={classes.rightIcon} />
+                      &nbsp;&nbsp;Cancel                      
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Grid>
                   <TrackDetails gpx={gpx} primaryColor="#fff" secondaryColor="#000" />
                 </Grid>
-              ) : ''}
-            </Grid>
-          </Grid> 
-        ): ''}
-      </div>
-    )
-  }
+              </Grid>
+            ) : ''}
+          </Grid>
+        </Grid> 
+      ): ''}
+    </div>
+  )
 }
 
 HandleGPXDrag.propTypes = {

@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { NavLink } from 'react-router-dom'
 import compose from 'recompose/compose';
 import { hot } from 'react-hot-loader'
+import { jssWrapper } from 'Styles/globalStyles'
 
 //UI Elements
 import AppBar from '@material-ui/core/AppBar'
@@ -18,11 +19,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
-import { jssWrapper } from 'Styles/globalStyles'
-
-//Development Data
-import DummyData from 'Utils/DummyData'
 import { Grid } from '@material-ui/core';
+
+//GraphQL Store
+import DummyData from 'Utils/DummyData'
+
 
 //import DummyData from 'Utils/DummyData'
 

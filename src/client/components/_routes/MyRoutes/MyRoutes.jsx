@@ -20,7 +20,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
-//Development Data
+//GraphQL Store
 import DummyStitch from 'Utils/DummyStitch'
 import DummyData from 'Utils/DummyData'
 

@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 //UI Elements
 import Grid from '@material-ui/core/Grid'
 
-//Development Data
+//GraphQL Store
 import DummyData from 'Utils/DummyData'
 
 //Utils

@@ -9,10 +9,8 @@ import { hot } from 'react-hot-loader'
 //UI Elements
 import { jssWrapper, jssModalWrapperOuter } from 'Styles/globalStyles'
 import Grid from '@material-ui/core/Grid'
-//import HUE from '@material-ui/core/colors/HUE';
 
-//Development Data
-//import DummyData from 'Utils/DummyData'
+//GraphQL Store
 
 //Utils
 
@@ -25,36 +23,16 @@ const styles = () => ({
   },
 })
 
-class CONTAINER extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+CONTAINER = (props) => {
+  const { classes } = props;
 
-    }
-  }
+  return (
+    <Grid container direction="row" className={classes.CONTAINERWrapper}>
+      <>
+      </>
+    </Grid>
+  );
 
-  componentDidMount() {
-    this.setState({
-      //
-    })
-  }
-  componentWillReceiveProps() {
-    if (this.props) {
-      this.setState({
-        //
-      })
-    }
-  }
-
-  render() {
-    const { classes } = this.props;
-    return (
-      <Grid container direction="row" className={classes.CONTAINERWrapper}>
-        <>
-        </>
-      </Grid>
-    );
-  }
 }
 
 CONTAINER.propTypes = {

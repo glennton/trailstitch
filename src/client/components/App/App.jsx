@@ -11,7 +11,7 @@ import { useCookies } from 'react-cookie';
 import { graphql } from "react-apollo";
 
 //Data
-import setToken from 'GraphQLStore/Login/setToken'
+import SET_TOKEN from 'GraphQLStore/Login/SET_TOKEN'
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
@@ -47,7 +47,7 @@ const App = (props) => {
   const [cookies] = useCookies(['user']);
   const token = cookies.user || null
   const checkCookiesAndSetToken = async()=>{
-    await setToken({ variables: { token: token } })
+    await SET_TOKEN({ variables: { token: token } })
   }
   const renderApp = (
     <Grid container direction="column" className={classes.appContainer}>
@@ -97,7 +97,7 @@ App.propTypes = {
 }
 
 export default compose(
-  graphql(setToken, { name: 'setToken' }),
+  graphql(SET_TOKEN, { name: 'SET_TOKEN' }),
   hot(module),
   withStyles(styles)
 )(App)

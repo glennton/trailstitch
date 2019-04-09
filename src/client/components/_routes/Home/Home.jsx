@@ -8,7 +8,7 @@ import { hot } from 'react-hot-loader'
 //UI Elements
 import Grid from '@material-ui/core/Grid'
 
-//Development Data
+//GraphQL Store
 
 //Utils
 

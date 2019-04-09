@@ -15,7 +15,7 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
 
-//Development Data
+//GraphQL Store
 import DummyStitch from 'Utils/DummyStitch'
 import DummyPoints from 'Utils/DummyPoints'
 

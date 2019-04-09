@@ -17,10 +17,9 @@ import validator from 'validator';
 import { jssWrapper, jssModalWrapperOuter, jssModalWrapperInner } from 'Styles/globalStyles'
 import Typography from '@material-ui/core/Typography'
 
-//Development Data
-import CREATE_USER from 'GQL/CREATE_USER'
-import setToken from 'GraphQLStore/Login/setToken'
-//import DummyData from 'Utils/DummyData'
+//GraphQL Store
+import CREATE_USER from 'GraphQLStore/User/CREATE_USER'
+import SET_TOKEN from 'GraphQLStore/Login/SET_TOKEN'
 
 //Utils
 import validatePassword from './passwordValidation'
@@ -62,7 +61,7 @@ const styles = theme => ({
 
 const CreateAccount = (props) => {
 
-  const { classes, setToken } = props;
+  const { classes, SET_TOKEN } = props;
 
   const [firstName, setFirstNameState] = useState({ value: '', errorMessage: null })
   const [lastName, setLastNameState] = useState({ value: '', errorMessage: null })
@@ -136,7 +135,7 @@ const CreateAccount = (props) => {
   }
 
   const handleSuccessfulSubmit = (token) => {
-    setToken({ variables: { token } })
+    SET_TOKEN({ variables: { token } })
     setFirstNameState({ value: '', errorMessage: null })
     setLastNameState({ value: '', errorMessage: null })
     setEmailState({ value: '', errorMessage: null })
@@ -253,11 +252,11 @@ CreateAccount.propTypes = {
   classes: PropTypes.shape({
 
   }).isRequired,
-  setToken: PropTypes.func.isRequired,
+  SET_TOKEN: PropTypes.func.isRequired,
 }
 
 export default compose(
-  graphql(setToken, { name: 'setToken' }),
+  graphql(SET_TOKEN, { name: 'SET_TOKEN' }),
   hot(module),
   withStyles(styles)
 )(CreateAccount)
