@@ -21,7 +21,8 @@ class User extends Model {
         'firstName',
         'lastName',
         'email',
-        'password'
+        'password',
+        'gpxRecord',
       ]);
     } catch (error) {
       throw error;
@@ -46,7 +47,7 @@ class User extends Model {
         }},
         (res)=>console.log(res)
       );
-      return UserResponse._id
+      return UserResponse
     } catch (err) {
       throw err;
     }

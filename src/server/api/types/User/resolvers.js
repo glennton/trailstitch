@@ -9,6 +9,19 @@ import validatePassword from 'Config/validatePassword'
 import User from './User'
 import GpxRecord from '../gpxRecord/GpxRecord'
 
+const signToken = async (privateUser) => {
+  const expiry = JWT_EXPIRY()
+  const signedUser = {
+    firstName: privateUser.firstName,
+    lastName: privateUser.lastName,
+    authenticated: true,
+    gpxRecord: privateUser.gpxRecord,
+    privs: privateUser.privs || ''
+  }
+  return jwt.sign( signedUser, JWT_SECRET, { expiresIn: expiry })
+}
+
+
 const resolvers = {
   Query: {
     // async exampleFunction(obj, params, context, info){
@@ -34,29 +47,27 @@ const resolvers = {
           throw new AuthenticationError('Authentication Error')
         }
       }
-      const signToken = async (privateUser) => {
-        const expiry = JWT_EXPIRY()
-        const signedUser = {
-          firstName: privateUser.firstName,
-          lastName: privateUser.lastName,
-          authenticated: true,
-          privs: privateUser.privs || ''
-        }
-        return jwt.sign({ signedUser }, JWT_SECRET, { expiresIn: expiry })
-      }
+      // const signToken = async (privateUser) => {
+      //   const expiry = JWT_EXPIRY()
+      //   const signedUser = {
+      //     firstName: privateUser.firstName,
+      //     lastName: privateUser.lastName,
+      //     authenticated: true,
+      //     gpxRecord: privateUser.gpxRecord,
+      //     privs: privateUser.privs || ''
+      //   }
+      //   return jwt.sign({ signedUser }, JWT_SECRET, { expiresIn: expiry })
+      // }
       try {
-
         const privateUser = await getUser(email)
         const isValid = await validatePassword(privateUser)
         const token = await signToken(privateUser)
-
         if (isValid && token){
           return { success: true, payload: [{ type: 'token', value: token }] }
         }else{
           throw new AuthenticationError('Authentication Error')
         }        
-      }catch(err){
-        
+      }catch(err){        
         let returnObj = { success: false, payload: [] }
         if (err instanceof AuthenticationError) {
           returnObj.payload.push(
@@ -111,9 +122,12 @@ const resolvers = {
         const NewUser = await defineNewUser(hashedPassword)
         const NewUserId = await User.createUser(NewUser)
         const recordId = await GpxRecord.createBlankRecord()
-        await User.attachRecord(NewUserId, recordId)
-        return { success: true }
+        const privateUser = await User.attachRecord(NewUserId, recordId)
+        const token = await signToken(privateUser)
+        console.log('token', token)
+        return { success: true, payload: [{ type: 'token', value: token }] }
       }catch(err){
+        console.log(err)
         let returnObj = { success: false, payload: [] }
         if (err instanceof UserInputError){
           const { message, type } = err

@@ -86,12 +86,12 @@ class HandleGPXDrag extends React.Component {
     e.addEventListener('drop', this.handleDrop)
 
     //FOR TESTING ONLY
-    describeGPX(DummyGPX).then((res) => {
-      this.setState({
-        gpx: res,
-        fileLoaded: true,
-      })
-    }).catch(err => err /*TODO Add error message*/)
+    // describeGPX(DummyGPX).then((res) => {
+    //   this.setState({
+    //     gpx: res,
+    //     fileLoaded: true,
+    //   })
+    // }).catch(err => err /*TODO Add error message*/)
   }
 
   componentWillUnmount() {

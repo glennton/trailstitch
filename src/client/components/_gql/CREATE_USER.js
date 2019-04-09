@@ -18,6 +18,7 @@ const CREATE_USER = gql `
       payload{
         type
         message
+        value
       }
     }
   }

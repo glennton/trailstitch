@@ -1,5 +1,5 @@
 //Core
-import React, { lazy, Suspense } from 'react'
+import React, { lazy, Suspense, useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom';
 import './styles.scss'
 import PropTypes from 'prop-types'
@@ -7,6 +7,11 @@ import { SnackbarProvider } from 'notistack';
 import compose from 'recompose/compose';
 import { hot } from 'react-hot-loader'
 import { withStyles } from '@material-ui/core/styles';
+import { useCookies } from 'react-cookie';
+import { graphql } from "react-apollo";
+
+//Data
+import setToken from 'GraphQLStore/Login/setToken'
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
@@ -15,24 +20,14 @@ import Grid from '@material-ui/core/Grid'
 import Home from 'Routes/Home/Home'
 import MainNav from 'Common/MainNav'
 import FooterNav from 'Common/FooterNav'
-
-//import Albums from 'Routes/Albums/Albums'
-// import MyRoutes from 'Routes/MyRoutes/MyRoutes'
-// import Stitches from 'Routes/Stitches/Stitches'
-// import StitchEditor from 'Routes/StitchEditor/StitchEditor'
-// import Upload from 'Routes/Upload/Upload'
-// import Account from 'Routes/Account/Account'
-// import CreateAccount from 'Routes/CreateAccount/CreateAccount'
-
-
 import HandleGPXDrag from 'Common/HandleGPXDrag'
-const Albums = React.lazy(() => import("Routes/Albums/Albums"));
-const MyRoutes = React.lazy(() => import("Routes/MyRoutes/MyRoutes"));
-const Stitches = React.lazy(() => import("Routes/Stitches/Stitches"));
-const StitchEditor = React.lazy(() => import("Routes/StitchEditor/StitchEditor"));
-const Upload = React.lazy(() => import("Routes/Upload/Upload"));
-const Account = React.lazy(() => import("Routes/Account/Account"));
-const CreateAccount = React.lazy(() => import("Routes/CreateAccount/CreateAccount"));
+const Albums = React.lazy(() => import("Routes/Albums/Albums"))
+const MyRoutes = React.lazy(() => import("Routes/MyRoutes/MyRoutes"))
+const Stitches = React.lazy(() => import("Routes/Stitches/Stitches"))
+const StitchEditor = React.lazy(() => import("Routes/StitchEditor/StitchEditor"))
+const Upload = React.lazy(() => import("Routes/Upload/Upload"))
+const Account = React.lazy(() => import("Routes/Account/Account"))
+const CreateAccount = React.lazy(() => import("Routes/CreateAccount/CreateAccount"))
 
 
 const styles = theme => ({
@@ -46,9 +41,15 @@ const styles = theme => ({
   }
 })
 
-function App(props) {
-  const { classes } = props
-  return (
+const App = (props) => {
+
+  const { classes, setToken } = props
+  const [cookies] = useCookies(['user']);
+  const token = cookies.user || null
+  const checkCookiesAndSetToken = async()=>{
+    await setToken({ variables: { token: token } })
+  }
+  const renderApp = (
     <Grid container direction="column" className={classes.appContainer}>
       <SnackbarProvider maxSnack={3}>
         <HandleGPXDrag>
@@ -57,13 +58,13 @@ function App(props) {
             <Switch>
               <Suspense fallback={<div>Loading...</div>}>
                 <Route exact path="/" component={Home} />
-                <Route path="/albums" component={Albums} />
-                <Route path="/myroutes" component={MyRoutes} />
-                <Route path="/stitches" component={Stitches} />
-                <Route path="/upload" component={Upload} />
-                <Route path="/account" component={Account} />
-                <Route path="/editor" component={StitchEditor} />
-                <Route path="/create" component={CreateAccount} />
+                <Route path="/albums" render={() => <Albums />} />
+                <Route path="/myroutes" render={() => <MyRoutes />} />
+                <Route path="/stitches" render={() => <Stitches />} />
+                <Route path="/upload" render={() => <Upload />} />
+                <Route path="/account" render={() => <Account />} />
+                <Route path="/editor" render={() => <StitchEditor />} />
+                <Route path="/create" render={() => <CreateAccount />} />
               </Suspense>
             </Switch>
           </Grid>
@@ -71,7 +72,22 @@ function App(props) {
         </HandleGPXDrag>
       </SnackbarProvider>
     </Grid>
-  );
+  )
+  checkCookiesAndSetToken()
+  return renderApp
+  //checkCookiesAndSetToken().then(() => renderApp)
+  // try{
+  //   checkCookiesAndSetToken().then(() => renderApp)
+  // }catch(err){
+  //   console.log(err)
+  // }finally{
+  //   return renderApp
+  // }
+
+  
+  console.log('App Set Cookie')
+
+
 }
 
 App.propTypes = {
@@ -81,6 +97,7 @@ App.propTypes = {
 }
 
 export default compose(
+  graphql(setToken, { name: 'setToken' }),
   hot(module),
   withStyles(styles)
 )(App)

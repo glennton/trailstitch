@@ -23,7 +23,7 @@ const styles = () => ({
   }
 })
 
-function Home (props){
+const Home = (props) => {
   const { classes } = props;
   return (
     <Grid container>

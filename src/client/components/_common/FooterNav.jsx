@@ -18,34 +18,20 @@ const styles = theme => ({
   },
 })
 
-class FooterNav extends React.Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      value: 0
-    }
-    this.handleChange = this.handleChange.bind(this)
-  }
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
-  render() {
-    const { classes } = this.props;
-    const { value } = this.state
-    return (
-      <Grid className={classes.footerContainer}>
-        <BottomNavigation
-          value={value}
-          onChange={this.handleChange}
-          showLabels          
-        >
-          <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-          <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-          <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
-        </BottomNavigation>
-      </Grid>
-    );
-  }
+const FooterNav = (props) => {
+  const { classes } = props;
+
+  return (
+    <Grid className={classes.footerContainer}>
+      <BottomNavigation
+        showLabels          
+      >
+        <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
+        <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
+        <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
+      </BottomNavigation>
+    </Grid>
+  );
 }
   
 FooterNav.propTypes = {

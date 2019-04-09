@@ -9,12 +9,23 @@ import resolvers from './resolvers'
 
 const cache = new InMemoryCache();
 
+// persistCache({
+//   cache,
+//   storage: window.localStorage,
+// });
+
+
 const defaultState = {
-  currentUser: {
-    __typename: 'CurrentUser',
+  signedUser: {
+    __typename: 'signedUser',
     isLoggedIn: false,
     token: null,
-    recordRef: 'test'
+    recordRef: 'test',
+    firstName: '',
+    lastName: '',
+    exp: '',
+    iat: '',
+
   }
 }
 

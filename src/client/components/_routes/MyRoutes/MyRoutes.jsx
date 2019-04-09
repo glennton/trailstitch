@@ -150,7 +150,6 @@ class MyRoutes extends React.Component {
     const { slides, routeOptionAnchorEl } = this.state
     const { classes } = this.props
     return slides.map((e)=>{
-      console.log(e)
       return (
         <Grid item key={e.id} sm={3}>
           <Paper>

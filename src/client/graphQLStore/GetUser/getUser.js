@@ -2,10 +2,14 @@ import gql from 'graphql-tag';
 
 export default gql `
   query {
-    currentUser @client {
+    signedUser @client {
+      firstName
       isLoggedIn,
       token,
-      recordRef
+      recordRef,
+      lastName
+      exp
+      iat
     }
   }
 `

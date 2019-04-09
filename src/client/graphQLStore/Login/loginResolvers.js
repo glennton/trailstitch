@@ -1,30 +1,34 @@
 import gql from 'graphql-tag'
+import jwt from 'jsonwebtoken'
 
 export default {
   Mutation: {
     setToken: (_, { token }, { cache }) => {
-      
-      const query = gql`
-        query currentUser{
-          currentUser @client {
+      const decodedToken = jwt.decode(token);
+      console.log('decodedToken', decodedToken)
+      const query = gql `
+        query signedUser{
+          signedUser @client {
             token,
             isLoggedIn,
           }
         }
       `
-
       const prevState = cache.readQuery({ query })
       const data = {
         ...prevState,
-        currentUser: {
-          ...prevState.currentUser,
-          token,
+        signedUser: {
+          ...prevState.signedUser,
+          ...decodedToken,
+          token: token,
           isLoggedIn: true,
+          exp: decodedToken.exp,
+          iat: decodedToken.iat,
         }
       }
+      console.log('resolver', data)
       cache.writeData({ query, data })
-      console.log('query', cache.readQuery({ query }))
-      return null
+      return data.signedUser
     },
   }
 }
