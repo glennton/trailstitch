@@ -5,6 +5,7 @@ const typeDefs = gql`
   # Type Declarations
   type GpxRoute {
     ownerId: ID!,
+    gpxRecord: ID,
     name: String,
     totalDistance: Float,
     dayCount: Int,
@@ -17,7 +18,7 @@ const typeDefs = gql`
     overallElevationHighest: Float,
     overallElevationLowest: Float,
     info: Info,
-    days: [Day]
+    days: [Day],
   }  
 
   type Day {
@@ -85,13 +86,14 @@ const typeDefs = gql`
   }
 
   # Queries
-  type Query {
+  extend type Query {
     getOneGpxRoute(_id: String!): GpxRoute
   }
 
-  type Mutation {
+  extend type Mutation {
     createGpxRoute(
       ownerId: ID!,
+      gpxRecord: ID!,
       name: String,
       totalDistance: Float,
       dayCount: Int,
@@ -105,7 +107,7 @@ const typeDefs = gql`
       overallElevationLowest: Float,
       info: InfoInput,
       days: [DayInput]
-    ): GpxRoute
+    ): Response
   } 
 `;
 

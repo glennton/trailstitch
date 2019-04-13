@@ -1,10 +1,12 @@
 //Core
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles';
 import compose from 'recompose/compose';
 import { hot } from 'react-hot-loader'
 import { Mutation, graphql } from "react-apollo";
+import { useQuery } from "react-apollo-hooks";
+import jwt from 'jsonwebtoken'
 //import { useMutation } from 'react-apollo-hooks';
 
 //UI Elements
@@ -18,7 +20,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton'
 
 //GraphQL Store
-import GET_TOKEN from 'GraphQLStore/Login/GET_TOKEN'
+import UserContext from 'Context/UserContext'
+import GET_SIGNED_USER from 'GraphQLStore/User/GET_SIGNED_USER'
 import SET_TOKEN from 'GraphQLStore/Login/SET_TOKEN'
 import LOGIN from 'GraphQLStore/Login/LOGIN'
 
@@ -59,11 +62,10 @@ const styles = theme => ({
 
 const Login = props => {
 
-  const { classes, signedUser, SET_TOKEN } = props;
-
-  const popoverTarget = React.createRef()
-
+  const { classes, SET_TOKEN } = props;
   const [cookies, setCookie] = useCookies(['user']);
+  const { signedUser, token } = useContext(UserContext)
+  const popoverTarget = React.createRef()
 
   //Form States
   const [email, setEmailState] = useState({ value: '', errorMessage: null })
@@ -76,7 +78,6 @@ const Login = props => {
   const [signedUserName, setSignedUserName] = useState(false)
   
   //Token
-  //const { firstName = null, authenticated = null } = signedUser
   const fieldValidation = [
     {
       fieldData: email,
@@ -90,16 +91,19 @@ const Login = props => {
 
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    if (signedUser.isLoggedIn) {
+    if (signedUser) {
+      setAuth(signedUser.authenticated)
       setSignedUserName(signedUser.firstName)
-      setAuth(true)
-    }else{
-      setSignedUserName(false)
-      setAuth(false)
     }
-  }, [signedUser.isLoggedIn]);
+  }, [signedUser.authenticated]);
 
-  //const [passwordError, setPasswordErrorState] = useState(null)
+  const handlePopoverOpen = () => {
+    setPopoverState(true)
+  }
+  const handlePopoverClose = () => {
+    setPopoverState(false)
+  }
+
 
   const handleSubmitForm = (login) => (event) => {
     event.preventDefault();
@@ -117,9 +121,10 @@ const Login = props => {
       ).then(({ data }) => {
         const { login } = data
         const { success, payload } = login
-        const tokenPayload = parsePayload(payload, "token")
-        if (success && tokenPayload) {
-          handleSuccessfulSubmit(tokenPayload.value)
+        const userTokenPayload = parsePayload(payload, "userToken")
+        const userIdPayload = parsePayload(payload, "userId")
+        if (success && userTokenPayload && userIdPayload) {
+          handleSuccessfulSubmit(userTokenPayload.value, userIdPayload.value)
         } else {
           
           const error = parsePayload(payload, "authError").message
@@ -136,19 +141,16 @@ const Login = props => {
   const handleSubmitFormErrors = (errPayload = 'We apologize, an unknown error has occured. Please try logging in again.') => {    
     setFormError(errPayload)
   }
-  const handleSuccessfulSubmit = (token) => {
-    SET_TOKEN({variables: {token}}).then(({data})=>{
-      setCookie('user', token)
-      const signedUser = data['SET_TOKEN']
+  const handleSuccessfulSubmit = (userToken, userId) => {
+    SET_TOKEN({ variables: { token: userToken}}).then(({data})=>{
+      const signedUser = jwt.decode(userToken);
+      setCookie('userToken', userToken)
+      setCookie('userData', signedUser)
       setAuth(signedUser.authenticated)
+      setSignedUserName(signedUser.firstName)
+    }).catch((err)=>{
+      console.log(err)
     })
-  }
-
-  const handlePopoverOpen = () => {
-    setPopoverState(true)
-  }
-  const handlePopoverClose = () => {
-    setPopoverState(false)
   }
 
   return (
@@ -246,17 +248,11 @@ Login.propTypes = {
   classes: PropTypes.shape({
 
   }).isRequired,
-  setToken: PropTypes.func.isRequired,
+  SET_TOKEN: PropTypes.func.isRequired,
 }
 
 export default compose(
   graphql(SET_TOKEN, {name: 'SET_TOKEN'}),
-  graphql(GET_TOKEN, {
-    props: ({ data: { signedUser, loading} }) => ({
-      signedUser,
-      loading
-    })
-  }),
   hot(module),
   withStyles(styles)
 )(Login)

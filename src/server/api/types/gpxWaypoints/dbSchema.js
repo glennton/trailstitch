@@ -1,8 +1,11 @@
 import mongoose from 'mongoose'
 import TrackPointSchema from '../common/commonDbSchemas'
 
-const dbSchema = new mongoose.Schema({
-  gpxWaypoints: {
+const Schema = mongoose.Schema
+
+const dbSchema = new Schema({
+  ownerId: { type: Schema.Types.ObjectId, ref: 'User' },
+  gpxWaypoints: [{
     dateKey: String,
     contentId: String,
     pointType: String,
@@ -19,7 +22,7 @@ const dbSchema = new mongoose.Schema({
     ele: Number,
     time: String,
     uuid: String
-  }
+  }]
 })
 
 export default dbSchema

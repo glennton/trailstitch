@@ -1,5 +1,5 @@
 //Core
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { NavLink } from 'react-router-dom'
@@ -23,7 +23,7 @@ import { Grid } from '@material-ui/core';
 
 //GraphQL Store
 import DummyData from 'Utils/DummyData'
-
+import UserContext from 'Context/UserContext'
 
 //import DummyData from 'Utils/DummyData'
 
@@ -65,6 +65,7 @@ const MainNav = (props) => {
   const { classes } = props 
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const navLinks = DummyData(['pageNavItems']).pageNavItems
+  const {signedUser} = useContext(UserContext)
 
   const makeNavLinks = () => {
     return(
@@ -119,7 +120,7 @@ const MainNav = (props) => {
 MainNav.propTypes = {
   classes: PropTypes.shape({
 
-  }).isRequired
+  }).isRequired,
 }
 
 export default compose(

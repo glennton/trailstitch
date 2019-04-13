@@ -3,7 +3,7 @@ import { gql } from 'apollo-server-express'
 const typeDefs = gql`
   type GpxWaypoints {
     _id: ID!,
-    routeRefID: ID,
+    ownerId: ID,
     waypoints: [Waypoint]
   }
   type Waypoint {

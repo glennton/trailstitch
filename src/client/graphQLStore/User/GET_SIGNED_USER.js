@@ -1,15 +1,15 @@
 import gql from 'graphql-tag';
 
 export default gql `
-  query {
-    signedUser @client {
-      firstName
-      isLoggedIn,
-      token,
-      recordRef,
-      lastName
-      exp
-      iat
+  query SignedUser($_id: String!) {
+    signedUser(_id: $_id) @client {
+      _id,
+      firstName,
+      lastName,
+      gpxRecord,
+      exp,
+      iat,
+      authenticated,
     }
   }
 `

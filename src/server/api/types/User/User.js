@@ -4,11 +4,11 @@ import dbSchema from './dbSchema'
 const Model = mongoose.model('users', dbSchema, 'users');
 
 class User extends Model {
-  static async checkIfUserFieldExists(userObj) {
+  static async checkIfUserFieldExists(userObj, fieldsToReturn = []) {
     try {
-      const response = await User.findOne(userObj, ['_id']);
+      const response = await User.findOne(userObj, [...fieldsToReturn]);
       console.log(userObj, response)
-      return response !== null
+      return response ? response : null
     } catch (error) {
       throw error;
     }

@@ -20,6 +20,25 @@ class GpxRecord extends Model {
       const newGpxRecord = await GpxRecord.save();
       return newGpxRecord._id
     } catch (err) {
+      console.log('ERRRRRRR' ,err)
+      throw err;
+    }
+  }
+  static async addNewRecord(ownerId, gpxWaypoints, gpxRoute ) {
+    console.log('static async addNewRecord', ownerId, gpxWaypoints, gpxRoute)
+    try {
+      const newRecord = await Model.findOneAndUpdate({
+          ownerId,
+        }, {
+          $push: { gpxRoutes: {
+            gpxRoute,
+            gpxWaypoints
+          }}
+        },
+        (res) => console.log(res)
+      );
+      return newRecord._id
+    } catch (err) {
       throw err;
     }
   }

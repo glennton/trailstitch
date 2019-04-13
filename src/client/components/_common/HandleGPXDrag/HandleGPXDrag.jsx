@@ -5,11 +5,12 @@ import { withStyles } from '@material-ui/core/styles';
 import readGpxUpload from 'Common/HandleGPXDrag/readGpxUpload'
 import compose from 'recompose/compose';
 import { withSnackbar } from 'notistack';
-import classnames from 'classnames'
 import { hot } from 'react-hot-loader'
+import { graphql } from "react-apollo";
+import { useCookies } from 'react-cookie';
 
 //GraphQL Store
-import DummyGPX from 'Utils/DummyGPX'
+import CREATE_GPX from 'GraphQLStore/Gpx/CREATE_GPX'
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
@@ -70,7 +71,10 @@ const styles = theme => ({
 })
 
 const HandleGPXDrag = (props) => {
-  const { children, classes, enqueueSnackbar } = props
+  const { children, classes, CREATE_GPX, enqueueSnackbar } = props
+
+  const [cookies, setCookie] = useCookies(['user']);
+  const signedUser = cookies.userData || null
 
   const dropRef = React.createRef()
   const [isExpanded, setIsExpanded] = useState(false)
@@ -80,16 +84,15 @@ const HandleGPXDrag = (props) => {
  
   let counter = 0
 
- 
   useEffect(() => {
 
     //FOR TESTING ONLY
     //
     //
-    describeGPX(DummyGPX).then((res) => {
-      setGpx(res)
-    }).catch(err => err /*TODO Add error message*/)
-    setIsOverlayActive(true)
+    // describeGPX(DummyGPX).then((res) => {
+    //   setGpx(res)
+    // }).catch(err => err /*TODO Add error message*/)
+    // setIsOverlayActive(true)
     //
     //
     //FOR TESTING ONLY
@@ -150,6 +153,27 @@ const HandleGPXDrag = (props) => {
       })
   }
  
+  const handleSubmit = () => {
+    console.log('data', {
+      variables: {
+        ...gpx,
+        ownerId: signedUser._id,
+        gpxRecord: signedUser.gpxRecord,
+      }})
+    CREATE_GPX({
+      variables : {
+        ...gpx,
+        ownerId: signedUser._id,
+        //gpxRecord: signedUser.gpxRecord || "",
+        gpxRecord: "",
+      }
+    }).then((res)=>{
+      console.log('res', res)
+    }).catch((err) => {
+      console.log('err', err)
+    })
+  }
+
   return(
     <div ref={dropRef} className={classes.dropContainer}>
       {children}
@@ -176,7 +200,7 @@ const HandleGPXDrag = (props) => {
                 </Grid>  
                 <Grid container justify="center" spacing={32} className={classes.buttonContainer}>
                   <Grid item>
-                    <Button variant="contained" color="primary" className={classes.button}>
+                    <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>
                       <CloudUploadIcon className={classes.rightIcon} />
                         &nbsp;&nbsp;Upload
                     </Button>
@@ -211,6 +235,7 @@ HandleGPXDrag.propTypes = {
 }
 
 export default compose(
+  graphql(CREATE_GPX, { name: 'CREATE_GPX' }),
   withSnackbar,
   hot(module),
   withStyles(styles)

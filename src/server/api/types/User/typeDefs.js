@@ -10,7 +10,17 @@ const typeDefs = gql`
     firstName: String,
     lastName: String,
     email: String,
-    gpxRecord: ID
+    gpxRecord: ID,
+    token: String,
+  }
+  type SignedUser {
+    _id: ID!,
+    firstName: String,
+    lastName: String,
+    gpxRecord: String,
+    exp: String,
+    iat: String,
+    authenticated: Boolean
   }
   extend type Query {
     getOneUser(_id: String!): User
@@ -26,6 +36,9 @@ const typeDefs = gql`
       password: String!,
       email: String!,
     ): Response
+    validateToken(
+      token: String!
+    ): SignedUser
   }
 `;
 

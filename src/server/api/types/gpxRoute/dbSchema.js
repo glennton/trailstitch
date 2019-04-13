@@ -7,6 +7,7 @@ const Schema = mongoose.Schema
 const dbSchema = new Schema({
   name: String,
   ownerId: { type: Schema.Types.ObjectId, ref: 'User' },
+  gpxRecord: { type: Schema.Types.ObjectId, ref: 'GpxRecord', },
   totalDistance: Number,
   dayCount: Number,
   dateFirst: String,

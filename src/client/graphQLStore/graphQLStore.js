@@ -17,15 +17,15 @@ const cache = new InMemoryCache();
 
 const defaultState = {
   signedUser: {
-    __typename: 'signedUser',
-    isLoggedIn: false,
-    token: null,
-    recordRef: 'test',
+    __typename: 'SignedUser',
+    _id: '',
+    token: '',
+    authenticated: false,
+    gpxRecord: '',
     firstName: '',
     lastName: '',
     exp: '',
     iat: '',
-
   }
 }
 

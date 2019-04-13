@@ -10,9 +10,11 @@ module.exports = {
       Utils: path.resolve(__dirname, `../client/components/_utils`),
       GQL: path.resolve(__dirname, `../client/components/_gql`),
       GraphQLStore: path.resolve(__dirname, `../client/graphQLStore`),
+      Context: path.resolve(__dirname, `../client/context`),
       ClientConfig: path.resolve(__dirname, `../client/config`),
       Config: path.resolve(__dirname, `../server/config`),
-      Auth: path.resolve(__dirname, `../server/auth`)
+      Auth: path.resolve(__dirname, `../server/auth`),
+      ServerUtils: path.resolve(__dirname, `../server/utils`)
     }
   }
 }

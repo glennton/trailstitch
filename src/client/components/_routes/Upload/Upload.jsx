@@ -29,7 +29,7 @@ import parseISO from 'date-fns/parseISO';
 
 //Components
 import readGpxUpload from 'Common/HandleGPXDrag/readGpxUpload'
-import CREATE_GPX from 'GQL/CREATE_GPX'
+import CREATE_GPX from 'GraphQLStore/Gpx/CREATE_GPX'
 import TrackDetails from './TrackDetails'
 
 

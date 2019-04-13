@@ -61,7 +61,7 @@ const styles = theme => ({
 
 const CreateAccount = (props) => {
 
-  const { classes, SET_TOKEN } = props;
+  const { classes, SET_TOKEN, CREATE_USER } = props;
 
   const [firstName, setFirstNameState] = useState({ value: '', errorMessage: null })
   const [lastName, setLastNameState] = useState({ value: '', errorMessage: null })
@@ -101,11 +101,11 @@ const CreateAccount = (props) => {
     }
   } 
 
-  const handleSubmitForm = (createUser) => (event) => {
+  const handleSubmitForm = () => (event) => {
     event.preventDefault();
     const validatedSuccessful = validateForEmptyFields(fieldValidation)
     if (validatedSuccessful){
-      createUser(
+      CREATE_USER(
         {
           variables: {
             firstName: firstName.value,
@@ -125,6 +125,7 @@ const CreateAccount = (props) => {
           handleSubmitFormErrors(error)
         }
       }).catch((err)=>{
+        console.log(err)
         handleSubmitFormErrors()
       })
     }
@@ -146,104 +147,100 @@ const CreateAccount = (props) => {
 
   return (
     <Grid container direction="row" className={classes.wrapper}>
-      <Mutation mutation={CREATE_USER}>
-        {(createUser) => (
-          <form autoComplete="on" className={classNames(classes.wrapper, classes.formContainer)} onSubmit={handleSubmitForm(createUser)}>
-            <Grid container className={classes.modalWrapperOuter}>
-              <Grid container className={classes.modalWrapperInner} spacing={16}>
-                <Grid item xs={12} sm={6} className={classes.inputContainer}>
-                  <FormControl className={classes.input} error={firstName.errorMessage != null}>
-                    <Input
-                      id="outlined-firstName"
-                      label="firstName"
-                      placeholder="First Name"
-                      className={classes.input}
-                      value={firstName.value || ''}
-                      autoComplete="given-name"
-                      onChange={() => { setFirstNameState({ ...firstName, value: event.target.value }) }}
-                      variant="outlined"
-                    />
-                    {firstName.errorMessage ? (
-                      <FormHelperText error>{firstName.errorMessage}</FormHelperText>
-                    ) : <FormHelperText>&nbsp;</FormHelperText>}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6} className={classes.inputContainer}>
-                  <FormControl className={classes.input} error={lastName.errorMessage != null}>
-                    <Input
-                      id="outlined-lastName"
-                      label="lastName"
-                      placeholder="Last Name"
-                      className={classes.input}
-                      value={lastName.value || ''}
-                      autoComplete="family-name"
-                      onChange={() => { setLastNameState({ ...lastName, value: event.target.value }) }}
-                      variant="outlined"
-                    />
-                  </FormControl>
-                  {lastName.errorMessage ? (
-                    <FormHelperText error>{lastName.errorMessage}</FormHelperText>
-                  ) : <FormHelperText>&nbsp;</FormHelperText>}
-                </Grid>
-                <Grid item xs={12} className={classes.inputContainer}>
-                  <FormControl className={classes.input} error={email.errorMessage != null || emailValidation != null}>
-                    <Input
-                      id="outlined-email-input"
-                      label="Email"
-                      placeholder="Email"
-                      className={classes.input}
-                      value={email.value || ''}
-                      onChange={() => { setEmailState({ ...email, value: event.target.value }) }}
-                      type="email"
-                      autoComplete="new-email"
-                      variant="outlined"
-                    />
-                  </FormControl>
-                  {email.errorMessage ? (
-                    <FormHelperText error>{email.errorMessage}</FormHelperText>
-                  ) : emailValidation ? (
-                    <FormHelperText error>{emailValidation}</FormHelperText>
-                  ) : <FormHelperText>&nbsp;</FormHelperText> }
-                </Grid>
-                <Grid item xs={12} className={classes.inputContainer}>
-                  <FormControl className={classes.input} error={password.errorMessage != null || passwordValidation != null}>
-                    <Input                        
-                      id="outlined-password-input"
-                      label="Password"
-                      placeholder="Password"
-                      className={classes.input}
-                      value={password.value || ''}
-                      type="password"
-                      autoComplete="new-password"
-                      onChange={() => { setPasswordState({ ...password, value: event.target.value }) }}
-                      variant="outlined"
-                    />
-                    {password.errorMessage ? (
-                      <FormHelperText error>{password.errorMessage}</FormHelperText>
-                    ) : passwordValidation ? (
-                      <FormHelperText error>{passwordValidation}</FormHelperText>
-                    ): <FormHelperText>Use 8 or more characters. We reccomend using a mix of letters, numbers &amp; symbols</FormHelperText>}
-                  </FormControl>
-                </Grid>
-                {formError ? (
-                  <Grid item xs={12}>
-                    <Typography variant="caption" className={classes.errorMessage}>
-                      {formError}
-                    </Typography>
-                  </Grid>
-                ) : ''}               
-                <Grid item xs={12} className={classes.submitBtnContainer}>
-                  <Grid container justify="flex-end">
-                    <Button variant="contained" type="submit" value="Submit" size="medium" color="primary" className={classes.submitBtn}>
-                      Continue
-                    </Button>
-                  </Grid>
-                </Grid>
+      <form autoComplete="on" className={classNames(classes.wrapper, classes.formContainer)} onSubmit={handleSubmitForm()}>
+        <Grid container className={classes.modalWrapperOuter}>
+          <Grid container className={classes.modalWrapperInner} spacing={16}>
+            <Grid item xs={12} sm={6} className={classes.inputContainer}>
+              <FormControl className={classes.input} error={firstName.errorMessage != null}>
+                <Input
+                  id="outlined-firstName"
+                  label="firstName"
+                  placeholder="First Name"
+                  className={classes.input}
+                  value={firstName.value || ''}
+                  autoComplete="given-name"
+                  onChange={() => { setFirstNameState({ ...firstName, value: event.target.value }) }}
+                  variant="outlined"
+                />
+                {firstName.errorMessage ? (
+                  <FormHelperText error>{firstName.errorMessage}</FormHelperText>
+                ) : <FormHelperText>&nbsp;</FormHelperText>}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6} className={classes.inputContainer}>
+              <FormControl className={classes.input} error={lastName.errorMessage != null}>
+                <Input
+                  id="outlined-lastName"
+                  label="lastName"
+                  placeholder="Last Name"
+                  className={classes.input}
+                  value={lastName.value || ''}
+                  autoComplete="family-name"
+                  onChange={() => { setLastNameState({ ...lastName, value: event.target.value }) }}
+                  variant="outlined"
+                />
+              </FormControl>
+              {lastName.errorMessage ? (
+                <FormHelperText error>{lastName.errorMessage}</FormHelperText>
+              ) : <FormHelperText>&nbsp;</FormHelperText>}
+            </Grid>
+            <Grid item xs={12} className={classes.inputContainer}>
+              <FormControl className={classes.input} error={email.errorMessage != null || emailValidation != null}>
+                <Input
+                  id="outlined-email-input"
+                  label="Email"
+                  placeholder="Email"
+                  className={classes.input}
+                  value={email.value || ''}
+                  onChange={() => { setEmailState({ ...email, value: event.target.value }) }}
+                  type="email"
+                  autoComplete="new-email"
+                  variant="outlined"
+                />
+              </FormControl>
+              {email.errorMessage ? (
+                <FormHelperText error>{email.errorMessage}</FormHelperText>
+              ) : emailValidation ? (
+                <FormHelperText error>{emailValidation}</FormHelperText>
+              ) : <FormHelperText>&nbsp;</FormHelperText> }
+            </Grid>
+            <Grid item xs={12} className={classes.inputContainer}>
+              <FormControl className={classes.input} error={password.errorMessage != null || passwordValidation != null}>
+                <Input                        
+                  id="outlined-password-input"
+                  label="Password"
+                  placeholder="Password"
+                  className={classes.input}
+                  value={password.value || ''}
+                  type="password"
+                  autoComplete="new-password"
+                  onChange={() => { setPasswordState({ ...password, value: event.target.value }) }}
+                  variant="outlined"
+                />
+                {password.errorMessage ? (
+                  <FormHelperText error>{password.errorMessage}</FormHelperText>
+                ) : passwordValidation ? (
+                  <FormHelperText error>{passwordValidation}</FormHelperText>
+                ): <FormHelperText>Use 8 or more characters. We reccomend using a mix of letters, numbers &amp; symbols</FormHelperText>}
+              </FormControl>
+            </Grid>
+            {formError ? (
+              <Grid item xs={12}>
+                <Typography variant="caption" className={classes.errorMessage}>
+                  {formError}
+                </Typography>
+              </Grid>
+            ) : ''}               
+            <Grid item xs={12} className={classes.submitBtnContainer}>
+              <Grid container justify="flex-end">
+                <Button variant="contained" type="submit" value="Submit" size="medium" color="primary" className={classes.submitBtn}>
+                  Continue
+                </Button>
               </Grid>
             </Grid>
-          </form>
-        )}
-      </Mutation>
+          </Grid>
+        </Grid>
+      </form>
     </Grid>
   );
 }
@@ -257,6 +254,7 @@ CreateAccount.propTypes = {
 
 export default compose(
   graphql(SET_TOKEN, { name: 'SET_TOKEN' }),
+  graphql(CREATE_USER, { name: 'CREATE_USER' }),
   hot(module),
   withStyles(styles)
 )(CreateAccount)

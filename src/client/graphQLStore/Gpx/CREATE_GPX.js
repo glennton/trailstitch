@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 export default gql `
   mutation CreateGpxRouteMitation(
     $ownerId: ID!,
+    $gpxRecord: ID!,
     $name: String,
     $totalDistance: Float,
     $dayCount: Int,
@@ -19,6 +20,7 @@ export default gql `
   ) {
     createGpxRoute(
       ownerId: $ownerId,
+      gpxRecord: $gpxRecord,
       name: $name,
       totalDistance: $totalDistance,
       dayCount: $dayCount,
@@ -33,7 +35,12 @@ export default gql `
       info: $info,
       days: $days,
     ) {
-      _id
+      success
+      payload {
+        type
+        message
+        value
+      }
     }
   }
 `;

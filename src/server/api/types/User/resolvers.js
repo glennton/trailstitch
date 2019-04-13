@@ -4,23 +4,11 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import {JWT_SECRET, JWT_EXPIRY} from 'Auth/jwt'
 import validatePassword from 'Config/validatePassword'
+import { validateToken, signToken } from 'ServerUtils/tokenUtilities'
 
 //Models
 import User from './User'
 import GpxRecord from '../gpxRecord/GpxRecord'
-
-const signToken = async (privateUser) => {
-  const expiry = JWT_EXPIRY()
-  const signedUser = {
-    firstName: privateUser.firstName,
-    lastName: privateUser.lastName,
-    authenticated: true,
-    gpxRecord: privateUser.gpxRecord,
-    privs: privateUser.privs || ''
-  }
-  return jwt.sign( signedUser, JWT_SECRET, { expiresIn: expiry })
-}
-
 
 const resolvers = {
   Query: {
@@ -29,7 +17,21 @@ const resolvers = {
     // }
   },
   Mutation: {
+    async validateToken(root, params){
+      console.log('params')
+      const { token } = params
+      try {
+        const signedUser = await validateToken(token)
+        
+        console.log({signedUser})
+        return signedUser
+      } catch (error) {
+        console.log('Error: validateToken: ', error)
+        throw error
+      }
+    },
     async login(root, params) {
+      console.log('login', params)
       const {password, email } = params;
       const getUser = async (email) => {
         const user = await User.login({ email })
@@ -47,23 +49,14 @@ const resolvers = {
           throw new AuthenticationError('Authentication Error')
         }
       }
-      // const signToken = async (privateUser) => {
-      //   const expiry = JWT_EXPIRY()
-      //   const signedUser = {
-      //     firstName: privateUser.firstName,
-      //     lastName: privateUser.lastName,
-      //     authenticated: true,
-      //     gpxRecord: privateUser.gpxRecord,
-      //     privs: privateUser.privs || ''
-      //   }
-      //   return jwt.sign({ signedUser }, JWT_SECRET, { expiresIn: expiry })
-      // }
       try {
         const privateUser = await getUser(email)
         const isValid = await validatePassword(privateUser)
+        console.log('isValid', isValid)
         const token = await signToken(privateUser)
+        console.log('token', token)
         if (isValid && token){
-          return { success: true, payload: [{ type: 'token', value: token }] }
+          return { success: true, payload: [{ type: 'userToken', value: token }, { type: 'userId', value: privateUser._id }] }
         }else{
           throw new AuthenticationError('Authentication Error')
         }        

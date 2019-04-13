@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 8080
 
 
 api(app).then( () => {
+  
   app.use(express.static(path.join(__dirname, '../../dist', 'client')))
   app.use(helmet())
   app.get('/*', async (req, res) => {
