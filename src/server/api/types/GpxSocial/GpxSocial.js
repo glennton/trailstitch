@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import dbSchema from './dbSchema'
+import dbSchema from './GpxSocialSchema'
 
 const Model = mongoose.model('gpxRecords', dbSchema, 'gpxRecords');
 

@@ -148,7 +148,7 @@ const CreateAccount = (props) => {
 
   return (
     <Grid container direction="row" className={classes.wrapper}>
-      {submitSuccess ? (
+      {!submitSuccess ? (
         <form autoComplete="on" className={classNames(classes.wrapper, classes.formContainer)} onSubmit={handleSubmitForm()}>
           <Grid container className={classes.modalWrapperOuter}>
             <Grid container className={classes.modalWrapperInner} spacing={16}>

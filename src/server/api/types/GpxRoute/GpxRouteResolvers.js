@@ -1,16 +1,15 @@
 import { AuthenticationError } from 'apollo-server'
 import shortid from 'shortid'
 import GpxRoute from './GpxRoute'
-import GpxWaypoints from '../gpxWaypoints/GpxWaypoints'
-import GpxRecord from '../gpxRecord/GpxRecord'
+import GpxWaypoints from '../GpxWaypoints/GpxWaypoints'
+import GpxRecord from '../GpxRecord/GpxRecord'
 import User from '../User/User'
 
 
 
 const resolvers = {
   Query: {
-    async getGpxRoute(obj, params, context) {     
-      console.log('getGpxRoute')
+    async getOneGpxRoute(obj, params, context) {     
       let queryParamter = {}
       if (!params._id && !params.shortid) {
         throw new Error('Specify id or email');
@@ -26,7 +25,7 @@ const resolvers = {
       }
 
       try {
-        const Route = await GpxRoute.getGpxRoute(queryParamter)
+        const Route = await GpxRoute.getOneGpxRoute(queryParamter)
         const validatedRoute = validateOwnerID(Route)
         return validatedRoute
       } catch (err) {
@@ -37,12 +36,14 @@ const resolvers = {
   },
   Mutation: {
     async createGpxRoute(root, params, context) {
-
+      
       const { name, ownerId, gpxRecord, totalDistance, dayCount, dateFirst, dateLast, trackPtCount, centralCoords, totalElevationGain, totalElevationLoss, overallElevationHighest, overallElevationLowest, info, days } = params;
       if (context._id !== ownerId) { throw new AuthenticationError('Authentication Error') }
+      console.log('gpxRecordExists', params.gpxRecord.length !== 0)
       const gpxRecordExists = params.gpxRecord.length !== 0
       const routeShortid = shortid.generate()
       const recordShortid = shortid.generate()
+      const recordEntryShortid = shortid.generate()
       const waypointShortid = shortid.generate()
       const defineNewWaypoints = async () => {
         try {
@@ -60,21 +61,9 @@ const resolvers = {
       const defineNewRoute = async () => {
         try {
           return new GpxRoute({
-            name,
             ownerId,
             shortid: routeShortid,
             gpxRecord,
-            totalDistance,
-            dayCount,
-            dateFirst,
-            dateLast,
-            trackPtCount,
-            centralCoords,
-            totalElevationGain,
-            totalElevationLoss,
-            overallElevationHighest,
-            overallElevationLowest,
-            info,
             days,
           });
         } catch (err) {
@@ -83,16 +72,34 @@ const resolvers = {
         }
       };
 
+      const defineNewRecordEntry = (newWaypoints, newRoute) => {
+        return {
+          ownerId,
+          shortid: recordEntryShortid,
+          totalDistance,
+          dayCount,
+          dateFirst,
+          dateLast,
+          trackPtCount,
+          centralCoords,
+          totalElevationGain,
+          totalElevationLoss,
+          overallElevationHighest,
+          overallElevationLowest,
+          info,
+          gpxRoute: newRoute,
+          gpxWaypoints: newWaypoints,
+        }
+      }
+
       const defineNewRecord = (ownerId, newWaypoints, newRoute) => {
         try {
           return new GpxRecord({
             ownerId,
+            name,
             shortid: recordShortid,
             gpxRoutes: [
-              {
-                gpxRoute: newRoute,
-                gpxWaypoints: newWaypoints,
-              }
+              defineNewRecordEntry(newWaypoints, newRoute)
             ]
           });
         } catch (err) {
@@ -100,21 +107,29 @@ const resolvers = {
           throw err;
         }
       }
-      const setRecord = async (newWaypoints, newRoute) => {
+      const setRecord = async (newWaypoints, newRoute, newRecordEntry) => { //TODO PROTECT ROUTES WITH VERIFICATION
         try {
           if (gpxRecordExists) {
-            return await GpxRecord.addNewRecord(ownerId, newWaypoints, newRoute)
+            // Normal operation - return record id defined by client
+            const newRecord = await GpxRecord.addNewRecord({ ownerId: ownerId }, newRecordEntry)
+            return newRecord.shortid
           }else{
-            //If record somehow does not exist
-            //Check user to see if gpx record is found exists
-            const userRecord = await User.checkIfUserFieldExists({ _id: ownerId }, ['gpxRecord'])
-            if (userRecord.gpxRecord) { 
-              newRoute.gpxRecord = userRecord.gpxRecord
-              return userRecord.gpxRecord 
+            // If record somehow does not exist on client user, search for any records under client user id
+            const gpxRecordCheck = await GpxRecord.getOneGpxRecord({ ownerId: ownerId }, ['_id'])
+            const gpxRecordCheckId = gpxRecordCheck._id
+            if (gpxRecordCheckId) {
+              // GPX Record was found - Attach to route and reattach to user
+              newRoute.gpxRecord = gpxRecordCheckId
+              await User.attachRecord(ownerId, gpxRecordCheckId)
+              const newRecord = await GpxRecord.addNewRecord({ ownerId: ownerId }, newRecordEntry)
+              return newRecord.shortid
             }else{
+              // No GPX Record was found - Create New Record - Attach to route and reattach to user
               const newRecord = await defineNewRecord(ownerId, newWaypoints, newRoute)
               newRoute.gpxRecord = newRecord
-              return await GpxRecord.createGpxRecord(newRecord)
+              await User.attachRecord(ownerId, newRecord)
+              await GpxRecord.createGpxRecord(newRecord)
+              return newRecord.shortid
             }
           }
         } catch (err) {
@@ -122,15 +137,19 @@ const resolvers = {
         }        
       }
       try {
+        //const verifiedClientRecordId
+        const newRecordEntry = defineNewRecordEntry(newWaypoints, newRoute)
         const newWaypoints = await defineNewWaypoints()
         const newRoute = await defineNewRoute()
-        const RecordId = await setRecord(newWaypoints, newRoute)
+        const RecordId = await setRecord(newWaypoints, newRoute, newRecordEntry)
         const RouteId = await GpxRoute.createGpxRoute(newRoute)
+        const refreshToken = RecordId === gpxRecord ? false : true  //Resign token in case user record information changed
         await GpxWaypoints.createNewWaypoints(newWaypoints)
         return { success: true, payload: [
           { type: 'RouteId', value: RouteId },
           { type: 'RouteUrl', value: routeShortid },
-          { type: 'RecordId', value: RecordId }]
+          { type: 'RecordUrl', value: recordEntryShortid },
+          { type: 'RefreshToken', value: refreshToken }]
         }
       } catch (err) {
           console.log('Error: GPX Route Resolver: ', err)

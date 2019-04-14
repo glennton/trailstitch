@@ -158,7 +158,7 @@ const HandleGPXDrag = (props) => {
     }).then(({data})=>{
       const { createGpxRoute } = data
       const { success, payload } = createGpxRoute
-      const RouteUrl = parsePayload(payload, "RouteUrl")
+      const RouteUrl = parsePayload(payload, "RecordUrl")
       if (success && RouteUrl) {
         handleSuccessfulSubmit(RouteUrl.value)
       } else {

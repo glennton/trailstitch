@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export default gql `
-  query getGpxRoute($shortid: String, $_id: ID) {
+  query getAllRoutes($shortid: String, $_id: ID) {
     getGpxRoute(shortid: $shortid, _id: $_id) {
       ownerId
       gpxRecord

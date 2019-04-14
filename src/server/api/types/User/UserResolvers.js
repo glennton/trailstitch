@@ -7,7 +7,7 @@ import { validateToken, signToken } from 'ServerUtils/tokenUtilities'
 
 //Models
 import User from './User'
-import GpxRecord from '../gpxRecord/GpxRecord'
+import GpxRecord from '../GpxRecord/GpxRecord'
 
 const resolvers = {
   Query: {
@@ -15,7 +15,7 @@ const resolvers = {
 
     // }
   },
-  Mutation: {
+  Mutation: { //TODO Refresh Token Resolver - if existing token is valid, refresh and send new token, tell client to update, ie after uploading new gpx
     async validateToken(root, params){
       const { token } = params
       try {

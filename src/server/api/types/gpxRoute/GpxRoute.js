@@ -1,11 +1,10 @@
 import mongoose from 'mongoose'
-import dbSchema from './dbSchema'
+import dbSchema from './GpxRouteSchema'
 
 const Model = mongoose.model('gpxRoutes', dbSchema, 'gpxRoutes');
 
 class GpxRoute extends Model {
   static async createGpxRoute(GpxRoute) {
-    console.log('//////////////', GpxRoute.days[0].track)
     try {
       const gpxRoute = await GpxRoute.save();
       return gpxRoute._id
@@ -14,10 +13,10 @@ class GpxRoute extends Model {
       throw err;
     }
   }
-  static async getGpxRoute(queryKey) {
+  static async getOneGpxRoute(queryObj, queryFields = []) {
     try {
-      const route = await Model.findOne(queryKey)
-      return route
+      const response = await Model.findOne(queryObj, [...queryFields]);
+      return response ? response : null
     } catch (err) {
       console.log('Error: GPX Route Model: createGpxRoute:', err)
       throw err;

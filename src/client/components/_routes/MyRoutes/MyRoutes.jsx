@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles';
 import compose from 'recompose/compose';
 import { hot } from 'react-hot-loader'
+import { Query } from "react-apollo";
 
 //UI Elements
 import Grid from '@material-ui/core/Grid'
@@ -215,6 +216,13 @@ class MyRoutes extends React.Component {
         <Grid container spacing={16} direction="row" alignContent="flex-start">
           <Grid item xs={12}>
             <Typography variant="h6">My Routes:</Typography>
+          </Grid>
+          <Grid container>
+            <Query query={GET_ALL_GPX} variables={{ shortid: match.params.id }}>
+              {({ loading, error, data }) => {
+
+              }}
+            </Query>
           </Grid>
           {dataLoaded ? this.renderRecentRoutes() : 'Loading'}
         </Grid>

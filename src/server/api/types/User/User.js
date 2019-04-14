@@ -1,13 +1,12 @@
 import mongoose from 'mongoose'
-import dbSchema from './dbSchema'
+import dbSchema from './UserSchema'
 
 const Model = mongoose.model('users', dbSchema, 'users');
 
 class User extends Model {
-  static async checkIfUserFieldExists(userObj, fieldsToReturn = []) {
+  static async checkIfUserFieldExists(queryObj, queryFields = []) {
     try {
-      const response = await User.findOne(userObj, [...fieldsToReturn]);
-      console.log(userObj, response)
+      const response = await Model.findOne(queryObj, [...queryFields]);
       return response ? response : null
     } catch (error) {
       throw error;
@@ -39,7 +38,7 @@ class User extends Model {
   }
   static async attachRecord(_id, gpxRecord) {
     try {
-      const UserResponse = await Model.findOneAndUpdate(
+      const response = await Model.findOneAndUpdate(
         {
           _id,
         },
@@ -48,18 +47,11 @@ class User extends Model {
         }},
         (res)=>console.log(res)
       );
-      return UserResponse
+      return response
     } catch (err) {
       throw err;
     }
   }
-  // static async function(arg) {
-  //   try {
-  //     return arg
-  //   } catch (err) {
-  //     return err;
-  //   }
-  // }
 }
 
 export default User

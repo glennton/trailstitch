@@ -1,8 +1,6 @@
 import gql from 'graphql-tag'
 import jwt from 'jsonwebtoken'
 
-import GET_SIGNED_USER from 'GraphQLStore/User/GET_SIGNED_USER'
-
 export default {
   Query: {
     signedUser: (_, {_id}, { cache }) => {
@@ -21,7 +19,7 @@ export default {
       return cache.readFragment({ fragment, id });
 
     },
-    getGpxRoute: (_, params, { cache }) => {
+    getOneGpxRoute: (_, params, { cache }) => {
       console.log('CACHE', params, cache)
     }
   },

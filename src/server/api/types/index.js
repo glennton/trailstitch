@@ -1,13 +1,13 @@
 import { mergeSchemas } from 'graphql-tools'
-import testSchema from './test'
-import gpxRoute from './gpxRoute'
+import gpxRoute from './GpxRoute'
+import gpxRecord from './GpxRecord'
 import User from './User'
 
 const schemas = mergeSchemas({
   schemas: [
     gpxRoute,
-    testSchema,
     User,
+    gpxRecord,
   ]
 })
 

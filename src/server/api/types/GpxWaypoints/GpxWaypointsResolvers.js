@@ -1,4 +1,4 @@
-//import MODELNAME from './MODELNAME'
+// import gpxWaypoints from './GpxWaypoints'
 
 const resolvers = {
   Query: {
