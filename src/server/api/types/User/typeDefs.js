@@ -9,6 +9,7 @@ const typeDefs = gql`
     _id: ID!,
     firstName: String,
     lastName: String,
+    shortid: String,
     email: String,
     gpxRecord: ID,
     token: String,

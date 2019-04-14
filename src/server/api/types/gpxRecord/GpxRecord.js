@@ -12,6 +12,7 @@ class GpxRecord extends Model {
       const newGpxRecord = await GpxRecord.save();
       return newGpxRecord._id
     } catch (err) {
+      console.log('Error: GPX Record Model: newGpxRecord:', err)
       throw err;
     }
   }
@@ -20,12 +21,11 @@ class GpxRecord extends Model {
       const newGpxRecord = await GpxRecord.save();
       return newGpxRecord._id
     } catch (err) {
-      console.log('ERRRRRRR' ,err)
+      console.log('Error: GPX Record Model: createGpxRecord:', err)
       throw err;
     }
   }
   static async addNewRecord(ownerId, gpxWaypoints, gpxRoute ) {
-    console.log('static async addNewRecord', ownerId, gpxWaypoints, gpxRoute)
     try {
       const newRecord = await Model.findOneAndUpdate({
           ownerId,
@@ -39,6 +39,7 @@ class GpxRecord extends Model {
       );
       return newRecord._id
     } catch (err) {
+      console.log('Error: GPX Record Model: addNewRecord:', err)
       throw err;
     }
   }

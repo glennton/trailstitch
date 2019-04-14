@@ -18,13 +18,11 @@ export default {
           authenticated,
         }
       `
-      console.log('fragmentid:', id)
-      console.log('cache:', cache.data.data)
-      // const signedUser = cache.readFragment({ fragment, id });
-      // const data = { ...signedUser };
-      // console.log('fragment', data)
       return cache.readFragment({ fragment, id });
 
+    },
+    getGpxRoute: (_, params, { cache }) => {
+      console.log('CACHE', params, cache)
     }
   },
   Mutation: {

@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export default gql `
-  mutation CreateGpxRouteMitation(
+  mutation CreateGpxRouteMutation(
     $ownerId: ID!,
     $gpxRecord: ID!,
     $name: String,

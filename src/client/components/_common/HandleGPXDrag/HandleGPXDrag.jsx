@@ -8,6 +8,8 @@ import { withSnackbar } from 'notistack';
 import { hot } from 'react-hot-loader'
 import { graphql } from "react-apollo";
 import { useCookies } from 'react-cookie';
+import { withRouter } from "react-router-dom";
+import parsePayload from 'Utils/GraphQL/parsePayload'
 
 //GraphQL Store
 import CREATE_GPX from 'GraphQLStore/Gpx/CREATE_GPX'
@@ -22,7 +24,6 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Cancel from '@material-ui/icons/Cancel';
 
 //Utils
-import describeGPX from 'Utils/mapUtils/describeGPX'
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
 import CloseIcon from '@material-ui/icons/Close';
@@ -71,7 +72,7 @@ const styles = theme => ({
 })
 
 const HandleGPXDrag = (props) => {
-  const { children, classes, CREATE_GPX, enqueueSnackbar } = props
+  const { children, classes, CREATE_GPX, enqueueSnackbar, history } = props
 
   const [cookies, setCookie] = useCookies(['user']);
   const signedUser = cookies.userData || null
@@ -86,17 +87,6 @@ const HandleGPXDrag = (props) => {
 
   useEffect(() => {
 
-    //FOR TESTING ONLY
-    //
-    //
-    // describeGPX(DummyGPX).then((res) => {
-    //   setGpx(res)
-    // }).catch(err => err /*TODO Add error message*/)
-    // setIsOverlayActive(true)
-    //
-    //
-    //FOR TESTING ONLY
-
     let e = dropRef.current
     if (e){
       e.addEventListener('dragenter', handleDragIn)
@@ -110,12 +100,12 @@ const HandleGPXDrag = (props) => {
     setIsExpanded(!isExpanded)
   };
 
-  const clearFileLoad = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const clearFileLoad = () => {
     setIsOverlayActive(false)
     setGpx(null)
   }
+
+
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -142,7 +132,6 @@ const HandleGPXDrag = (props) => {
     e.preventDefault();
     readGpxUpload(e)
       .then((res) => {
-        enqueueSnackbar('Done!')
         counter = 0
         setGpx(res)
       }).catch((err) => {
@@ -167,11 +156,27 @@ const HandleGPXDrag = (props) => {
         //gpxRecord: signedUser.gpxRecord || "",
         gpxRecord: "",
       }
-    }).then((res)=>{
-      console.log('res', res)
+    }).then(({data})=>{
+      const { createGpxRoute } = data
+      const { success, payload } = createGpxRoute
+      const RouteUrl = parsePayload(payload, "RouteUrl")
+      if (success && RouteUrl) {
+        handleSuccessfulSubmit(RouteUrl.value)
+      } else {
+        //const error = parsePayload(payload, "authError").message
+        handleSubmitFormErrors()
+      }
     }).catch((err) => {
-      console.log('err', err)
     })
+  }
+
+  const handleSuccessfulSubmit = (RouteUrl) => {
+    enqueueSnackbar('Upload Successful!')
+    history.push(`/route/${RouteUrl}`)
+    clearFileLoad()
+  }
+  const handleSubmitFormErrors = (errPayload = 'We apologize, an unknown error has occured. Please try logging in again.') => {
+    //setFormError(errPayload)
   }
 
   return(
@@ -232,10 +237,12 @@ HandleGPXDrag.propTypes = {
   classes: PropTypes.shape({
 
   }).isRequired,
+  CREATE_GPX: PropTypes.func.isRequired,
 }
 
 export default compose(
   graphql(CREATE_GPX, { name: 'CREATE_GPX' }),
+  withRouter,
   withSnackbar,
   hot(module),
   withStyles(styles)

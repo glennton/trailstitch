@@ -6,6 +6,7 @@ const typeDefs = gql`
   type GpxRoute {
     ownerId: ID!,
     gpxRecord: ID,
+    shortid: String,
     name: String,
     totalDistance: Float,
     dayCount: Int,
@@ -87,7 +88,7 @@ const typeDefs = gql`
 
   # Queries
   extend type Query {
-    getOneGpxRoute(_id: String!): GpxRoute
+    getGpxRoute(_id: ID, shortid: String): GpxRoute
   }
 
   extend type Mutation {

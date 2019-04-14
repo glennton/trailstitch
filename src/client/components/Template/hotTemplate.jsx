@@ -23,7 +23,7 @@ const styles = () => ({
   },
 })
 
-CONTAINER = (props) => {
+const CONTAINER = (props) => {
   const { classes } = props;
 
   return (

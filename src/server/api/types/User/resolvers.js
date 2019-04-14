@@ -1,8 +1,7 @@
 import validator from 'validator';
 import { UserInputError, AuthenticationError } from 'apollo-server'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-import {JWT_SECRET, JWT_EXPIRY} from 'Auth/jwt'
+import shortid from 'shortid'
 import validatePassword from 'Config/validatePassword'
 import { validateToken, signToken } from 'ServerUtils/tokenUtilities'
 
@@ -18,15 +17,12 @@ const resolvers = {
   },
   Mutation: {
     async validateToken(root, params){
-      console.log('params')
       const { token } = params
       try {
-        const signedUser = await validateToken(token)
-        
-        console.log({signedUser})
+        const signedUser = await validateToken(token)        
         return signedUser
       } catch (error) {
-        console.log('Error: validateToken: ', error)
+          console.log('Error: validateToken: ', error)
         throw error
       }
     },
@@ -52,15 +48,14 @@ const resolvers = {
       try {
         const privateUser = await getUser(email)
         const isValid = await validatePassword(privateUser)
-        console.log('isValid', isValid)
         const token = await signToken(privateUser)
-        console.log('token', token)
         if (isValid && token){
           return { success: true, payload: [{ type: 'userToken', value: token }, { type: 'userId', value: privateUser._id }] }
         }else{
           throw new AuthenticationError('Authentication Error')
         }        
-      }catch(err){        
+      }catch(err){     
+        console.log('Error: User Resolver: login: ', err)
         let returnObj = { success: false, payload: [] }
         if (err instanceof AuthenticationError) {
           returnObj.payload.push(
@@ -90,6 +85,7 @@ const resolvers = {
         try {
           return new User({
             password: hashedPassword,
+            shortid: shortid.generate(),
             firstName, 
             lastName, 
             email: validator.normalizeEmail(email),

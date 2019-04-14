@@ -61,6 +61,10 @@ const data = {
       linkPath: `/myroutes`
     },
     {
+      linkName: `Routes View`,
+      linkPath: `/route`
+    },
+    {
       linkName: `stitches`,
       linkPath: `/stitches`
     },

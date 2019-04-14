@@ -5,7 +5,6 @@ import { withStyles } from '@material-ui/core/styles';
 import compose from 'recompose/compose';
 import { hot } from 'react-hot-loader'
 import { Mutation, graphql } from "react-apollo";
-import { useQuery } from "react-apollo-hooks";
 import jwt from 'jsonwebtoken'
 //import { useMutation } from 'react-apollo-hooks';
 
@@ -76,7 +75,7 @@ const Login = props => {
   //Auth States
   const [isAuth, setAuth] = useState(false)
   const [signedUserName, setSignedUserName] = useState(false)
-  
+
   //Token
   const fieldValidation = [
     {
@@ -126,36 +125,34 @@ const Login = props => {
         if (success && userTokenPayload && userIdPayload) {
           handleSuccessfulSubmit(userTokenPayload.value, userIdPayload.value)
         } else {
-          
+
           const error = parsePayload(payload, "authError").message
           handleSubmitFormErrors(error)
         }
       }).catch((err) => {
-        console.log('error',err)
+        console.log('error', err)
         handleSubmitFormErrors()
       })
     }
-
-
   }
-  const handleSubmitFormErrors = (errPayload = 'We apologize, an unknown error has occured. Please try logging in again.') => {    
+  const handleSubmitFormErrors = (errPayload = 'We apologize, an unknown error has occured. Please try logging in again.') => {
     setFormError(errPayload)
   }
   const handleSuccessfulSubmit = (userToken, userId) => {
-    SET_TOKEN({ variables: { token: userToken}}).then(({data})=>{
+    SET_TOKEN({ variables: { token: userToken } }).then(() => {
       const signedUser = jwt.decode(userToken);
       setCookie('userToken', userToken)
       setCookie('userData', signedUser)
       setAuth(signedUser.authenticated)
       setSignedUserName(signedUser.firstName)
-    }).catch((err)=>{
+    }).catch((err) => {
       console.log(err)
     })
   }
 
   return (
     <>
-      <div ref={popoverTarget}> 
+      <div ref={popoverTarget}>
         <IconButton
           aria-owns={open ? 'menu-appbar' : undefined}
           aria-haspopup="true"
@@ -189,58 +186,58 @@ const Login = props => {
                 !
               </Typography>
             </>
-          ):(
-            <>
-              <Typography className={classes.typography}>Have an account?</Typography>
-              <Mutation mutation={LOGIN}>
-                {(login) => (
-                  <form className={classes.formContainer} autoComplete="on" onSubmit={handleSubmitForm(login)}>
-                    <FormControl className={classes.input} error={email.errorMessage != null}>
-                      <Input
-                        id="outlined-email-input"
-                        label="Email"
-                        placeholder="Email"
-                        className={classes.input}
-                        value={email.value || ''}
-                        onChange={() => { setEmailState({ ...email, value: event.target.value }) }}
-                        type="email"
-                        autoComplete="email"
-                        variant="outlined"
-                      />
-                    </FormControl>
-                    <FormControl className={classes.input} error={password.errorMessage != null}>
-                      <Input
-                        id="outlined-password-input"
-                        label="Password"
-                        placeholder="Password"
-                        className={classes.input}
-                        value={password.value || ''}
-                        type="password"
-                        autoComplete="current-password"
-                        onChange={() => { setPasswordState({ ...email, value: event.target.value }) }}
-                        variant="outlined"
-                      />
-                    </FormControl>
-                    {formError ? (
-                      <Grid>
-                        <Typography variant="caption" className={classes.errorMessage}>
-                          {formError}
-                        </Typography>
-                      </Grid>
-                    ) : ''}
-                    <Grid container justify="flex-end">
-                      <Button variant="contained" type="submit" value="Submit" size="medium" color="primary" className={classes.submitBtn}>
-                        Continue
+          ) : (
+              <>
+                <Typography className={classes.typography}>Have an account?</Typography>
+                <Mutation mutation={LOGIN}>
+                  {(login) => (
+                    <form className={classes.formContainer} autoComplete="on" onSubmit={handleSubmitForm(login)}>
+                      <FormControl className={classes.input} error={email.errorMessage != null}>
+                        <Input
+                          id="outlined-email-input"
+                          label="Email"
+                          placeholder="Email"
+                          className={classes.input}
+                          value={email.value || ''}
+                          onChange={() => { setEmailState({ ...email, value: event.target.value }) }}
+                          type="email"
+                          autoComplete="email"
+                          variant="outlined"
+                        />
+                      </FormControl>
+                      <FormControl className={classes.input} error={password.errorMessage != null}>
+                        <Input
+                          id="outlined-password-input"
+                          label="Password"
+                          placeholder="Password"
+                          className={classes.input}
+                          value={password.value || ''}
+                          type="password"
+                          autoComplete="current-password"
+                          onChange={() => { setPasswordState({ ...email, value: event.target.value }) }}
+                          variant="outlined"
+                        />
+                      </FormControl>
+                      {formError ? (
+                        <Grid>
+                          <Typography variant="caption" className={classes.errorMessage}>
+                            {formError}
+                          </Typography>
+                        </Grid>
+                      ) : ''}
+                      <Grid container justify="flex-end">
+                        <Button variant="contained" type="submit" value="Submit" size="medium" color="primary" className={classes.submitBtn}>
+                          Continue
                       </Button>
-                    </Grid>
-                  </form>
-                )}
-              </Mutation>
-            </>
-          )}
+                      </Grid>
+                    </form>
+                  )}
+                </Mutation>
+              </>
+            )}
         </Grid>
       </Popover>
-    </> 
+    </>
   );
 }
 
@@ -252,7 +249,7 @@ Login.propTypes = {
 }
 
 export default compose(
-  graphql(SET_TOKEN, {name: 'SET_TOKEN'}),
+  graphql(SET_TOKEN, { name: 'SET_TOKEN' }),
   hot(module),
   withStyles(styles)
 )(Login)

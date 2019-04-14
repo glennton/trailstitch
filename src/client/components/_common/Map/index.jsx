@@ -54,6 +54,7 @@ class Map extends React.Component {
   
   componentDidMount() {
     const { gpx } = this.props
+    console.log('gpx', gpx)
     const { days, centralCoords } = gpx
     this.setState({
       dataLoaded: true,

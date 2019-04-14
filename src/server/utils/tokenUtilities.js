@@ -9,8 +9,8 @@ export const validateToken = async (token) => {
       }
       return decoded
     })
-  } catch (error) {
-    throw new Error('Unknown Error')
+  } catch (err) {
+    throw new Error('Error Validating Token', err)
   }
 }
 
@@ -24,8 +24,7 @@ export const signToken = async ({ _id, firstName, lastName, gpxRecord }) => {
   }
   try {
     return await jwt.sign(signedUser, JWT_SECRET, { expiresIn: JWT_EXPIRY() });
-  } catch (error) {
-    console.log(error)
-    throw new Error('Unknown Error')
+  } catch (err) {
+    throw new Error('Error Signing Token', err)
   }
 }

@@ -20,6 +20,7 @@ class User extends Model {
       }, [
         'firstName',
         'lastName',
+        'shortid',
         'email',
         'password',
         'gpxRecord',

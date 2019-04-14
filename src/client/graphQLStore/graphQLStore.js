@@ -41,8 +41,9 @@ const clientStore = new ApolloClient({
     stateLink,
     new HttpLink({
       uri: '//localhost:8080/graphql',
+      withCredentials: true
     })
-  ]),  
+  ]),
 })
 
 export default clientStore

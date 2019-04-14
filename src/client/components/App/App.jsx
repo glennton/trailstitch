@@ -26,6 +26,9 @@ const Albums = React.lazy(
 const MyRoutes = React.lazy(
   () => import("Routes/MyRoutes/MyRoutes")
 )
+const RouteView = React.lazy(
+  () => import("Routes/RouteView/RouteView")
+)
 const Stitches = React.lazy(
   () => import("Routes/Stitches/Stitches")
 )
@@ -75,6 +78,7 @@ const App = (props) => {
                   <Route exact path="/" component={Home} />
                   <Route path="/albums" render={() => <Albums />} />
                   <Route path="/myroutes" render={() => <MyRoutes />} />
+                  <Route exact path="/route/:id" render={(props) => <RouteView {...props} />} />
                   <Route path="/stitches" render={() => <Stitches />} />
                   <Route path="/upload" render={() => <Upload />} />
                   <Route path="/account" render={() => <Account />} />

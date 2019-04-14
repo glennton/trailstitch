@@ -8,6 +8,7 @@ const dbSchema = new Schema({
   name: String,
   ownerId: { type: Schema.Types.ObjectId, ref: 'User' },
   gpxRecord: { type: Schema.Types.ObjectId, ref: 'GpxRecord', },
+  shortid: String,
   totalDistance: Number,
   dayCount: Number,
   dateFirst: String,
@@ -53,7 +54,17 @@ const dbSchema = new Schema({
       },
       trackPtStart: TrackPointSchema,
       trackPtEnd: TrackPointSchema,
-      track: [TrackPointSchema],
+      track: [
+        {
+          lat: Number,
+          lng: Number,
+          ele: Number,
+          time: String,
+          distanceToNextPoint: Number,
+          ascent: Number,
+          descent: Number
+        }
+      ],
     }
   ]
 })
