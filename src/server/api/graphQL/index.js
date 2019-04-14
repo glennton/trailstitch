@@ -18,7 +18,7 @@ const apolloServer = new ApolloServer({
           console.log(err)
         });
     }else{
-      return {}
+      return null
     }
   },
 });

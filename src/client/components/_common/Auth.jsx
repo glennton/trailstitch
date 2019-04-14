@@ -11,7 +11,6 @@ import jwt from 'jsonwebtoken'
 //UI Elements
 
 //GraphQL Store
-import VALIDATE_TOKEN from 'GraphQLStore/Login/VALIDATE_TOKEN';
 import SET_TOKEN from 'GraphQLStore/Login/SET_TOKEN';
 
 //Utils

@@ -54,7 +54,8 @@
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
     "webpack-merge": "^4.2.1",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^1.7.2",
+    "xss": "^1.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",

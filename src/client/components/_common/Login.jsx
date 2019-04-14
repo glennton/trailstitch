@@ -27,7 +27,7 @@ import LOGIN from 'GraphQLStore/Login/LOGIN'
 //Utils
 import validateForEmptyFields from 'Utils/forms/validateForEmptyFields'
 import parsePayload from 'Utils/GraphQL/parsePayload'
-import { Divider } from '@material-ui/core';
+import { Divider, Link } from '@material-ui/core';
 //Components
 
 const styles = theme => ({
@@ -60,12 +60,15 @@ const styles = theme => ({
   divider: {
     marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit,
+  },
+  createLink: {
+    paddingTop: 2 * theme.spacing.unit,
   }
 })
 
 const Login = props => {
   const { classes, SET_TOKEN } = props;
-  const { signedUser, token, setUserCookies, unsetUserCookies } = useContext(UserContext)
+  const { signedUser, setUserCookies, unsetUserCookies } = useContext(UserContext)
   
   const popoverTarget = React.createRef()
 
@@ -127,7 +130,6 @@ const Login = props => {
         if (success && userTokenPayload && userIdPayload) {
           handleSuccessfulSubmit(userTokenPayload.value, userIdPayload.value)
         } else {
-
           const error = parsePayload(payload, "authError").message
           handleSubmitFormErrors(error)
         }
@@ -186,57 +188,62 @@ const Login = props => {
                 !
               </Typography>
               <Divider className={classes.divider} />
-              <Typography onClick={() => unsetUserCookies()}>Logout</Typography>
+              <Typography><Button onClick={() => unsetUserCookies()}>Logout</Button></Typography>
             </>
           ) : (
-              <>
-                <Typography className={classes.typography}>Have an account?</Typography>
-                <Mutation mutation={LOGIN}>
-                  {(login) => (
-                    <form className={classes.formContainer} autoComplete="on" onSubmit={handleSubmitForm(login)}>
-                      <FormControl className={classes.input} error={email.errorMessage != null}>
-                        <Input
-                          id="outlined-email-input"
-                          label="Email"
-                          placeholder="Email"
-                          className={classes.input}
-                          value={email.value || ''}
-                          onChange={() => { setEmailState({ ...email, value: event.target.value }) }}
-                          type="email"
-                          autoComplete="email"
-                          variant="outlined"
-                        />
-                      </FormControl>
-                      <FormControl className={classes.input} error={password.errorMessage != null}>
-                        <Input
-                          id="outlined-password-input"
-                          label="Password"
-                          placeholder="Password"
-                          className={classes.input}
-                          value={password.value || ''}
-                          type="password"
-                          autoComplete="current-password"
-                          onChange={() => { setPasswordState({ ...email, value: event.target.value }) }}
-                          variant="outlined"
-                        />
-                      </FormControl>
-                      {formError ? (
-                        <Grid>
-                          <Typography variant="caption" className={classes.errorMessage}>
-                            {formError}
-                          </Typography>
-                        </Grid>
-                      ) : ''}
-                      <Grid container justify="flex-end">
-                        <Button variant="contained" type="submit" value="Submit" size="medium" color="primary" className={classes.submitBtn}>
-                          Continue
-                        </Button>
+            <>
+              <Typography className={classes.typography}>Have an account?</Typography>
+              <Mutation mutation={LOGIN}>
+                {(login) => (
+                  <form className={classes.formContainer} autoComplete="on" onSubmit={handleSubmitForm(login)}>
+                    <FormControl className={classes.input} error={email.errorMessage != null}>
+                      <Input
+                        id="outlined-email-input"
+                        label="Email"
+                        placeholder="Email"
+                        className={classes.input}
+                        value={email.value || ''}
+                        onChange={() => { setEmailState({ ...email, value: event.target.value }) }}
+                        type="email"
+                        autoComplete="email"
+                        variant="outlined"
+                      />
+                    </FormControl>
+                    <FormControl className={classes.input} error={password.errorMessage != null}>
+                      <Input
+                        id="outlined-password-input"
+                        label="Password"
+                        placeholder="Password"
+                        className={classes.input}
+                        value={password.value || ''}
+                        type="password"
+                        autoComplete="current-password"
+                        onChange={() => { setPasswordState({ ...email, value: event.target.value }) }}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                    {formError ? (
+                      <Grid>
+                        <Typography variant="caption" className={classes.errorMessage}>
+                          {formError}
+                        </Typography>
                       </Grid>
-                    </form>
-                  )}
-                </Mutation>
-              </>
-            )}
+                    ) : ''}
+                    <Grid container justify="center">                    
+                      <Button variant="contained" type="submit" value="Submit" size="medium" color="primary" className={classes.submitBtn}>
+                        Login
+                      </Button>
+                      <Typography className={classes.createLink}>
+                        <Link href="/create">
+                          Create an Account
+                        </Link>
+                      </Typography>
+                    </Grid>
+                  </form>
+                )}
+              </Mutation>
+            </>
+          )}
         </Grid>
       </Popover>
     </>

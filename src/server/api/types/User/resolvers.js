@@ -27,7 +27,6 @@ const resolvers = {
       }
     },
     async login(root, params) {
-      console.log('login', params)
       const {password, email } = params;
       const getUser = async (email) => {
         const user = await User.login({ email })
@@ -101,6 +100,7 @@ const resolvers = {
         const fieldsIsValid = await validateFields(email, password)
         const passwordIsValid  = await validatePassword(password)
         const userEmailExists = await User.checkIfUserFieldExists({ email })
+        console.log('userEmailExists')
         const duplicateCheck = await Promise.all([userEmailExists, fieldsIsValid, passwordIsValid])
           .then((res) => {
             return { email: res[0] }
@@ -113,7 +113,6 @@ const resolvers = {
         const recordId = await GpxRecord.createBlankRecord()
         const privateUser = await User.attachRecord(NewUserId, recordId)
         const token = await signToken(privateUser)
-        console.log('token', token)
         return { success: true, payload: [{ type: 'token', value: token }] }
       }catch(err){
         console.log(err)
