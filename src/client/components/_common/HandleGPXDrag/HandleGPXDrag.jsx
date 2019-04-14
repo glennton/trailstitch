@@ -153,8 +153,7 @@ const HandleGPXDrag = (props) => {
       variables : {
         ...gpx,
         ownerId: signedUser._id,
-        //gpxRecord: signedUser.gpxRecord || "",
-        gpxRecord: "",
+        gpxRecord: signedUser.gpxRecord || "",
       }
     }).then(({data})=>{
       const { createGpxRoute } = data
@@ -163,10 +162,10 @@ const HandleGPXDrag = (props) => {
       if (success && RouteUrl) {
         handleSuccessfulSubmit(RouteUrl.value)
       } else {
-        //const error = parsePayload(payload, "authError").message
         handleSubmitFormErrors()
       }
     }).catch((err) => {
+      
     })
   }
 

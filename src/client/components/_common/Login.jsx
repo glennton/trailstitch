@@ -27,7 +27,7 @@ import LOGIN from 'GraphQLStore/Login/LOGIN'
 //Utils
 import validateForEmptyFields from 'Utils/forms/validateForEmptyFields'
 import parsePayload from 'Utils/GraphQL/parsePayload'
-import { useCookies } from 'react-cookie';
+import { Divider } from '@material-ui/core';
 //Components
 
 const styles = theme => ({
@@ -56,14 +56,17 @@ const styles = theme => ({
   },
   accountIconActive: {
     color: theme.palette.primary.main,
+  },
+  divider: {
+    marginTop: theme.spacing.unit,
+    marginBottom: theme.spacing.unit,
   }
 })
 
 const Login = props => {
-
   const { classes, SET_TOKEN } = props;
-  const [cookies, setCookie] = useCookies(['user']);
-  const { signedUser, token } = useContext(UserContext)
+  const { signedUser, token, setUserCookies, unsetUserCookies } = useContext(UserContext)
+  
   const popoverTarget = React.createRef()
 
   //Form States
@@ -106,7 +109,6 @@ const Login = props => {
 
   const handleSubmitForm = (login) => (event) => {
     event.preventDefault();
-
     const validatedSuccessful = validateForEmptyFields(fieldValidation)
     if (validatedSuccessful) {
       setFormError(false)
@@ -135,16 +137,14 @@ const Login = props => {
       })
     }
   }
+
   const handleSubmitFormErrors = (errPayload = 'We apologize, an unknown error has occured. Please try logging in again.') => {
     setFormError(errPayload)
   }
+
   const handleSuccessfulSubmit = (userToken, userId) => {
     SET_TOKEN({ variables: { token: userToken } }).then(() => {
-      const signedUser = jwt.decode(userToken);
-      setCookie('userToken', userToken)
-      setCookie('userData', signedUser)
-      setAuth(signedUser.authenticated)
-      setSignedUserName(signedUser.firstName)
+      setUserCookies(userToken)
     }).catch((err) => {
       console.log(err)
     })
@@ -185,6 +185,8 @@ const Login = props => {
                 {signedUserName ? `, ${signedUserName}` : ''}
                 !
               </Typography>
+              <Divider className={classes.divider} />
+              <Typography onClick={() => unsetUserCookies()}>Logout</Typography>
             </>
           ) : (
               <>
@@ -228,7 +230,7 @@ const Login = props => {
                       <Grid container justify="flex-end">
                         <Button variant="contained" type="submit" value="Submit" size="medium" color="primary" className={classes.submitBtn}>
                           Continue
-                      </Button>
+                        </Button>
                       </Grid>
                     </form>
                   )}

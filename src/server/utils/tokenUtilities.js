@@ -5,12 +5,13 @@ export const validateToken = async (token) => {
   try {
     return await jwt.verify(token, JWT_SECRET, (err, decoded) => {
       if (err) {
+        console.log('Error Validating Token', err)
         throw new Error('Authentication Error')
       }
       return decoded
     })
   } catch (err) {
-    throw new Error('Error Validating Token', err)
+    return null
   }
 }
 

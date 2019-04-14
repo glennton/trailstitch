@@ -30,21 +30,21 @@ const styles = (theme) => ({
 
 const RouteView = (props) => {
   const { classes, match } = props;
-  const [gpx, setGPX ] = useState({})
   console.log(match)
   return (
     <Grid container direction="row" alignContent="flex-start" className={classes.RouteViewWrapper}>
       <Grid container direction="column">
         <Grid item>
-          <Typography variant="h6"> My Route </Typography>
           <Query query={GET_GPX} variables={{ shortid: match.params.id }}>
             {({ loading, error, data }) => {
               if (loading) return "Loading...";
               if (error) return `Error! ${error.message}`;
               const gpx = data.getGpxRoute
-              console.log(gpx)
               return (
                 <Grid container>
+                  <Typography variant="h6">
+                    {gpx.name}
+                  </Typography>
                   <Map gpx={gpx} />
                 </Grid>
               );
@@ -52,8 +52,6 @@ const RouteView = (props) => {
           </Query>
         </Grid>
       </Grid>
-      <>
-      </>
     </Grid>
   );
 
@@ -61,6 +59,9 @@ const RouteView = (props) => {
 
 RouteView.propTypes = {
   classes: PropTypes.shape({
+
+  }).isRequired,
+  match: PropTypes.shape({
 
   }).isRequired,
 }

@@ -1,5 +1,5 @@
 //Core
-import React, { lazy, Suspense, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './styles.scss';
 import PropTypes from 'prop-types';
@@ -8,6 +8,7 @@ import compose from 'recompose/compose';
 import { hot } from 'react-hot-loader';
 import { withStyles } from '@material-ui/core/styles';
 import { useCookies } from 'react-cookie';
+import jwt from 'jsonwebtoken'
 
 //Data
 import UserContext from 'Context/UserContext'
@@ -60,16 +61,36 @@ const styles = theme => ({
 const App = (props) => {
 
   const { classes } = props
+  const [token, setToken] = useState({})
+  const [signedUser, setSignedUser] = useState({})
   const [cookies, setCookie] = useCookies(['user']);
-  const signedUser = cookies.userData || {} 
-  const token = cookies.userToken || {} 
+
+  useEffect(()=>{
+    setToken(cookies.userToken)
+    setSignedUser(cookies.userData)
+  }, [cookies.userToken, cookies.userData] ) 
+
+  const setUserCookies = (newToken) => {
+    const newSignedUser = jwt.decode(newToken)
+    setCookie('userToken', newToken)
+    setCookie('userData', newSignedUser)
+    setToken(newToken)
+    setSignedUser(newSignedUser)
+  }
+
+  const unsetUserCookies = () => {
+    setCookie('userToken', null)
+    setCookie('userData', null)
+    setToken({})
+    setSignedUser({})
+  }
 
   console.log('signedUser app', signedUser)
 
   const renderApp = (
     <Grid container direction="column" className={classes.appContainer}>
       <SnackbarProvider maxSnack={3}>
-        <UserContext.Provider value={{ signedUser, token }}>
+        <UserContext.Provider value={{ signedUser, token, setUserCookies, unsetUserCookies }}>
           <HandleGPXDrag>
             <MainNav />
             <Grid container className={classes.contentContainer}>

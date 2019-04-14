@@ -61,7 +61,7 @@ const styles = theme => ({
 })
 
 const MainNav = (props) => {  
-  
+  console.log('mainnav')
   const { classes } = props 
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const navLinks = DummyData(['pageNavItems']).pageNavItems
