@@ -77,13 +77,13 @@ class StitchEditor extends React.Component {
   mapPoints = () => {
     let newPointsArr = []
     const { pointData, gpx } = this.state;
-    const { days } = gpx
+    const { gpxRouteData } = gpx
     pointData.points.map((waypoint)=>{
       const lat1 = waypoint.lat
       const lng1 = waypoint.lng
       let nearestTrackPoint = { distance: null, trackPoint: null, index: null}
       //First Match Date
-      days.map((dayData)=>{
+      gpxRouteData.map((dayData)=>{
         if (waypoint.dateKey === dayData.date){
           dayData.track.map((trackPoint, n) =>{
             const distance = 

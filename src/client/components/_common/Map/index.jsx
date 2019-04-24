@@ -55,11 +55,11 @@ class Map extends React.Component {
   componentDidMount() {
     const { gpx } = this.props
     console.log('gpx', gpx)
-    const { days, centralCoords } = gpx
+    const { gpxRouteData, centralCoords } = gpx
     this.setState({
       dataLoaded: true,
       centralCoords: centralCoords,
-      days: days,      
+      gpxRouteData: gpxRouteData,      
     })
   }
 
@@ -130,10 +130,10 @@ class Map extends React.Component {
     }
   }
   renderPolyLines = () => {
-    const { days, map, maps } = this.state
+    const { gpxRouteData, map, maps } = this.state
     if (map, maps) {
       const Polyline = maps.Polyline
-      days.map((e,i)=>{
+      gpxRouteData.map((e,i)=>{
         const lineColor = (i + 1) % 2 ? '#ffffff' : '#aaaaaa'
         const line = new Polyline({
           path: e.track,
@@ -193,11 +193,11 @@ class Map extends React.Component {
   }
   //Render default start, end markers
   renderTrailStartMarkers = () => {
-    const { days, map, maps, tempStartPoints, tempEndPoints } = this.state
+    const { gpxRouteData, map, maps, tempStartPoints, tempEndPoints } = this.state
     const Marker = maps.Marker
     const placeIcon = {...this.placeIcon}
     placeIcon.anchor = new maps.Point(14, 25)
-    days.map((e, i) => {
+    gpxRouteData.map((e, i) => {
       const startCoords = { lat: e.trackPtStart.lat, lng: e.trackPtStart.lng}
       const endCoords = { lat: e.trackPtEnd.lat, lng: e.trackPtEnd.lng }
       const startPoint = new Marker({
@@ -208,7 +208,7 @@ class Map extends React.Component {
       this.setState(prevState => ({
         startPoints: [...prevState.startPoints, startPoint]
       }))
-      if (i === days.length-1){
+      if (i === gpxRouteData.length-1){
         const endPoint = new Marker({
           position: endCoords,
           icon: placeIcon,

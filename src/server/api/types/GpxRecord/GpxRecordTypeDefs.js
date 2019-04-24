@@ -1,17 +1,17 @@
 import { gql } from 'apollo-server-express'
 
 const typeDefs = gql`
-
   type GpxRecord {
     _id: ID!
     ownerId: ID!
-    name: String
     shortid: String
     gpxRoutes: [GpxRecordRoutes]
   }
   type GpxRecordRoutes {
     ownerId: ID!
     shortid: String
+    name: String,
+    published: Boolean
     gpxRoute: ID
     gpxWaypoints: ID
     totalDistance: Float
@@ -25,6 +25,7 @@ const typeDefs = gql`
     overallElevationHighest: Float
     overallElevationLowest: Float
     info: Info
+    gpxRouteData: [Day]
   }
   type Info {
     Ascent: Float

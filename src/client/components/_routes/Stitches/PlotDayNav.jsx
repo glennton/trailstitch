@@ -84,7 +84,7 @@ class PlotDayNav extends React.Component {
     const { dataLoaded, gpx, activeIndex } = this.state
     return (
       <Grid className={classes.dayContainer}>
-        {dataLoaded ? gpx.days.map((e, i) => {
+        {dataLoaded ? gpx.gpxRouteData.map((e, i) => {
           const width = e.distance / gpx.totalDistance * 100
           const isActive = activeIndex === i
           return (

@@ -66,8 +66,14 @@ const App = (props) => {
   const [cookies, setCookie] = useCookies(['user']);
 
   useEffect(()=>{
-    setToken(cookies.userToken)
-    setSignedUser(cookies.userData)
+    if (cookies.userToken && cookies.userData){
+      if (cookies.userData.exp > (Date.now() / 1000 | 0)) {
+        setUserCookies(cookies.userToken)
+      } else {
+        unsetUserCookies()
+      }
+    }
+
   }, [cookies.userToken, cookies.userData] ) 
 
   const setUserCookies = (newToken) => {

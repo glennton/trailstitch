@@ -11,7 +11,7 @@ import { jssWrapper, jssModalWrapperOuter } from 'Styles/globalStyles'
 import Grid from '@material-ui/core/Grid'
 import { Typography } from '@material-ui/core';
 //GraphQL Store
-import GET_ONE_GPX_ROUTE from 'GraphQLStore/Gpx/GET_ONE_GPX_ROUTE'
+//import GET_ONE_GPX_ROUTE from 'GraphQLStore/Gpx/GET_ONE_GPX_ROUTE'
 import GET_ONE_GPX_RECORD from 'GraphQLStore/Gpx/GET_ONE_GPX_RECORD'
 //Utils
 
@@ -40,13 +40,13 @@ const RouteView = (props) => {
               if (loading) return "Loading...";
               if (error) return `Error! ${error.message}`;
               console.log('data', data)
-              const gpx = data.getOneGpxRoute
+              const { name } = data.getOneGpxRecordEntry
               return (
                 <Grid container>
-                  <Typography variant="h6">
+                  {/* <Typography variant="h6">
                     {gpx.name}
                   </Typography>
-                  <Map gpx={gpx} />
+                  <Map gpx={gpx} /> */}
                 </Grid>
               );
             }}

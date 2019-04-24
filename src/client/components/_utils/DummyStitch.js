@@ -18,7 +18,7 @@ const DummyStitch = {
     "StoppedTime": 38609,
     "TotalElapsedTime": 179899
   },
-  "days": [
+  "gpxRouteData": [
     {
       "date": "2018-06-16",
       "indexStart": 0,

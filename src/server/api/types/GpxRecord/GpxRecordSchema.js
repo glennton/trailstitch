@@ -9,6 +9,8 @@ const dbSchema = new Schema({
     {
       ownerId: { type: Schema.Types.ObjectId, ref: 'User' },
       shortid: String,
+      name: String,
+      published: Boolean,
       gpxRoute: { type: Schema.Types.ObjectId, ref: 'GpxRoute' },
       gpxWaypoints: { type: Schema.Types.ObjectId, ref: 'GpxWaypoints' },
       totalDistance: Number,

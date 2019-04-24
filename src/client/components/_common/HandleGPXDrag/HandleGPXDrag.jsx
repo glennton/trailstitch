@@ -157,21 +157,22 @@ const HandleGPXDrag = (props) => {
       }
     }).then(({data})=>{
       const { createGpxRoute } = data
+      console.log('successful data', data)
       const { success, payload } = createGpxRoute
-      const RouteUrl = parsePayload(payload, "RecordUrl")
-      if (success && RouteUrl) {
-        handleSuccessfulSubmit(RouteUrl.value)
+      const RecordUrl = parsePayload(payload, "RecordUrl")
+      if (success && RecordUrl) {
+        handleSuccessfulSubmit(RecordUrl.value)
       } else {
         handleSubmitFormErrors()
       }
     }).catch((err) => {
-      
+      console.log(err)
     })
   }
 
-  const handleSuccessfulSubmit = (RouteUrl) => {
+  const handleSuccessfulSubmit = (RecordUrl) => {
     enqueueSnackbar('Upload Successful!')
-    history.push(`/route/${RouteUrl}`)
+    history.push(`/route/${RecordUrl}`)
     clearFileLoad()
   }
   const handleSubmitFormErrors = (errPayload = 'We apologize, an unknown error has occured. Please try logging in again.') => {
@@ -198,7 +199,7 @@ const HandleGPXDrag = (props) => {
                     {`From your GPX track, it looks like you went on a trip on
                     ${gpx.dateFirst ? format(parseISO(gpx.dateFirst), ' MMMM d, yyyy ') : ''}
                     traveling over 
-                    ${gpx.days.length} 
+                    ${gpx.gpxRouteData.length} 
                     days. You can edit this later.`}                     
                   </Typography>
                 </Grid>  

@@ -5,6 +5,7 @@ export default gql `
     getOneGpxRecordEntry(shortid: $shortid, _id: $_id) {
       ownerId
       shortid
+      name
       gpxRoute
       gpxWaypoints
       totalDistance
@@ -35,6 +36,47 @@ export default gql `
         MovingTime
         StoppedTime
         TotalElapsedTime
+      }
+      gpxRouteData{
+        date
+        indexStart
+        indexEnd
+        elevationHighest
+        elevationLowest
+        distance
+        elevationGain
+        elevationLoss
+        centralCoords {
+          lat
+          lng
+        }
+        trackPtStart {
+          lat
+          lng
+          ele
+          time
+          distanceToNextPoint
+          ascent
+          descent
+        }
+        trackPtEnd {
+          lat
+          lng
+          ele
+          time
+          distanceToNextPoint
+          ascent
+          descent
+        }
+        track{
+          lat
+          lng
+          ele
+          time
+          distanceToNextPoint
+          ascent
+          descent
+        }
       }
     }
   }

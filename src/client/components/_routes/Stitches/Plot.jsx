@@ -87,7 +87,7 @@ class Plot extends React.Component {
     if (plotDayIndex != prevProps.plotDayIndex) {
       if (plotDayIndex !== false) {
         this.setState({
-          allPlots: this.plotDay(gpx.days[plotDayIndex]),
+          allPlots: this.plotDay(gpx.gpxRouteData[plotDayIndex]),
         })
       } else {
         this.setState({
@@ -130,7 +130,7 @@ class Plot extends React.Component {
   }
   plotAll = (gpx) => {
     let newArr = []
-    gpx.days.map((e) => {
+    gpx.gpxRouteData.map((e) => {
       newArr.push(...this.plotDay(e, gpx.totalDistance))
     })
     return newArr

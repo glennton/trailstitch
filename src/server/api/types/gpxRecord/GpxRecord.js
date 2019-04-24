@@ -12,12 +12,11 @@ class GpxRecord extends Model {
       throw err;
     }
   }
-  static async getOneGpxRecordEntry(parentQueryObj, queryObj, queryFields = []) {
-    console.log('getOneGpxRecord', parentQueryObj, queryObj, queryFields)
+  static async getOneGpxRecordEntry( queryObj, queryFields = []) {
     try {
-      const response = await Model.findOne( parentQueryObj, queryObj , [...queryFields]);
-      console.log('response', response)
-      return response ? response : null
+      //const response = await Model.find({'gpxRoutes.shortid': '1_H3qqp57C'}, [...queryFields]);
+      const response = await Model.findOne({ "gpxRoutes": { "$elemMatch": queryObj }, ...queryFields }, { "gpxRoutes.$": 1 })
+      return response.gpxRoutes ? response.gpxRoutes[0] : null
     } catch (err) {
       console.log('Error: GPX Record Model: getOneGpxRecordEntry:', err)
       throw err;

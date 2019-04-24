@@ -9,36 +9,7 @@ const dbSchema = new Schema({
   ownerId: { type: Schema.Types.ObjectId, ref: 'User' },
   gpxRecord: { type: Schema.Types.ObjectId, ref: 'GpxRecord', },
   shortid: String,
-  // totalDistance: Number,
-  // dayCount: Number,
-  // dateFirst: String,
-  // dateLast: String,
-  // trackPtCount: Number,
-  // centralCoords: {
-  //   lat: Number,
-  //   lng: Number
-  // },
-  // totalElevationGain: Number,
-  // totalElevationLoss: Number,
-  // overallElevationHighest: Number,
-  // overallElevationLowest: Number,
-  // info: {
-  //   Ascent: Number,
-  //   AvgAscentRate: Number,
-  //   AvgDescentRate: Number,
-  //   Descent: Number,
-  //   Distance: Number,
-  //   MaxAscentRate: Number,
-  //   MaxDescentRate: Number,
-  //   MaxElevation: Number,
-  //   MaxSpeed: Number,
-  //   MinElevation: Number,
-  //   MovingSpeed: Number,
-  //   MovingTime: Number,
-  //   StoppedTime: Number,
-  //   TotalElapsedTime: Number,
-  // },
-  days: [
+  gpxRouteData: [
     {
       date: String,
       indexStart: Number,

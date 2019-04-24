@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export default gql `
-  mutation CreateGpxRouteMutation(
+  mutation CreateGpxRoute(
     $ownerId: ID!,
     $gpxRecord: ID!,
     $name: String,
@@ -16,7 +16,7 @@ export default gql `
     $overallElevationHighest: Float,
     $overallElevationLowest: Float,
     $info: InfoInput,
-    $days: [DayInput]
+    $gpxRouteData: [DayInput]
   ) {
     createGpxRoute(
       ownerId: $ownerId,
@@ -33,7 +33,7 @@ export default gql `
       overallElevationHighest: $overallElevationHighest,
       overallElevationLowest: $overallElevationLowest,
       info: $info,
-      days: $days,
+      gpxRouteData: $gpxRouteData,
     ) {
       success
       payload {

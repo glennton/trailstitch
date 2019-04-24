@@ -110,7 +110,7 @@ const DescribeGPX = (data) => {
       resolve({
         name: originalTripName,
         info: originalGPXInfo,
-        days: daysArray,
+        gpxRouteData: daysArray,
         totalDistance: totalDistance,
         dayCount: daysArray.length,
         dateFirst: daysArray[0]['date'],

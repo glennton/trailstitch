@@ -1,4 +1,5 @@
 const parseCookie = (cookieKey, cookieString) => {
+  console.log('cookieKey, cookieString', !(cookieString.includes('null') , cookieString.includes('false') , cookieString.includes('undefined')))
   if (!(cookieString.includes('null') || cookieString.includes('false') || cookieString.includes('undefined'))){
     var name = cookieKey + "=";
     var decodedCookie = decodeURIComponent(cookieString);

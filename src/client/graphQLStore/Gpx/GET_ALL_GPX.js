@@ -35,7 +35,7 @@ export default gql `
         StoppedTime
         TotalElapsedTime
       },
-      days {
+      gpxRouteData {
         date
         indexStart
         indexEnd

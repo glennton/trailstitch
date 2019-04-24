@@ -190,7 +190,7 @@ class Upload extends React.Component {
                               and
                               {gpx.dateLast ? format(parseISO(gpx.dateLast), ' MMMM d, yyyy ') : ''}
                               traveling over 
-                              {gpx.days.length} 
+                              {gpx.gpxRouteData.length} 
                               days. If this looks slightly off, you will be able to update your data after uploading.
                             </Typography>
                           </Grid>

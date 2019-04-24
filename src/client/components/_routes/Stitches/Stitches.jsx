@@ -105,7 +105,7 @@ class Stitches extends React.Component {
       plotDayIndex: index
     });
   }
-  returnDays = () => {
+  returnGpxRouteData = () => {
     const { dataLoaded, value, plotDayIndex, gpx, plot } = this.state
     if (dataLoaded){
       const { classes } = this.props;
@@ -185,7 +185,7 @@ class Stitches extends React.Component {
                 {/* <ParseCoords coords={convertDMS(e.pointStart['@_lat'], e.pointEnd['@_lon']).locCoords} /> */}
               </Grid>
             </Grid>
-            {this.returnDays()}
+            {this.returnGpxRouteData()}
           </Grid>
         ): ''}   
       </Grid>

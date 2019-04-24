@@ -5,7 +5,7 @@ export default gql `
     getOneGpxRoute(shortid: $shortid, _id: $_id) {
       ownerId
       gpxRecord
-      days {
+      gpxRouteData {
         date
         indexStart
         indexEnd

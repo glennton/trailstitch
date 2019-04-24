@@ -27,6 +27,7 @@ const resolvers = {
       }
     },
     async login(root, params) {
+      console.log('login')
       const {password, email } = params;
       const getUser = async (email) => {
         const user = await User.login({ email })

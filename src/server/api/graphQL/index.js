@@ -7,15 +7,17 @@ import parseCookie from '../../utils/parseCookie'
 //Create new server and assign to schema - single schema merged from multiple schema types
 const apolloServer = new ApolloServer({
   schema : schemas,
+  //formatError: (err) => { console.log(err.stack); return err },
   context: ( {req} ) => {
-    const token = parseCookie('userToken', req.headers.cookie) || null
+    console.log('req')
+    const token = req.headers.cookie ? parseCookie('userToken', req.headers.cookie) : null
     if (token) {
       return validateToken(token)
         .then((signedUser) => {
           return signedUser
         })
         .catch((err) => {
-          console.log(err)
+          console.log('apolloServer context', err)
         });
     }else{
       return null

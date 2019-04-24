@@ -24,6 +24,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 //GraphQL Store
 import DummyStitch from 'Utils/DummyStitch'
 import DummyData from 'Utils/DummyData'
+import GET_ALL_GPX from 'GraphQLStore/Gpx/GET_ALL_GPX'
 
 //import DummyData from 'Utils/DummyData'
 
