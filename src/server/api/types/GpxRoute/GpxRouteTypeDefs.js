@@ -8,39 +8,8 @@ const typeDefs = gql`
     ownerId: ID!,
     gpxRecord: ID,
     shortid: String,
-    gpxRouteData: [Day],
+    gpxRouteData: [GpxRouteData],
   }  
-
-  type Day {
-    date: String,
-    indexStart: Int,
-    indexEnd: Int,
-    elevationHighest: Float,
-    elevationLowest: Float,
-    distance: Float,
-    elevationGain: Float,
-    elevationLoss: Float,
-    centralCoords: LatLng,
-    trackPtStart: TrackPoint,
-    trackPtEnd: TrackPoint,
-    track: [TrackPoint],
-  }
-
-  input DayInput {
-    date: String,
-    indexStart: Int,
-    indexEnd: Int,
-    elevationHighest: Float,
-    elevationLowest: Float,
-    distance: Float,
-    elevationGain: Float,
-    elevationLoss: Float,
-    centralCoords: LatLngInput,
-    trackPtStart: TrackPointInput,
-    trackPtEnd: TrackPointInput,
-    track: [TrackPointInput],
-  }
-
   input InfoInput {
     Ascent: Float,
     AvgAscentRate: Float,
@@ -79,7 +48,7 @@ const typeDefs = gql`
       overallElevationHighest: Float,
       overallElevationLowest: Float,
       info: InfoInput,
-      gpxRouteData: [DayInput]
+      gpxRouteData: [GpxRouteDataInput]
     ): Response
   } 
 `;

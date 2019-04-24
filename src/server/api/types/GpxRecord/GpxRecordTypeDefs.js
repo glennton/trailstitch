@@ -25,7 +25,7 @@ const typeDefs = gql`
     overallElevationHighest: Float
     overallElevationLowest: Float
     info: Info
-    gpxRouteData: [Day]
+    gpxRouteData: [GpxRouteData]
   }
   type Info {
     Ascent: Float

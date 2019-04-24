@@ -16,7 +16,7 @@ export default gql `
     $overallElevationHighest: Float,
     $overallElevationLowest: Float,
     $info: InfoInput,
-    $gpxRouteData: [DayInput]
+    $gpxRouteData: [GpxRouteDataInput]
   ) {
     createGpxRoute(
       ownerId: $ownerId,
