@@ -21,6 +21,20 @@ const gpxTypeDefs = gql `
     descent: Float
   }
 
+  type TrackPointStartEnd {
+    lat: Float,
+    lng: Float,
+    ele: Float,
+    time: String,
+  }
+
+  input TrackPointStartEndInput {
+    lat: Float,
+    lng: Float,
+    ele: Float,
+    time: String,
+  }
+
   type GpxRouteData {
     date: String,
     indexStart: Int,
@@ -31,8 +45,8 @@ const gpxTypeDefs = gql `
     elevationGain: Float,
     elevationLoss: Float,
     centralCoords: LatLng,
-    trackPtStart: TrackPoint,
-    trackPtEnd: TrackPoint,
+    trackPtStart: TrackPointStartEnd,
+    trackPtEnd: TrackPointStartEnd,
     track: [TrackPoint],
   }
 
@@ -46,8 +60,8 @@ const gpxTypeDefs = gql `
     elevationGain: Float,
     elevationLoss: Float,
     centralCoords: LatLngInput,
-    trackPtStart: TrackPointInput,
-    trackPtEnd: TrackPointInput,
+    trackPtStart: TrackPointStartEndInput,
+    trackPtEnd: TrackPointStartEndInput,
     track: [TrackPointInput],
   }
   input TrackPointInput {

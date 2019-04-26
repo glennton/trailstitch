@@ -54,8 +54,8 @@ class Map extends React.Component {
   
   componentDidMount() {
     const { gpx } = this.props
-    console.log('gpx', gpx)
     const { gpxRouteData, centralCoords } = gpx
+    console.log('gpxRouteData, centralCoords', gpxRouteData, centralCoords, gpx)
     this.setState({
       dataLoaded: true,
       centralCoords: centralCoords,
@@ -302,7 +302,13 @@ Map.propTypes = {
 
   }).isRequired,
   gpx: PropTypes.shape({
+    gpxRouteData: PropTypes.arrayOf(PropTypes.shape({
 
+    })),
+    centralCoords: PropTypes.shape({
+      lat: PropTypes.number,
+      lng: PropTypes.number
+    })
   }).isRequired,
   plot: PropTypes.shape({
 

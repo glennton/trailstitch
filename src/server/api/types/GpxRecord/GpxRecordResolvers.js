@@ -4,6 +4,27 @@ import GpxRoute from '../GpxRoute/GpxRoute'
 
 const resolvers = {
   Query: {
+    async getAllRoutes(obj, params, context) {
+      const { ownerId } = params
+      const validateOwnerID = (Record) => {
+        return Record.map((e) => {
+          if (e.ownerId == context._id || e.published) {
+            return e
+          } else {
+            throw new AuthenticationError('Authentication Error')
+          }
+        })
+      }
+
+      try{
+        const Record = await GpxRecord.getAllRoutes({ ownerId })
+        const validatedRecord = validateOwnerID(Record)
+        console.log('validatedRecord', validatedRecord)
+        return validatedRecord
+      }catch(err){
+        console.log('Error: GPX Route Resolver: getAllRoutes:', err)
+      }
+    },
     async getOneGpxRecordEntry(obj, params, context) {
       console.log('getOneGpxRecordEntry')
       let queryParamter = {}

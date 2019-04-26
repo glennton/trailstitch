@@ -4,9 +4,11 @@ import dbSchema from './GpxRecordSchema'
 const Model = mongoose.model('gpxRecords', dbSchema, 'gpxRecords');
 
 class GpxRecord extends Model {
-  static async getAllRoutes() {
+  static async getAllRoutes(queryObj, queryFields = []) {
+    console.log('routes')
     try {
-      return Model.find({}, ['']);
+      const response = await Model.findOne({ "gpxRoutes": { "$elemMatch": queryObj }, ...queryFields })
+      return response.gpxRoutes ? [...response.gpxRoutes] : null
     } catch (err) {
       console.log('Error: GPX Record Model: getAllRoutes:', err)
       throw err;

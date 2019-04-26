@@ -23,8 +23,19 @@ const dbSchema = new Schema({
         lat: Number,
         lng: Number,
       },
-      trackPtStart: TrackPointSchema,
-      trackPtEnd: TrackPointSchema,
+      trackPtStart: {
+        lat: Number,
+        lng: Number,
+        ele: Number,
+        time: String,
+      },
+      trackPtEnd: 
+      {
+        lat: Number,
+        lng: Number,
+        ele: Number,
+        time: String,
+      },
       track: [
         {
           lat: Number,

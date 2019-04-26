@@ -1,5 +1,5 @@
 //Core
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles';
@@ -22,6 +22,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 //GraphQL Store
+import UserContext from 'Context/UserContext'
 import DummyStitch from 'Utils/DummyStitch'
 import DummyData from 'Utils/DummyData'
 import GET_ALL_GPX from 'GraphQLStore/Gpx/GET_ALL_GPX'
@@ -45,6 +46,11 @@ const styles = theme => ({
     // [theme.breakpoints.up('lg')]: { //1280
       
     // },
+  },
+  routeGridItem: {
+    '&:hover': {
+      cursor: 'pointer',
+    }
   },
   routeTopContainer: {
     position: 'relative',
@@ -113,77 +119,90 @@ const styles = theme => ({
 
 })
 
-class MyRoutes extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      routeOptionAnchorEl: null,
-    }
-  }
 
-  componentDidMount() {
-    this.setState({
-      dataLoaded: true,
-      gpx: DummyStitch,
-      slides: DummyData(['slides']).slides
-    })
-  }
-  componentWillReceiveProps() {
-    if (this.props) {
-      this.setState({
-        //
-      })
-    }
-  }
-  handleRouteMenuClick = event => {
-    this.setState({ routeOptionAnchorEl: event.currentTarget });
+const MyRoutes = (props) => {
+  const { classes, history } = props
+  const { signedUser, setUserCookies, unsetUserCookies } = useContext(UserContext)
+  const [activeRouteMenu, setActiveRouteMenu ] = useState(null)
+
+  console.log('signedUser', signedUser)
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     routeOptionAnchorEl: null,
+  //   }
+  // }
+
+  // componentDidMount() {
+  //   this.setState({
+  //     dataLoaded: true,
+  //     slides: DummyData(['slides']).slides
+  //   })
+  // }
+  // componentWillReceiveProps() {
+  //   if (this.props) {
+  //     this.setState({
+  //       //
+  //     })
+  //   }
+  // }
+  const handleRouteMenuClick = (event) => {
+    event.stopPropagation()
+    setActiveRouteMenu(event.currentTarget)
   };
 
-  handleRouteMenuClose = () => {
-    this.setState({ routeOptionAnchorEl: null });
+  const handleRouteMenuClose = () => {
+    setActiveRouteMenu(null)
   };
 
-  handleDeleteRoute = () => {
-    this.setState({ routeOptionAnchorEl: null });
+  const handleDeleteRoute = () => {
+    //this.setState({ routeOptionAnchorEl: null });
     //DELETE
   }
 
-  renderRecentRoutes = () => {
-    const { slides, routeOptionAnchorEl } = this.state
-    const { classes } = this.props
-    return slides.map((e)=>{
+  const handleGridItemClick = (shortUrl) => (event) => {
+    event.preventDefault()
+    history.push(`/route/${shortUrl}`)
+
+  }
+
+  const renderRecentRoutes = ({getAllRoutes}) => {
+    console.log('renderRecentRoutes', getAllRoutes)
+    
+    return getAllRoutes.map((route) => {
+      const { _id = '', shortid = '', imgUrl = '', centralCoords = {lat: '', lng: ''}, name } = route
       return (
-        <Grid item key={e.id} sm={3}>
+        <Grid item key={_id} sm={3} onClick={handleGridItemClick(shortid)} className={classes.routeGridItem}>
           <Paper>
             <Grid item className={classes.routeTopContainer}>
               <Grid className={classes.routeOptions}>
-                <IconButton className={classes.optionsIcon} onClick={this.handleRouteMenuClick}>
+                <IconButton className={classes.optionsIcon} onClick={handleRouteMenuClick}>
                   <MoreVertIcon />
                 </IconButton>
                 <Menu
                   id=""
-                  anchorEl={routeOptionAnchorEl}
-                  open={Boolean(routeOptionAnchorEl)}
-                  onClose={this.handleRouteMenuClose}
+                  anchorEl={activeRouteMenu}
+                  open={Boolean(activeRouteMenu)}
+                  onClose={handleRouteMenuClose}
                 >
-                  <MenuItem onClick={this.handleRouteMenuClose} className={classes.optionsMenuItem}>Edit Route</MenuItem>
-                  <MenuItem onClick={this.handleDeleteRoute} className={classNames(classes.optionsMenuItem, classes.optionsDelete)}>Delete Route</MenuItem>
+                  <MenuItem onClick={handleRouteMenuClose} className={classes.optionsMenuItem}>Edit Route</MenuItem>
+                  <MenuItem onClick={handleDeleteRoute} className={classNames(classes.optionsMenuItem, classes.optionsDelete)}>Delete Route</MenuItem>
                 </Menu>
               </Grid>
               <Grid 
                 className={classes.routePreviewImageContainer}
-                style={{ backgroundImage: `url(${e.imgUrl})`}}
+                style={{ backgroundImage: `url(${imgUrl})`}}
               />
               <Grid container className={classes.routeOverlay} alignContent="center">
                 <Grid className={classes.routePreviewCoords}>
-                  <ParseCoords coords={convertDMS(e.lat, e.lng)} variant="subtitle2" color="#fff" justifycontent="center" />
+                  <ParseCoords coords={convertDMS(centralCoords.lat, centralCoords.lng)} variant="subtitle2" color="#fff" justifycontent="center" />
                 </Grid>
               </Grid>
             </Grid>
             <Grid container className={classes.routePreviewDetails}>
               <Grid item sm={12} zeroMinWidth>
                 <Typography gutterBottom noWrap> 
-                  {e.locName} 
+                  { name }
                 </Typography>
               </Grid>
               <Grid item xs={6}>
@@ -207,31 +226,84 @@ class MyRoutes extends React.Component {
         </Grid>
       )
     })
+    //const { slides, routeOptionAnchorEl } = this.state
+    // return slides.map((e)=>{
+    //   return (
+    //     <Grid item key={e.id} sm={3}>
+    //       <Paper>
+    //         <Grid item className={classes.routeTopContainer}>
+    //           <Grid className={classes.routeOptions}>
+    //             <IconButton className={classes.optionsIcon} onClick={this.handleRouteMenuClick}>
+    //               <MoreVertIcon />
+    //             </IconButton>
+    //             <Menu
+    //               id=""
+    //               anchorEl={routeOptionAnchorEl}
+    //               open={Boolean(routeOptionAnchorEl)}
+    //               onClose={this.handleRouteMenuClose}
+    //             >
+    //               <MenuItem onClick={this.handleRouteMenuClose} className={classes.optionsMenuItem}>Edit Route</MenuItem>
+    //               <MenuItem onClick={this.handleDeleteRoute} className={classNames(classes.optionsMenuItem, classes.optionsDelete)}>Delete Route</MenuItem>
+    //             </Menu>
+    //           </Grid>
+    //           <Grid 
+    //             className={classes.routePreviewImageContainer}
+    //             style={{ backgroundImage: `url(${e.imgUrl})`}}
+    //           />
+    //           <Grid container className={classes.routeOverlay} alignContent="center">
+    //             <Grid className={classes.routePreviewCoords}>
+    //               <ParseCoords coords={convertDMS(e.lat, e.lng)} variant="subtitle2" color="#fff" justifycontent="center" />
+    //             </Grid>
+    //           </Grid>
+    //         </Grid>
+    //         <Grid container className={classes.routePreviewDetails}>
+    //           <Grid item sm={12} zeroMinWidth>
+    //             <Typography gutterBottom noWrap> 
+    //               {e.locName} 
+    //             </Typography>
+    //           </Grid>
+    //           <Grid item xs={6}>
+    //             <Grid container justify="flex-end"> 
+    //               <Grid container className={classes.routeSocialContainer}>
+    //                 <FavoriteIcon color="disabled" className={classes.routeSocialIcons} />
+    //                 <Typography variant="caption" className={classes.routeSocialText}>2</Typography>
+    //               </Grid>
+    //               <Grid container className={classes.routeSocialContainer}>
+    //                 <ChatBubble color="disabled" className={classes.routeSocialIcons} />
+    //                 <Typography variant="caption" className={classes.routeSocialText}>20</Typography>
+    //               </Grid>
+    //               <Grid container className={classes.routeSocialContainer}>
+    //                 <ThumbUpAlt color="disabled" className={classes.routeSocialIcons} />
+    //                 <Typography variant="caption" className={classes.routeSocialText}>150</Typography>
+    //               </Grid>
+    //             </Grid>
+    //           </Grid>
+    //         </Grid>
+    //       </Paper>
+    //     </Grid>
+    //   )
+    // })
   } 
-
-  render() {
-    const { classes } = this.props;
-    const { dataLoaded } = this.state
-    return (
-      <Grid container onClick={this.sampleFunction} className={classNames(classes.wrapper, ``)}> 
-        <Grid container spacing={16} direction="row" alignContent="flex-start">
-          <Grid item xs={12}>
-            <Typography variant="h6">My Routes:</Typography>
-          </Grid>
-          <Grid container>
-            <Query query={GET_ALL_GPX} variables={{ shortid: match.params.id }}>
-              {({ loading, error, data }) => {
-
-              }}
-            </Query>
-          </Grid>
-          {dataLoaded ? this.renderRecentRoutes() : 'Loading'}
+  return (
+    <Grid container className={classNames(classes.wrapper, ``)}> 
+      <Grid container spacing={16} direction="row" alignContent="flex-start">
+        <Grid item xs={12}>
+          <Typography variant="h6">My Routes:</Typography>
         </Grid>
-        <>
-        </>
+        <Grid container spacing={16}>
+          <Query query={GET_ALL_GPX} variables={{ ownerId: signedUser._id }}>
+            {({ loading, error, data }) => {
+              console.log('my routes data', data, Boolean(data))
+              return data.getAllRoutes ? renderRecentRoutes(data) : <></>
+            }}
+          </Query>
+        </Grid>
+        {/* {renderRecentRoutes()} */}
       </Grid>
-    );
-  }
+      <>
+      </>
+    </Grid>
+  );
 }
 
 MyRoutes.propTypes = {

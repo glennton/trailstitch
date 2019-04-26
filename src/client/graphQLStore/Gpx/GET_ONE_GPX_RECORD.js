@@ -55,18 +55,12 @@ export default gql `
           lng
           ele
           time
-          distanceToNextPoint
-          ascent
-          descent
         }
         trackPtEnd {
           lat
           lng
           ele
           time
-          distanceToNextPoint
-          ascent
-          descent
         }
         track{
           lat

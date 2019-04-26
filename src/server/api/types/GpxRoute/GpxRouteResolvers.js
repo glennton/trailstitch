@@ -9,7 +9,6 @@ import User from '../User/User'
 const resolvers = {
   Query: {
     async getOneGpxRoute(obj, params, context) {     
-      console.log('getOneGpxRoute')
       let queryParamter = {}
       if (!params._id && !params.shortid) {
         throw new Error('Specify id or email');
@@ -27,6 +26,7 @@ const resolvers = {
       try {
         const Route = await GpxRoute.getOneGpxRoute(queryParamter)
         const validatedRoute = validateOwnerID(Route)
+        console.log(validatedRoute)
         return validatedRoute
       } catch (err) {
         console.log('Error: GPX Route Resolver: getGpxRoute: ', err)
@@ -36,12 +36,13 @@ const resolvers = {
   },
   Mutation: {
     async createGpxRoute(root, params, context) {
-      console.log('createGpxRoute', params)
+      //console.log('createGpxRoute', params)
       const { name, ownerId, gpxRecord, totalDistance, dayCount, dateFirst, dateLast, trackPtCount, centralCoords,
         totalElevationGain, totalElevationLoss, overallElevationHighest, overallElevationLowest, info, gpxRouteData } =
       params;
+      //console.log('gpxRouteData', gpxRouteData)
       if (context._id !== ownerId) { throw new AuthenticationError('Authentication Error') }
-      console.log('gpxRecordExists', params.gpxRecord.length !== 0)
+      //console.log('gpxRecordExists', params.gpxRecord.length !== 0)
       const gpxRecordExists = params.gpxRecord.length !== 0
       const routeShortid = shortid.generate()
       const recordShortid = shortid.generate()

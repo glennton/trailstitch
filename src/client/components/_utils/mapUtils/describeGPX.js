@@ -81,8 +81,8 @@ const DescribeGPX = (data) => {
           distance: totalDayDistance,
           elevationGain: ascent,
           elevationLoss: descent,
-          trackPtStart: trk[0],
-          trackPtEnd: trk[trkLength - 1],
+          trackPtStart: { ele: trk[0].ele, lat: trk[0].lat, lng: trk[0].lng, time: trk[0].time },
+          trackPtEnd: { ele: trk[trkLength - 1].ele, lat: trk[trkLength - 1].lat, lng: trk[trkLength - 1].lng, time: trk[trkLength - 1].time },
         })
       })
       // Generate data for entire trip

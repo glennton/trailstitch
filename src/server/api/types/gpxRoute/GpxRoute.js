@@ -7,6 +7,7 @@ class GpxRoute extends Model {
   static async createGpxRoute(GpxRoute) {
     try {
       const gpxRoute = await GpxRoute.save();
+      console.log('gpxRoute', gpxRoute)
       return gpxRoute._id
     } catch (err) {
       console.log('Error: GPX Route Model: createGpxRoute:', err)

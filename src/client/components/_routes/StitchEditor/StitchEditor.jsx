@@ -123,11 +123,10 @@ class StitchEditor extends React.Component {
   render() {
     const { classes } = this.props
     const { dataLoaded, pointData, gpx, unmappedStateCount, focusPlot } = this.state
+    console.log('gpx', gpx)
     //Count Unmapped Points
     return (
       <Grid container direction="column" className={classNames(classes.wrapper, ``)} spacing={16}> 
-        <Grid>
-        </Grid>
         <Grid container>
           <Grid item sm={6} md={3}>
             <Typography variant="h6">Drag Here to Upload Points</Typography>

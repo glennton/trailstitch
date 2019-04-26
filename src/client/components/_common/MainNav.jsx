@@ -54,6 +54,9 @@ const styles = theme => ({
   toolbarNav: {
      flexGrow: '1',
   },
+  menuExpandButton: {
+    color: '#000',
+  },
   mainNavLink:{
     color: theme.palette.grey.A700,
     textDecoration: `none`,
@@ -61,7 +64,6 @@ const styles = theme => ({
 })
 
 const MainNav = (props) => {  
-  console.log('mainnav')
   const { classes } = props 
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const navLinks = DummyData(['pageNavItems']).pageNavItems
@@ -93,7 +95,7 @@ const MainNav = (props) => {
       <AppBar position="static" className={`${classes.mainNavigation}`}>
         <Toolbar className={`${classes.toolbar}`}>
           <IconButton color="inherit" aria-label="Menu" onClick={() => setMobileNavOpen(true)}>
-            <MenuIcon />
+            <MenuIcon className={classes.menuExpandButton} />
           </IconButton>
           <Grid className={classes.toolbarNav}>
             {makeNavLinks()}

@@ -9,9 +9,9 @@ import { Query } from "react-apollo";
 //UI Elements
 import { jssWrapper, jssModalWrapperOuter } from 'Styles/globalStyles'
 import Grid from '@material-ui/core/Grid'
-import { Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography'
+
 //GraphQL Store
-//import GET_ONE_GPX_ROUTE from 'GraphQLStore/Gpx/GET_ONE_GPX_ROUTE'
 import GET_ONE_GPX_RECORD from 'GraphQLStore/Gpx/GET_ONE_GPX_RECORD'
 //Utils
 
@@ -39,14 +39,14 @@ const RouteView = (props) => {
             {({ loading, error, data }) => {
               if (loading) return "Loading...";
               if (error) return `Error! ${error.message}`;
-              console.log('data', data)
-              const { name } = data.getOneGpxRecordEntry
+              const { name, gpxRouteData, centralCoords } = data.getOneGpxRecordEntry
+              //console.log(data)
               return (
                 <Grid container>
-                  {/* <Typography variant="h6">
-                    {gpx.name}
+                  <Typography variant="h6">
+                    {name}
                   </Typography>
-                  <Map gpx={gpx} /> */}
+                  <Map gpx={{gpxRouteData, centralCoords}} />
                 </Grid>
               );
             }}

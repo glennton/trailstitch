@@ -91,7 +91,7 @@ const App = (props) => {
     setSignedUser({})
   }
 
-  console.log('signedUser app', signedUser)
+  //console.log('signedUser app', signedUser)
 
   const renderApp = (
     <Grid container direction="column" className={classes.appContainer}>
@@ -104,7 +104,7 @@ const App = (props) => {
                 <Suspense fallback={<div>Loading...</div>}>
                   <Route exact path="/" component={Home} />
                   <Route path="/albums" render={() => <Albums />} />
-                  <Route path="/myroutes" render={() => <MyRoutes />} />
+                  <Route path="/myroutes" render={(props) => <MyRoutes {...props} />} />
                   <Route exact path="/route/:id" render={(props) => <RouteView {...props} />} />
                   <Route path="/stitches" render={() => <Stitches />} />
                   <Route path="/upload" render={() => <Upload />} />

@@ -1,6 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools'
 import typeDefs from './GpxRouteTypeDefs'
-import resolvers from './resolvers'
+import resolvers from './GpxRouteResolvers'
 import gpxTypeDefs from '../common/typeDefs/gpxTypeDefs'
 import defaultTypeDefs from '../common/typeDefs/defaultTypeDefs'
 

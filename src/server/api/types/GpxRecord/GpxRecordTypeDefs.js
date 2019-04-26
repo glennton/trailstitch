@@ -8,6 +8,7 @@ const typeDefs = gql`
     gpxRoutes: [GpxRecordRoutes]
   }
   type GpxRecordRoutes {
+    _id: ID!
     ownerId: ID!
     shortid: String
     name: String,
@@ -46,6 +47,7 @@ const typeDefs = gql`
   # Queries
   extend type Query {
     getOneGpxRecordEntry(_id: ID, shortid: String): GpxRecordRoutes
+    getAllRoutes(ownerId: ID!): [GpxRecordRoutes]
   }
 
 
