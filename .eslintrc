@@ -1,0 +1,28 @@
+{
+  "parser": "babel-eslint",
+  "rules": {
+    "no-console": "off",
+    "react/no-did-update-set-state": "off"
+  },
+  "plugins": [
+    "react-hooks",
+    "react",
+    "jsx-a11y"
+  ],
+  "env": {
+    "browser": true,
+    "es6": true
+  },  
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "./src/bundler/webpack.common.config.js"
+      }
+    },
+    "react": { 
+      "version": "^16.8.3"
+    }
+
+  },
+  "extends": ["airbnb", "eslint:recommended", "plugin:react/recommended"]
+}

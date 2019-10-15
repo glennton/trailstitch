@@ -1,0 +1,23 @@
+# Package Folders #
+/node_modules/
+**/dist/
+**/auth/
+**/config/API_KEYS*
+
+# OS generated files #
+.DS_Store
+.DS_Store?
+.DocumentRevisions-V100
+.fseventsd
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.DocumentRevisions-V100
+.vscode
+src/server/auth/database.js
