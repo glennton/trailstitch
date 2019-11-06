@@ -33,7 +33,7 @@
     "lodash.merge": "^4.6.1",
     "material-ui-pickers": "^2.2.4",
     "mini-css-extract-plugin": "^0.5.0",
-    "mongoose": "^5.4.17",
+    "mongoose": "^5.7.5",
     "node-fetch": "^2.3.0",
     "notistack": "^0.6.1",
     "password-validator": "^4.1.1",
