@@ -34,7 +34,7 @@
     "material-ui-pickers": "^2.2.4",
     "mini-css-extract-plugin": "^0.5.0",
     "mongoose": "^5.4.17",
-    "node-fetch": "^2.3.0",
+    "node-fetch": "^2.6.7",
     "notistack": "^0.6.1",
     "password-validator": "^4.1.1",
     "prop-types": "^15.7.2",
